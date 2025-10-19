@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cocktail Recipe Scaling Calculator</title>
+  <link rel="stylesheet" href="styles/styleScale.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="scale-wrapper">
+    <div class="scale-calculator glass">
+      <h2><i data-lucide="beaker"></i>Recipe Scaling Calculator</h2>
+      <p class="subtitle">Easily adjust your recipes by servings and ingredient proportions.</p>
+
+      <!-- FORM SECTION -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="recipeSelect">Recipe</label>
+          <select id="recipeSelect">
+            <option value="">Select a recipe...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="originalYield">Original yield (servings)</label>
+          <input type="number" id="originalYield" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="newServings">Desired servings</label>
+          <input type="number" id="newServings" value="1" min="1">
+        </div>
+
+        <div class="form-group">
+          <label for="scaleFactor">Scaling factor</label>
+          <input type="number" id="scaleFactor" readonly>
+        </div>
+      </div>
+
+      <!-- BUTTON -->
+      <button class="btn-primary" id="btnCalculate">
+        <i data-lucide="calculator"></i> Calculate Ingredients
+      </button>
+
+      <!-- RESULTS -->
+      <div class="results">
+        <h4><i data-lucide="list-checks"></i> Adjusted Ingredients</h4>
+        <table class="ingredients-table">
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Original Amount</th>
+              <th>Scaled Amount</th>
+            </tr>
+          </thead>
+          <tbody id="ingredientsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/scaleCalculator.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
