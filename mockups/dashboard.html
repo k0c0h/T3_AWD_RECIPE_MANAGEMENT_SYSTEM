@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DishDash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/styleDash.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>DishDash</h1>
+        <div class="profile-section" id="profileSection">
+            <div class="profile-avatar"></div>
+            <div class="profile-info">
+                <div class="profile-name">My Profile</div>
+                <div class="profile-role">Student</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="menu-category">Content Management</div>
+        <a href="#" class="menu-item" data-section="recipes">
+            <i data-lucide="book-open" class="menu-icon"></i>
+            <span>Recipes</span>
+        </a>
+        <a href="#" class="menu-item" data-section="ingredients">
+            <i data-lucide="apple" class="menu-icon"></i>
+            <span>Ingredients</span>
+        </a>
+
+        <div class="menu-category">Tools & Utilities</div>
+        <a href="#" class="menu-item blue-accent" data-section="conversion">
+            <i data-lucide="scale" class="menu-icon"></i>
+            <span>Unit Conversion</span>
+        </a>
+        <a href="#" class="menu-item blue-accent" data-section="scaling">
+            <i data-lucide="maximize-2" class="menu-icon"></i>
+            <span>Recipe Scaling</span>
+        </a>
+
+        <div class="menu-category">Financial</div>
+        <a href="#" class="menu-item" data-section="costs">
+            <i data-lucide="dollar-sign" class="menu-icon"></i>
+            <span>Costs</span>
+        </a>
+        <a href="#" class="menu-item" data-section="quotes">
+            <i data-lucide="file-text" class="menu-icon"></i>
+            <span>Quotes</span>
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="content-frame" id="contentArea">
+
+        </div>
+    </div>
+
+    <script src="scripts/scriptDash.js"></script>
+</body>
+</html>
