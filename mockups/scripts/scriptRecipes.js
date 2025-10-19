@@ -4,7 +4,6 @@ const initialRecipes = [
         id: 1,
         name: "Cuba Libre",
         category: "cocktail",
-        method: "built",
         servings: 1,
         description: "Classic refreshing Cuban cocktail",
         ingredients: [
@@ -12,13 +11,19 @@ const initialRecipes = [
             { name: "Rum", quantity: 1.5, unit: "oz" },
             { name: "Coca Cola", quantity: "", unit: "top" },
             { name: "Lime", quantity: 1, unit: "dash" }
+        ],
+        instructions: [
+            "Fill a highball glass with ice",
+            "Pour rum over ice",
+            "Top with Coca Cola",
+            "Add a dash of lime juice",
+            "Stir gently and serve"
         ]
     },
     {
         id: 2,
         name: "Daiquiri (Classic)",
         category: "cocktail",
-        method: "shaker",
         servings: 1,
         description: "Classic Cuban rum cocktail",
         ingredients: [
@@ -26,13 +31,19 @@ const initialRecipes = [
             { name: "Rum", quantity: 2, unit: "oz" },
             { name: "Lime juice", quantity: 1, unit: "oz" },
             { name: "Simple syrup", quantity: 0.75, unit: "oz" }
+        ],
+        instructions: [
+            "Add ice to a shaker",
+            "Pour rum, lime juice, and simple syrup",
+            "Shake vigorously for 15 seconds",
+            "Strain into a chilled cocktail glass",
+            "Garnish with lime wheel if desired"
         ]
     },
     {
         id: 3,
         name: "Cuban Mojito",
         category: "cocktail",
-        method: "built",
         servings: 1,
         description: "Refreshing cocktail with mint",
         ingredients: [
@@ -42,13 +53,20 @@ const initialRecipes = [
             { name: "Rum", quantity: 2, unit: "oz" },
             { name: "Lime juice", quantity: 0.75, unit: "oz" },
             { name: "Soda water", quantity: "", unit: "top" }
+        ],
+        instructions: [
+            "Add simple syrup and mint leaves to glass",
+            "Gently muddle the mint",
+            "Fill glass with ice",
+            "Add rum and lime juice",
+            "Top with soda water",
+            "Stir gently and garnish with mint sprig"
         ]
     },
     {
         id: 4,
         name: "Sex on The Beach",
         category: "cocktail",
-        method: "built",
         servings: 1,
         description: "Fruity and vibrant cocktail",
         ingredients: [
@@ -58,13 +76,19 @@ const initialRecipes = [
             { name: "Orange juice", quantity: 2, unit: "oz" },
             { name: "Cranberry juice", quantity: 2, unit: "oz" },
             { name: "Grenadine", quantity: 1, unit: "dash" }
+        ],
+        instructions: [
+            "Fill a highball glass with ice",
+            "Add vodka and peach liqueur",
+            "Pour orange juice and cranberry juice",
+            "Add a dash of grenadine",
+            "Stir well and garnish with orange slice"
         ]
     },
     {
         id: 5,
         name: "Long Island Blue",
         category: "cocktail",
-        method: "built",
         servings: 1,
         description: "Blue variation of the classic Long Island",
         ingredients: [
@@ -77,13 +101,20 @@ const initialRecipes = [
             { name: "Blue Curacao", quantity: 1, unit: "oz" },
             { name: "Sprite", quantity: "", unit: "top" },
             { name: "Lime juice", quantity: 1, unit: "dash" }
+        ],
+        instructions: [
+            "Fill a tall glass with ice",
+            "Add all spirits: rum, vodka, gin, triple sec, and tequila",
+            "Pour Blue Curacao",
+            "Add a dash of lime juice",
+            "Top with Sprite",
+            "Stir gently and garnish with lemon wedge"
         ]
     },
     {
         id: 6,
         name: "Blue Margarita",
         category: "cocktail",
-        method: "blended",
         servings: 1,
         description: "Margarita with a blue twist",
         ingredients: [
@@ -92,13 +123,20 @@ const initialRecipes = [
             { name: "Tequila", quantity: 2, unit: "oz" },
             { name: "Blue Curacao", quantity: 1, unit: "oz" },
             { name: "Sour mix", quantity: 1.5, unit: "oz" }
+        ],
+        instructions: [
+            "Rim glass with salt (optional)",
+            "Add ice to blender",
+            "Pour tequila, triple sec, blue curacao, and sour mix",
+            "Blend until smooth",
+            "Pour into prepared glass",
+            "Garnish with lime wheel"
         ]
     },
     {
         id: 7,
         name: "White Russian",
         category: "cocktail",
-        method: "built",
         servings: 1,
         description: "Creamy and smooth cocktail",
         ingredients: [
@@ -106,13 +144,19 @@ const initialRecipes = [
             { name: "Vodka", quantity: 1.5, unit: "oz" },
             { name: "Kahlua or coffee liqueur", quantity: 0.75, unit: "oz" },
             { name: "Heavy cream", quantity: 1, unit: "oz" }
+        ],
+        instructions: [
+            "Fill an old fashioned glass with ice",
+            "Pour vodka over ice",
+            "Add coffee liqueur",
+            "Top with heavy cream",
+            "Stir gently to create layers"
         ]
     },
     {
         id: 8,
         name: "Grasshopper",
         category: "cocktail",
-        method: "blended",
         servings: 1,
         description: "Creamy mint and cocoa cocktail",
         ingredients: [
@@ -121,13 +165,21 @@ const initialRecipes = [
             { name: "Creme de menthe", quantity: 1, unit: "oz" },
             { name: "Heavy cream", quantity: 1.5, unit: "oz" },
             { name: "Condensed milk", quantity: "", unit: "to taste" }
+        ],
+        instructions: [
+            "Add ice to blender",
+            "Pour creme de cacao and creme de menthe",
+            "Add heavy cream",
+            "Add condensed milk to taste",
+            "Blend until smooth and creamy",
+            "Pour into cocktail glass",
+            "Garnish with chocolate shavings"
         ]
     },
     {
         id: 9,
         name: "June Bug",
         category: "cocktail",
-        method: "double_strain",
         servings: 1,
         description: "Refreshing tropical cocktail",
         ingredients: [
@@ -136,6 +188,13 @@ const initialRecipes = [
             { name: "Lime juice", quantity: 1, unit: "oz" },
             { name: "Simple syrup", quantity: 0.5, unit: "oz" },
             { name: "Pineapple juice", quantity: 2, unit: "oz" }
+        ],
+        instructions: [
+            "Add all ingredients to a shaker with ice",
+            "Shake vigorously",
+            "Double strain into a chilled glass",
+            "Garnish with pineapple wedge",
+            "Serve immediately"
         ]
     }
 ];
@@ -144,6 +203,7 @@ const initialRecipes = [
 let recipes = [...initialRecipes];
 let currentRecipe = null;
 let ingredientCounter = 0;
+let instructionCounter = 0;
 
 // DOM Elements
 const recipesGrid = document.getElementById('recipesGrid');
@@ -152,6 +212,7 @@ const detailModal = document.getElementById('detailModal');
 const recipeForm = document.getElementById('recipeForm');
 const searchInput = document.getElementById('searchInput');
 const filterCategory = document.getElementById('filterCategory');
+const filterServings = document.getElementById('filterServings');
 
 // Event Listeners
 document.getElementById('btnNewRecipe').addEventListener('click', () => openRecipeModal());
@@ -159,9 +220,11 @@ document.getElementById('btnCloseModal').addEventListener('click', closeRecipeMo
 document.getElementById('btnCloseDetail').addEventListener('click', closeDetailModal);
 document.getElementById('btnCancel').addEventListener('click', closeRecipeModal);
 document.getElementById('btnAddIngredient').addEventListener('click', addIngredientField);
+document.getElementById('btnAddInstruction').addEventListener('click', addInstructionField);
 recipeForm.addEventListener('submit', saveRecipe);
 searchInput.addEventListener('input', filterRecipes);
 filterCategory.addEventListener('change', filterRecipes);
+filterServings.addEventListener('change', filterRecipes);
 
 // Main functions
 function renderRecipes(recipesToRender = recipes) {
@@ -173,16 +236,16 @@ function renderRecipes(recipesToRender = recipes) {
             </div>
             <div class="recipe-info">
                 <div class="info-item">
-                    <i data-lucide="chef-hat"></i>
-                    <span>${recipe.method}</span>
-                </div>
-                <div class="info-item">
                     <i data-lucide="users"></i>
                     <span>${recipe.servings} ${recipe.servings === 1 ? 'serving' : 'servings'}</span>
                 </div>
                 <div class="info-item">
                     <i data-lucide="list"></i>
                     <span>${recipe.ingredients.length} ingredients</span>
+                </div>
+                <div class="info-item">
+                    <i data-lucide="clipboard-list"></i>
+                    <span>${recipe.instructions.length} steps</span>
                 </div>
             </div>
             <div class="recipe-actions">
@@ -211,7 +274,6 @@ function openRecipeModal(recipe = null) {
         document.getElementById('recipeName').value = recipe.name;
         document.getElementById('recipeCategory').value = recipe.category;
         document.getElementById('recipeServings').value = recipe.servings;
-        document.getElementById('recipeMethod').value = recipe.method;
         document.getElementById('recipeDescription').value = recipe.description || '';
         
         // Load ingredients
@@ -219,11 +281,19 @@ function openRecipeModal(recipe = null) {
         recipe.ingredients.forEach(ing => {
             addIngredientField(ing);
         });
+        
+        // Load instructions
+        document.getElementById('instructionsList').innerHTML = '';
+        recipe.instructions.forEach(instruction => {
+            addInstructionField(instruction);
+        });
     } else {
         modalTitle.textContent = 'New Recipe';
         recipeForm.reset();
         document.getElementById('ingredientsList').innerHTML = '';
+        document.getElementById('instructionsList').innerHTML = '';
         addIngredientField();
+        addInstructionField();
     }
     
     recipeModal.classList.add('active');
@@ -234,6 +304,7 @@ function closeRecipeModal() {
     recipeModal.classList.remove('active');
     currentRecipe = null;
     ingredientCounter = 0;
+    instructionCounter = 0;
 }
 
 function addIngredientField(ingredient = null) {
@@ -271,6 +342,37 @@ function removeIngredient(button) {
     button.closest('.ingredient-item').remove();
 }
 
+function addInstructionField(instruction = null) {
+    const instructionsList = document.getElementById('instructionsList');
+    const id = instructionCounter++;
+    
+    const instructionDiv = document.createElement('div');
+    instructionDiv.className = 'instruction-item';
+    instructionDiv.innerHTML = `
+        <span class="step-number">${id + 1}.</span>
+        <input type="text" placeholder="Instruction step..." value="${instruction || ''}" data-field="instruction" required>
+        <button type="button" class="btn-icon btn-danger" onclick="removeInstruction(this)">
+            <i data-lucide="x"></i>
+        </button>
+    `;
+    
+    instructionsList.appendChild(instructionDiv);
+    lucide.createIcons();
+}
+
+function removeInstruction(button) {
+    const item = button.closest('.instruction-item');
+    item.remove();
+    updateInstructionNumbers();
+}
+
+function updateInstructionNumbers() {
+    const instructions = document.querySelectorAll('.instruction-item');
+    instructions.forEach((item, index) => {
+        item.querySelector('.step-number').textContent = `${index + 1}.`;
+    });
+}
+
 function saveRecipe(e) {
     e.preventDefault();
     
@@ -280,14 +382,22 @@ function saveRecipe(e) {
         unit: item.querySelector('[data-field="unit"]').value
     }));
     
+    const instructions = Array.from(document.querySelectorAll('.instruction-item'))
+        .map(item => item.querySelector('[data-field="instruction"]').value);
+    
+    if (instructions.length === 0) {
+        alert('Please add at least one instruction step');
+        return;
+    }
+    
     const recipeData = {
         id: currentRecipe?.id || Date.now(),
         name: document.getElementById('recipeName').value,
         category: document.getElementById('recipeCategory').value,
         servings: parseInt(document.getElementById('recipeServings').value),
-        method: document.getElementById('recipeMethod').value,
         description: document.getElementById('recipeDescription').value,
-        ingredients
+        ingredients,
+        instructions
     };
     
     if (currentRecipe) {
@@ -310,7 +420,6 @@ function viewRecipe(id) {
         <div class="detail-section">
             <h4>General Information</h4>
             <p><strong>Type:</strong> ${getCategoryName(recipe.category)}</p>
-            <p><strong>Method:</strong> ${recipe.method}</p>
             <p><strong>Yield:</strong> ${recipe.servings} ${recipe.servings === 1 ? 'serving' : 'servings'}</p>
             ${recipe.description ? `<p><strong>Description:</strong> ${recipe.description}</p>` : ''}
         </div>
@@ -321,6 +430,14 @@ function viewRecipe(id) {
                     <li>${ing.quantity ? ing.quantity + ' ' : ''}${getUnitName(ing.unit)} ${ing.name}</li>
                 `).join('')}
             </ul>
+        </div>
+        <div class="detail-section">
+            <h4>Instructions</h4>
+            <ol class="instructions-list">
+                ${recipe.instructions.map(instruction => `
+                    <li>${instruction}</li>
+                `).join('')}
+            </ol>
         </div>
     `;
     
@@ -347,13 +464,27 @@ function deleteRecipe(id) {
 function filterRecipes() {
     const searchTerm = searchInput.value.toLowerCase();
     const category = filterCategory.value;
+    const servingsRange = filterServings.value;
     
     const filtered = recipes.filter(recipe => {
         const matchesSearch = recipe.name.toLowerCase().includes(searchTerm) ||
                             recipe.ingredients.some(ing => ing.name.toLowerCase().includes(searchTerm));
         const matchesCategory = !category || recipe.category === category;
         
-        return matchesSearch && matchesCategory;
+        let matchesServings = true;
+        if (servingsRange) {
+            if (servingsRange === '1') {
+                matchesServings = recipe.servings === 1;
+            } else if (servingsRange === '2-4') {
+                matchesServings = recipe.servings >= 2 && recipe.servings <= 4;
+            } else if (servingsRange === '5-10') {
+                matchesServings = recipe.servings >= 5 && recipe.servings <= 10;
+            } else if (servingsRange === '10+') {
+                matchesServings = recipe.servings > 10;
+            }
+        }
+        
+        return matchesSearch && matchesCategory && matchesServings;
     });
     
     renderRecipes(filtered);

@@ -336,6 +336,42 @@ form {
     font-size: 13px;
 }
 
+.instruction-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.step-number {
+    font-weight: 600;
+    color: #355070;
+    font-size: 14px;
+    min-width: 25px;
+}
+
+.instruction-item input {
+    padding: 10px;
+    border: 2px solid #e8c4d8;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.instructions-list {
+    list-style: decimal;
+    padding-left: 25px;
+}
+
+.instructions-list li {
+    padding: 10px;
+    background-color: #fef6f9;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border-left: 3px solid #ba84a8;
+    line-height: 1.6;
+}
+
 .modal-footer {
     display: flex;
     justify-content: flex-end;

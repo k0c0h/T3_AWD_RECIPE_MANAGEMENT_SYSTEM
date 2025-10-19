@@ -1,33 +1,33 @@
 // Initial ingredient data
 let ingredients = [
-    { id: 1, name: "Rum", category: "spirit", units: ["oz", "ml"] },
-    { id: 2, name: "Vodka", category: "spirit", units: ["oz", "ml"] },
-    { id: 3, name: "Tequila", category: "spirit", units: ["oz", "ml"] },
-    { id: 4, name: "Gin", category: "spirit", units: ["oz", "ml"] },
-    { id: 5, name: "Triple Sec", category: "spirit", units: ["oz", "ml"] },
-    { id: 6, name: "Blue Curacao", category: "spirit", units: ["oz", "ml"] },
-    { id: 7, name: "Kahlua", category: "spirit", units: ["oz", "ml"] },
-    { id: 8, name: "Midori", category: "spirit", units: ["oz", "ml"] },
-    { id: 9, name: "Malibu", category: "spirit", units: ["oz", "ml"] },
-    { id: 10, name: "Creme de cacao", category: "spirit", units: ["oz", "ml"] },
-    { id: 11, name: "Creme de menthe", category: "spirit", units: ["oz", "ml"] },
-    { id: 12, name: "Peach liqueur", category: "spirit", units: ["oz", "ml"] },
-    { id: 13, name: "Coca Cola", category: "mixer", units: ["ml", "oz"] },
-    { id: 14, name: "Sprite", category: "mixer", units: ["ml", "oz"] },
-    { id: 15, name: "Soda water", category: "mixer", units: ["ml", "oz"] },
-    { id: 16, name: "Orange juice", category: "juice", units: ["oz", "ml"] },
-    { id: 17, name: "Cranberry juice", category: "juice", units: ["oz", "ml"] },
-    { id: 18, name: "Pineapple juice", category: "juice", units: ["oz", "ml"] },
-    { id: 19, name: "Lime juice", category: "juice", units: ["oz", "ml", "dash", "unit"] },
-    { id: 20, name: "Simple syrup", category: "syrup", units: ["oz", "ml"] },
-    { id: 21, name: "Sugar syrup", category: "syrup", units: ["oz", "ml"] },
-    { id: 22, name: "Grenadine", category: "syrup", units: ["dash", "oz", "ml"] },
-    { id: 23, name: "Sour mix", category: "syrup", units: ["oz", "ml"] },
-    { id: 24, name: "Heavy cream", category: "other", units: ["oz", "ml"] },
-    { id: 25, name: "Condensed milk", category: "other", units: ["oz", "ml", "tbsp"] },
-    { id: 26, name: "Spearmint", category: "garnish", units: ["unit"] },
-    { id: 27, name: "Mint leaves", category: "garnish", units: ["unit"] },
-    { id: 28, name: "Ice", category: "other", units: ["unit"] }
+    { id: 1, name: "Rum", category: "spirit", product: "Bacardi Superior", size: "750ml", price: 18.99, units: ["oz", "ml"] },
+    { id: 2, name: "Vodka", category: "spirit", product: "Absolut Vodka", size: "1 liter", price: 24.99, units: ["oz", "ml"] },
+    { id: 3, name: "Tequila", category: "spirit", product: "Jose Cuervo Silver", size: "750ml", price: 19.99, units: ["oz", "ml"] },
+    { id: 4, name: "Gin", category: "spirit", product: "Beefeater", size: "750ml", price: 21.99, units: ["oz", "ml"] },
+    { id: 5, name: "Triple Sec", category: "spirit", product: "Cointreau", size: "750ml", price: 29.99, units: ["oz", "ml"] },
+    { id: 6, name: "Blue Curacao", category: "spirit", product: "Bols Blue", size: "750ml", price: 15.99, units: ["oz", "ml"] },
+    { id: 7, name: "Kahlua", category: "spirit", product: "Kahlua Coffee Liqueur", size: "750ml", price: 22.99, units: ["oz", "ml"] },
+    { id: 8, name: "Midori", category: "spirit", product: "Midori Melon Liqueur", size: "750ml", price: 18.99, units: ["oz", "ml"] },
+    { id: 9, name: "Malibu", category: "spirit", product: "Malibu Coconut Rum", size: "750ml", price: 17.99, units: ["oz", "ml"] },
+    { id: 10, name: "Creme de cacao", category: "spirit", product: "Bols Dark Creme de Cacao", size: "750ml", price: 14.99, units: ["oz", "ml"] },
+    { id: 11, name: "Creme de menthe", category: "spirit", product: "Bols Peppermint White", size: "750ml", price: 14.99, units: ["oz", "ml"] },
+    { id: 12, name: "Peach liqueur", category: "spirit", product: "DeKuyper Peachtree", size: "750ml", price: 12.99, units: ["oz", "ml"] },
+    { id: 13, name: "Coca Cola", category: "mixer", product: "Coca-Cola Classic", size: "2 liters", price: 2.49, units: ["ml", "oz"] },
+    { id: 14, name: "Sprite", category: "mixer", product: "Sprite", size: "2 liters", price: 2.49, units: ["ml", "oz"] },
+    { id: 15, name: "Soda water", category: "mixer", product: "Club Soda", size: "1 liter", price: 1.99, units: ["ml", "oz"] },
+    { id: 16, name: "Orange juice", category: "juice", product: "Tropicana Pure Premium", size: "1.5 liters", price: 4.99, units: ["oz", "ml"] },
+    { id: 17, name: "Cranberry juice", category: "juice", product: "Ocean Spray", size: "1.5 liters", price: 4.99, units: ["oz", "ml"] },
+    { id: 18, name: "Pineapple juice", category: "juice", product: "Dole 100%", size: "1.5 liters", price: 4.99, units: ["oz", "ml"] },
+    { id: 19, name: "Lime juice", category: "juice", product: "Fresh Lime Juice", size: "500ml", price: 3.99, units: ["oz", "ml", "dash", "unit"] },
+    { id: 20, name: "Simple syrup", category: "syrup", product: "Homemade", size: "500ml", price: 2.00, units: ["oz", "ml"] },
+    { id: 21, name: "Sugar syrup", category: "syrup", product: "Monin", size: "750ml", price: 8.99, units: ["oz", "ml"] },
+    { id: 22, name: "Grenadine", category: "syrup", product: "Rose's Grenadine", size: "354ml", price: 4.99, units: ["dash", "oz", "ml"] },
+    { id: 23, name: "Sour mix", category: "syrup", product: "Master of Mixes", size: "1 liter", price: 6.99, units: ["oz", "ml"] },
+    { id: 24, name: "Heavy cream", category: "other", product: "Fresh Heavy Cream", size: "500ml", price: 3.99, units: ["oz", "ml"] },
+    { id: 25, name: "Condensed milk", category: "other", product: "Nestle La Lechera", size: "397g", price: 2.99, units: ["oz", "ml", "tbsp"] },
+    { id: 26, name: "Spearmint", category: "garnish", product: "Fresh Spearmint", size: "1 bunch", price: 1.99, units: ["unit"] },
+    { id: 27, name: "Mint leaves", category: "garnish", product: "Fresh Mint", size: "1 bunch", price: 1.99, units: ["unit"] },
+    { id: 28, name: "Ice", category: "other", product: "Ice Cubes", size: "2kg bag", price: 2.99, units: ["unit"] }
 ];
 
 let currentIngredient = null;
@@ -37,6 +37,7 @@ const ingredientsBody = document.getElementById('ingredientsBody');
 const ingredientModal = document.getElementById('ingredientModal');
 const ingredientForm = document.getElementById('ingredientForm');
 const searchIngredient = document.getElementById('searchIngredient');
+const filterCategory = document.getElementById('filterCategory');
 
 // Event Listeners
 document.getElementById('btnNewIngredient').addEventListener('click', () => openIngredientModal());
@@ -44,6 +45,7 @@ document.getElementById('btnCloseModal').addEventListener('click', closeIngredie
 document.getElementById('btnCancel').addEventListener('click', closeIngredientModal);
 ingredientForm.addEventListener('submit', saveIngredient);
 searchIngredient.addEventListener('input', filterIngredients);
+filterCategory.addEventListener('change', filterIngredients);
 
 // Functions
 function renderIngredients(ingredientsToRender = ingredients) {
@@ -51,6 +53,9 @@ function renderIngredients(ingredientsToRender = ingredients) {
         <tr>
             <td>${ingredient.name}</td>
             <td><span class="category-badge">${getCategoryName(ingredient.category)}</span></td>
+            <td>${ingredient.product}</td>
+            <td>${ingredient.size}</td>
+            <td>$${ingredient.price.toFixed(2)}</td>
             <td>${ingredient.units.join(', ')}</td>
             <td>
                 <button class="btn-icon" onclick="editIngredient(${ingredient.id})" title="Edit">
@@ -74,6 +79,9 @@ function openIngredientModal(ingredient = null) {
         modalTitle.textContent = 'Edit Ingredient';
         document.getElementById('ingredientName').value = ingredient.name;
         document.getElementById('ingredientCategory').value = ingredient.category;
+        document.getElementById('productBrand').value = ingredient.product;
+        document.getElementById('productSize').value = ingredient.size;
+        document.getElementById('productPrice').value = ingredient.price;
         
         // Check units
         document.querySelectorAll('input[name="units"]').forEach(checkbox => {
@@ -107,6 +115,9 @@ function saveIngredient(e) {
         id: currentIngredient?.id || Date.now(),
         name: document.getElementById('ingredientName').value,
         category: document.getElementById('ingredientCategory').value,
+        product: document.getElementById('productBrand').value,
+        size: document.getElementById('productSize').value,
+        price: parseFloat(document.getElementById('productPrice').value),
         units: selectedUnits
     };
     
@@ -135,9 +146,16 @@ function deleteIngredient(id) {
 
 function filterIngredients() {
     const searchTerm = searchIngredient.value.toLowerCase();
-    const filtered = ingredients.filter(ingredient =>
-        ingredient.name.toLowerCase().includes(searchTerm)
-    );
+    const category = filterCategory.value;
+    
+    const filtered = ingredients.filter(ingredient => {
+        const matchesSearch = ingredient.name.toLowerCase().includes(searchTerm) ||
+                            ingredient.product.toLowerCase().includes(searchTerm);
+        const matchesCategory = !category || ingredient.category === category;
+        
+        return matchesSearch && matchesCategory;
+    });
+    
     renderIngredients(filtered);
 }
 

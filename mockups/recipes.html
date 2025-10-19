@@ -25,6 +25,13 @@
                     <option value="dessert">Dessert</option>
                     <option value="beverage">Beverage</option>
                 </select>
+                <select id="filterServings" class="filter-select">
+                    <option value="">All Servings</option>
+                    <option value="1">1 serving</option>
+                    <option value="2-4">2-4 servings</option>
+                    <option value="5-10">5-10 servings</option>
+                    <option value="10+">10+ servings</option>
+                </select>
                 <button class="btn-primary" id="btnNewRecipe">
                     <i data-lucide="plus"></i>
                     New Recipe
@@ -68,18 +75,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="recipeMethod">Preparation Method *</label>
-                        <select id="recipeMethod" required>
-                            <option value="built">Built</option>
-                            <option value="shaker">Shaker</option>
-                            <option value="blended">Blended</option>
-                            <option value="double_strain">Double Strain</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
                         <label for="recipeDescription">Description</label>
-                        <textarea id="recipeDescription" rows="3"></textarea>
+                        <textarea id="recipeDescription" rows="3" placeholder="Brief description of the recipe..."></textarea>
                     </div>
 
                     <div class="form-group">
@@ -88,6 +85,15 @@
                         <button type="button" class="btn-secondary" id="btnAddIngredient">
                             <i data-lucide="plus"></i>
                             Add Ingredient
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Instructions *</label>
+                        <div id="instructionsList"></div>
+                        <button type="button" class="btn-secondary" id="btnAddInstruction">
+                            <i data-lucide="plus"></i>
+                            Add Step
                         </button>
                     </div>
 

@@ -303,6 +303,27 @@ form {
     border-top: 1px solid #f0f0f0;
 }
 
+.filter-select {
+    padding: 12px 15px;
+    border: 2px solid #e8c4d8;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #ba84a8;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
 @media (max-width: 768px) {
     .ingredients-table {
         overflow-x: auto;
@@ -313,6 +334,10 @@ form {
     }
     
     .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
         grid-template-columns: 1fr;
     }
 }
