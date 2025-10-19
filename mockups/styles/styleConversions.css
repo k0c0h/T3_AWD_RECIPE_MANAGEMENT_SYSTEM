@@ -6,25 +6,16 @@
 }
 
 body {
-  font-family: 'Poppins', 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #fef6f9 0%, #f9e5ef 100%);
-  color: #2c2c2c;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fef6f9;
+    color: #2c2c2c;
+    padding: 20px;
 }
 
 /* === Container === */
 .conversion-container {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  padding: 40px;
-  max-width: 900px;
-  width: 100%;
-  animation: fadeIn 0.6s ease;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 @keyframes fadeIn {
@@ -34,13 +25,9 @@ body {
 
 /* === Titles === */
 .conversion-container h2 {
-  color: #355070;
-  font-size: 28px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+    color: #355070;
+    margin-bottom: 20px;
+    font-size: 28px;
 }
 
 .subtitle {
@@ -50,19 +37,9 @@ body {
   font-size: 15px;
 }
 
-/* === Conversion card === */
 .conversion-card {
-  background: #fff;
-  border: 2px solid #e8c4d8;
-  border-radius: 16px;
-  padding: 25px 30px;
-  box-shadow: 0 2px 12px rgba(186, 132, 168, 0.1);
-  transition: 0.3s;
-}
-
-.conversion-card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 5px 18px rgba(186, 132, 168, 0.15);
+ max-width: 1400px;
+    margin: 0 auto;
 }
 
 .conversion-card h3 {
@@ -76,7 +53,6 @@ body {
   justify-content: center;
 }
 
-/* === Conversion tool layout === */
 .conversion-tool {
   display: flex;
   align-items: center;
@@ -88,7 +64,7 @@ body {
 
 .conversion-box {
   flex: 1;
-  min-width: 260px;
+  min-width: 400px;
   background: rgba(255, 255, 255, 0.75);
   border-radius: 12px;
   padding: 20px;

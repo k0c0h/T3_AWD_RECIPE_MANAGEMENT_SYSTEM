@@ -1,125 +1,85 @@
 * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Poppins', 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #fef6f9 0%, #f9e5ef 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fef6f9;
       color: #2c2c2c;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
+      padding: 20px;
     }
 
     .container {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      padding: 40px;
       max-width: 1000px;
-      width: 100%;
-      animation: fadeIn 0.6s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      margin: 0 auto;
     }
 
     .title {
-      color: #355070;
-      font-size: 28px;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      margin: 0 0 10px 0;
+        color: #355070;
+        margin-bottom: 20px;
+        font-size: 28px;
     }
 
     .subtitle {
       text-align: center;
       color: #666;
-      margin-bottom: 35px;
-      font-size: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
     }
 
     .card {
-      background: #fff;
-      border: 2px solid #e8c4d8;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 2px 12px rgba(186, 132, 168, 0.1);
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .search-container {
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .label {
       display: block;
       color: #355070;
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-size: 14px;
-    }
-
-    .autocomplete-wrapper {
-      position: relative;
     }
 
     .search-input-wrapper {
       position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      color: #ba84a8;
-      pointer-events: none;
     }
 
     .search-input {
       width: 100%;
-      padding: 12px 12px 12px 42px;
+      padding: 12px 12px 12px 40px;
       border: 2px solid #e8c4d8;
       border-radius: 8px;
-      fontSize: 15px;
-      transition: all 0.3s ease;
-      outline: none;
+      font-size: 14px;
+      transition: border-color 0.3s;
     }
 
     .search-input:focus {
+      outline: none;
       border-color: #ba84a8;
-      box-shadow: 0 0 6px rgba(186, 132, 168, 0.4);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8e8e93;
     }
 
     .dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: white;
       border: 2px solid #e8c4d8;
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-      max-height: 300px;
-      overflow-y: auto;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      display: none;
+      border-radius: 8px;
+      margin-top: 4px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .dropdown.show {
@@ -155,8 +115,8 @@
     }
 
     .table-wrapper {
+      margin-bottom: 20px;
       overflow-x: auto;
-      margin-bottom: 25px;
     }
 
     table {
@@ -165,9 +125,9 @@
     }
 
     th {
-      background-color: #f9e5ef;
+      background-color: #fef6f9;
       color: #355070;
-      padding: 12px;
+      padding: 12px 16px;
       text-align: left;
       font-weight: 600;
       font-size: 14px;
@@ -175,17 +135,17 @@
     }
 
     td {
-      padding: 12px;
+      padding: 12px 16px;
       border-bottom: 1px solid #f0f0f0;
       color: #2c2c2c;
       font-size: 14px;
     }
 
     .summary-section {
-      background-color: rgba(249, 229, 239, 0.3);
+      background-color: white;
       border-radius: 12px;
       padding: 20px;
-      margin-top: 20px;
+      border: 2px solid #e8c4d8;
     }
 
     .cost-row {
@@ -193,7 +153,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 0;
-      font-size: 15px;
+      font-size: 14px;
       color: #2c2c2c;
     }
 
@@ -203,122 +163,119 @@
     }
 
     .total-row {
-      border-top: 2px solid #ba84a8;
-      margin-top: 10px;
+      border-top: 2px solid #e8c4d8;
+      margin-top: 15px;
       padding-top: 15px;
     }
 
     .total-label {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 600;
       color: #355070;
     }
 
     .total-value {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 18px;
+      font-weight: 600;
       color: #ba84a8;
     }
 
     .form-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 0;
+      margin-bottom: 15px;
     }
 
     .small-label {
       color: #355070;
       font-weight: 600;
       font-size: 14px;
-      min-width: 160px;
+      display: block;
+      margin-bottom: 8px;
     }
 
     .small-input {
-      width: 100px;
-      padding: 8px;
+      padding: 8px 12px;
       border: 2px solid #e8c4d8;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 14px;
+      width: 120px;
+    }
+
+    .small-input:focus {
+      outline: none;
+      border-color: #ba84a8;
     }
 
     .pricing-section {
       margin-top: 20px;
       padding-top: 20px;
-      border-top: 1px solid #e8c4d8;
+      border-top: 1px solid #f0f0f0;
     }
 
     .formula-box {
-      background-color: #fff3f8;
-      border: 1px dashed #ba84a8;
+      background-color: #fef6f9;
+      border: 2px solid #e8c4d8;
       border-radius: 8px;
       padding: 12px;
       margin-bottom: 15px;
     }
 
     .formula-text {
-      margin: 0;
       color: #355070;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 14px;
       text-align: center;
+      margin: 0;
     }
 
     .final-price {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      background-color: #e8f5e9;
+      background-color: #fef6f9;
       padding: 20px;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
-
-    .price-icon {
-      color: #28a745;
-      font-size: 24px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border: 2px solid #e8c4d8;
     }
 
     .price-label {
-      color: #2c2c2c;
+      color: #355070;
       font-size: 14px;
       margin-bottom: 5px;
     }
 
     .price-value {
-      color: #28a745;
-      font-size: 28px;
-      font-weight: 700;
+      color: #ba84a8;
+      font-size: 24px;
+      font-weight: 600;
     }
 
     .empty-state {
       text-align: center;
-      padding: 60px 20px;
-      color: #999;
+      padding: 40px 20px;
     }
 
     .empty-icon {
-      font-size: 48px;
       color: #ba84a8;
-      opacity: 0.5;
+      margin-bottom: 10px;
+      opacity: 0.7;
     }
 
     .empty-text {
-      margin-top: 15px;
-      font-size: 16px;
       color: #666;
+      font-size: 14px;
     }
 
     .hidden {
       display: none;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 768px) {
       .container {
-        padding: 20px;
+        padding: 10px;
       }
       
       .card {
-        padding: 20px;
+        padding: 15px;
+      }
+      
+      .summary-section {
+        padding: 15px;
       }
     }

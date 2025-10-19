@@ -8,12 +8,9 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <div class="scale-wrapper">
-    <div class="scale-calculator glass">
-      <h2><i data-lucide="beaker"></i>Recipe Scaling Calculator</h2>
-      <p class="subtitle">Easily adjust your recipes by servings and ingredient proportions.</p>
+  <div class="scale-calculator ">
+      <h2><i data-lucide="maximize-2"></i> Recipe Scaling Calculator</h2>
 
-      <!-- FORM SECTION -->
       <div class="form-grid">
         <div class="form-group">
           <label for="recipeSelect">Recipe</label>
@@ -38,12 +35,10 @@
         </div>
       </div>
 
-      <!-- BUTTON -->
       <button class="btn-primary" id="btnCalculate">
         <i data-lucide="calculator"></i> Calculate Ingredients
       </button>
 
-      <!-- RESULTS -->
       <div class="results">
         <h4><i data-lucide="list-checks"></i> Adjusted Ingredients</h4>
         <table class="ingredients-table">
@@ -57,8 +52,8 @@
           <tbody id="ingredientsBody"></tbody>
         </table>
       </div>
-    </div>
   </div>
+ 
 
   <script src="scripts/scaleCalculator.js"></script>
   <script>
