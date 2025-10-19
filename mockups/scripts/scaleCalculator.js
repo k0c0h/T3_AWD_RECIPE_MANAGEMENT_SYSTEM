@@ -1,4 +1,3 @@
-// === Import or reuse recipe data ===
 const recipes = [
   {
     id: 1,
@@ -60,7 +59,15 @@ const recipes = [
   }
 ];
 
-// === DOM elements ===
+const bottleSizes = {
+  Vodka: 25.36,
+  Rum: 25.36,
+  Tequila: 25.36,
+  "Triple Sec": 25.36,
+  "Peach liqueur": 25.36,
+  "Blue Curacao": 25.36
+};
+
 const recipeSelect = document.querySelector("select");
 const originalYieldInput = document.getElementById("originalYield");
 const newServingsInput = document.getElementById("newServings");
@@ -68,7 +75,6 @@ const scaleFactorInput = document.getElementById("scaleFactor");
 const ingredientsBody = document.getElementById("ingredientsBody");
 const calculateBtn = document.getElementById("btnCalculate");
 
-// === Load recipe names ===
 window.addEventListener("DOMContentLoaded", () => {
   recipes.forEach((recipe) => {
     const option = document.createElement("option");
@@ -78,7 +84,6 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// === When a recipe is selected ===
 recipeSelect.addEventListener("change", (e) => {
   const recipe = recipes.find((r) => r.id == e.target.value);
   if (!recipe) return;
@@ -90,7 +95,6 @@ recipeSelect.addEventListener("change", (e) => {
   renderIngredients(recipe, 1);
 });
 
-// === Render ingredients ===
 function renderIngredients(recipe, factor) {
   ingredientsBody.innerHTML = recipe.ingredients
     .map((ing) => {
@@ -98,18 +102,24 @@ function renderIngredients(recipe, factor) {
         ing.quantity && !isNaN(ing.quantity)
           ? (ing.quantity * factor).toFixed(2)
           : ing.quantity || "";
+
+      let bottleInfo = "";
+      if (bottleSizes[ing.name] && scaledQty) {
+        const neededBottles = Math.ceil(scaledQty / bottleSizes[ing.name]);
+        bottleInfo = ` (≈ ${neededBottles} bottle${neededBottles > 1 ? "s" : ""})`;
+      }
+
       return `
         <tr>
           <td>${ing.name}</td>
           <td>${ing.quantity ? ing.quantity + " " + ing.unit : ing.unit}</td>
-          <td>${scaledQty ? scaledQty + " " + ing.unit : ing.unit}</td>
+          <td>${scaledQty ? scaledQty + " " + ing.unit + bottleInfo : ing.unit}</td>
         </tr>
       `;
     })
     .join("");
 }
 
-// === When "Calculate Ingredients" button is clicked ===
 calculateBtn.addEventListener("click", () => {
   const recipe = recipes.find((r) => r.id == recipeSelect.value);
   if (!recipe) {
