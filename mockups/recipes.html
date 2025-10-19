@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Management</title>
+    <link rel="stylesheet" href="styles/styleRecipes.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="recipes-container">
+        <!-- Header with search and filters -->
+        <div class="recipes-header">
+            <h2>Recipe Management</h2>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Search recipes or ingredients...">
+                </div>
+                <select id="filterCategory" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="cocktail">Cocktail</option>
+                    <option value="appetizer">Appetizer</option>
+                    <option value="main_course">Main Course</option>
+                    <option value="dessert">Dessert</option>
+                    <option value="beverage">Beverage</option>
+                </select>
+                <button class="btn-primary" id="btnNewRecipe">
+                    <i data-lucide="plus"></i>
+                    New Recipe
+                </button>
+            </div>
+        </div>
+
+        <!-- Recipe list -->
+        <div class="recipes-grid" id="recipesGrid"></div>
+
+        <!-- Modal to create/edit recipe -->
+        <div class="modal" id="recipeModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">New Recipe</h3>
+                    <button class="btn-close" id="btnCloseModal">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <form id="recipeForm">
+                    <div class="form-group">
+                        <label for="recipeName">Recipe Name *</label>
+                        <input type="text" id="recipeName" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="recipeCategory">Type *</label>
+                            <select id="recipeCategory" required>
+                                <option value="cocktail">Cocktail</option>
+                                <option value="appetizer">Appetizer</option>
+                                <option value="main_course">Main Course</option>
+                                <option value="dessert">Dessert</option>
+                                <option value="beverage">Beverage</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipeServings">Yield (servings) *</label>
+                            <input type="number" id="recipeServings" min="1" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipeMethod">Preparation Method *</label>
+                        <select id="recipeMethod" required>
+                            <option value="built">Built</option>
+                            <option value="shaker">Shaker</option>
+                            <option value="blended">Blended</option>
+                            <option value="double_strain">Double Strain</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipeDescription">Description</label>
+                        <textarea id="recipeDescription" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ingredients *</label>
+                        <div id="ingredientsList"></div>
+                        <button type="button" class="btn-secondary" id="btnAddIngredient">
+                            <i data-lucide="plus"></i>
+                            Add Ingredient
+                        </button>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btnCancel">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Recipe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Recipe detail modal -->
+        <div class="modal" id="detailModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="detailRecipeName"></h3>
+                    <button class="btn-close" id="btnCloseDetail">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="recipe-detail" id="recipeDetail"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/scriptRecipes.js"></script>
+</body>
+</html>
