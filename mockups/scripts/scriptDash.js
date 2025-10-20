@@ -1,12 +1,12 @@
 const SECTION_FILES = {
-    calendar: 'calendar.html',
-    recipes: 'recipes.html',
-    ingredients: 'ingredients.html',
-    conversion: 'conversion.html',
-    scaling: 'scaling.html',
-    costs: 'costs.html',
-    quotes: 'quotes.html',
-    profile: 'profile.html'
+    calendar: '../panels/calendar.html',
+    recipes: '../panels/recipes.html',
+    ingredients: '../panels/ingredients.html',
+    conversion: '../panels/conversion.html',
+    scaling: '../panels/scaling.html',
+    costs: '../panels/costs.html',
+    quotes: '../panels/quotes.html',
+    profile: '../panels/profile.html'
 };
 
 const DOM = {
@@ -86,7 +86,6 @@ function initializeEventListeners() {
     document.addEventListener('error', handleIframeError, true);
 }
 
-// Initialize Lucide icons
 lucide.createIcons();
 
 initializeEventListeners();

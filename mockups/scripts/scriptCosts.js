@@ -43,54 +43,11 @@
           { name: "Crema batida", quantity: 200, unit: "ml", unitCost: 0.008, totalCost: 1.60 }
         ],
         servings: 8
-      },
-      {
-        id: 4,
-        name: "Mojito Clásico",
-        category: "cocktail",
-        ingredients: [
-          { name: "Ron blanco", quantity: 50, unit: "ml", unitCost: 0.03, totalCost: 1.50 },
-          { name: "Hierbabuena", quantity: 10, unit: "hojas", unitCost: 0.05, totalCost: 0.50 },
-          { name: "Limón", quantity: 1, unit: "unidad", unitCost: 0.20, totalCost: 0.20 },
-          { name: "Azúcar", quantity: 2, unit: "cdas", unitCost: 0.05, totalCost: 0.10 },
-          { name: "Agua con gas", quantity: 100, unit: "ml", unitCost: 0.01, totalCost: 1.00 },
-          { name: "Hielo", quantity: 150, unit: "g", unitCost: 0.01, totalCost: 1.50 }
-        ],
-        indirectCosts: 0.85,
-        cocktailCost: 2.55
-      },
-      {
-        id: 5,
-        name: "Ensalada César",
-        category: "appetizer",
-        ingredients: [
-          { name: "Lechuga romana", quantity: 200, unit: "g", unitCost: 0.003, totalCost: 0.60 },
-          { name: "Pollo", quantity: 150, unit: "g", unitCost: 0.008, totalCost: 1.20 },
-          { name: "Pan", quantity: 100, unit: "g", unitCost: 0.002, totalCost: 0.20 },
-          { name: "Queso parmesano", quantity: 50, unit: "g", unitCost: 0.008, totalCost: 0.40 },
-          { name: "Aderezo césar", quantity: 60, unit: "ml", unitCost: 0.015, totalCost: 0.90 }
-        ],
-        servings: 2
-      },
-      {
-        id: 6,
-        name: "Tiramisu",
-        category: "dessert",
-        ingredients: [
-          { name: "Queso mascarpone", quantity: 250, unit: "g", unitCost: 0.016, totalCost: 4.00 },
-          { name: "Huevos", quantity: 3, unit: "unidades", unitCost: 0.25, totalCost: 0.75 },
-          { name: "Azúcar", quantity: 100, unit: "g", unitCost: 0.002, totalCost: 0.20 },
-          { name: "Café expreso", quantity: 200, unit: "ml", unitCost: 0.01, totalCost: 2.00 },
-          { name: "Bizcochos", quantity: 200, unit: "g", unitCost: 0.006, totalCost: 1.20 },
-          { name: "Cacao en polvo", quantity: 20, unit: "g", unitCost: 0.03, totalCost: 0.60 }
-        ],
-        servings: 6
       }
     ];
 
   
     let selectedRecipe = null;
-
  
     const searchInput = document.getElementById('searchInput');
     const dropdown = document.getElementById('dropdown');

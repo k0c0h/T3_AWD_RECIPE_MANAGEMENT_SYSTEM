@@ -14,20 +14,7 @@ let ingredients = [
     { id: 12, name: "Peach liqueur", category: "spirit", product: "DeKuyper Peachtree", size: "750ml", price: 12.99, units: ["oz", "ml"] },
     { id: 13, name: "Coca Cola", category: "mixer", product: "Coca-Cola Classic", size: "2 liters", price: 2.49, units: ["ml", "oz"] },
     { id: 14, name: "Sprite", category: "mixer", product: "Sprite", size: "2 liters", price: 2.49, units: ["ml", "oz"] },
-    { id: 15, name: "Soda water", category: "mixer", product: "Club Soda", size: "1 liter", price: 1.99, units: ["ml", "oz"] },
-    { id: 16, name: "Orange juice", category: "juice", product: "Tropicana Pure Premium", size: "1.5 liters", price: 4.99, units: ["oz", "ml"] },
-    { id: 17, name: "Cranberry juice", category: "juice", product: "Ocean Spray", size: "1.5 liters", price: 4.99, units: ["oz", "ml"] },
-    { id: 18, name: "Pineapple juice", category: "juice", product: "Dole 100%", size: "1.5 liters", price: 4.99, units: ["oz", "ml"] },
-    { id: 19, name: "Lime juice", category: "juice", product: "Fresh Lime Juice", size: "500ml", price: 3.99, units: ["oz", "ml", "dash", "unit"] },
-    { id: 20, name: "Simple syrup", category: "syrup", product: "Homemade", size: "500ml", price: 2.00, units: ["oz", "ml"] },
-    { id: 21, name: "Sugar syrup", category: "syrup", product: "Monin", size: "750ml", price: 8.99, units: ["oz", "ml"] },
-    { id: 22, name: "Grenadine", category: "syrup", product: "Rose's Grenadine", size: "354ml", price: 4.99, units: ["dash", "oz", "ml"] },
-    { id: 23, name: "Sour mix", category: "syrup", product: "Master of Mixes", size: "1 liter", price: 6.99, units: ["oz", "ml"] },
-    { id: 24, name: "Heavy cream", category: "other", product: "Fresh Heavy Cream", size: "500ml", price: 3.99, units: ["oz", "ml"] },
-    { id: 25, name: "Condensed milk", category: "other", product: "Nestle La Lechera", size: "397g", price: 2.99, units: ["oz", "ml", "tbsp"] },
-    { id: 26, name: "Spearmint", category: "garnish", product: "Fresh Spearmint", size: "1 bunch", price: 1.99, units: ["unit"] },
-    { id: 27, name: "Mint leaves", category: "garnish", product: "Fresh Mint", size: "1 bunch", price: 1.99, units: ["unit"] },
-    { id: 28, name: "Ice", category: "other", product: "Ice Cubes", size: "2kg bag", price: 2.99, units: ["unit"] }
+    { id: 15, name: "Soda water", category: "mixer", product: "Club Soda", size: "1 liter", price: 1.99, units: ["ml", "oz"] }
 ];
 
 let currentIngredient = null;

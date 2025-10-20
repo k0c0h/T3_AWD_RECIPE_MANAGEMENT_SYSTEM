@@ -4,7 +4,7 @@ const initialEvents = [
         id: 1,
         title: "Wedding Catering - Johnson",
         type: "quotation",
-        date: "2024-12-15",
+        date: "2025-10-15",
         time: "14:00",
         description: "Wedding catering for 150 guests. Menu: appetizers, main course, desserts",
         client: "Sarah Johnson",
@@ -16,7 +16,7 @@ const initialEvents = [
         id: 2,
         title: "Cake Delivery - Downtown",
         type: "delivery",
-        date: "2024-12-03",
+        date: "2025-10-03",
         time: "10:00",
         description: "3-tier wedding cake delivery to downtown venue",
         client: "Mike & Emma",
@@ -28,7 +28,7 @@ const initialEvents = [
         id: 3,
         title: "Client Meeting - Corporate Event",
         type: "meeting",
-        date: "2024-12-05",
+        date: "2025-12-05",
         time: "15:30",
         description: "Discuss corporate event catering for 200 people",
         client: "ABC Corporation",
@@ -36,18 +36,6 @@ const initialEvents = [
         notification: true,
         reminderTime: 30
     },
-    {
-        id: 4,
-        title: "Restock Ingredients",
-        type: "restock",
-        date: "2024-12-01",
-        time: "09:00",
-        description: "Order: flour, sugar, eggs, butter, cream",
-        client: "",
-        priority: "medium",
-        notification: true,
-        reminderTime: 1440
-    }
 ];
 
 // Application state
