@@ -1,4 +1,5 @@
 const SECTION_FILES = {
+    calendar: 'calendar.html',
     recipes: 'recipes.html',
     ingredients: 'ingredients.html',
     conversion: 'conversion.html',
