@@ -22,8 +22,8 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log(' Connected to MongoDB Atlas'))
   .catch(err => console.error(' Connection Error:', err));
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 
