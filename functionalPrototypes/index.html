@@ -14,6 +14,12 @@
 </head>
 
 <body>
+    <script>
+        const session = sessionStorage.getItem('userSession');
+        if (!session) {
+            window.location.href = 'login.html';
+        }
+    </script>
     <div class="top-bar">
         <h1>DishDash</h1>
         <div class="profile-section" id="profileSection">
