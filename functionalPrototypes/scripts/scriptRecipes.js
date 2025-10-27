@@ -140,6 +140,30 @@ let recipes = [...initialRecipes];
 let currentRecipe = null;
 let ingredientCounter = 0;
 let instructionCounter = 0;
+let userRole = 'chef'; // Default role
+
+// Check user role from session
+function checkUserRole() {
+    const session = sessionStorage.getItem('userSession');
+    if (session) {
+        const userData = JSON.parse(session);
+        userRole = userData.role || 'chef';
+        updateUIForRole();
+    }
+}
+
+function updateUIForRole() {
+    const btnNewRecipe = document.getElementById('btnNewRecipe');
+    const headerTitle = document.getElementById('headerTitle');
+    
+    if (userRole === 'client') {
+        // Ocultar botón de nueva receta
+        if (btnNewRecipe) btnNewRecipe.style.display = 'none';
+        
+        // Cambiar título
+        if (headerTitle) headerTitle.textContent = 'Recipe Catalog';
+    }
+}
 
 // DOM Elements
 const recipesGrid = document.getElementById('recipesGrid');
@@ -164,6 +188,8 @@ filterServings.addEventListener('change', filterRecipes);
 
 // Main functions
 function renderRecipes(recipesToRender = recipes) {
+    const isClient = userRole === 'client';
+    
     recipesGrid.innerHTML = recipesToRender.map(recipe => `
         <div class="recipe-card">
             <div class="recipe-header">
@@ -188,12 +214,14 @@ function renderRecipes(recipesToRender = recipes) {
                 <button class="btn-icon" onclick="viewRecipe(${recipe.id})" title="View details">
                     <i data-lucide="eye"></i>
                 </button>
+                ${!isClient ? `
                 <button class="btn-icon" onclick="editRecipe(${recipe.id})" title="Edit">
                     <i data-lucide="edit"></i>
                 </button>
                 <button class="btn-icon btn-danger" onclick="deleteRecipe(${recipe.id})" title="Delete">
                     <i data-lucide="trash-2"></i>
                 </button>
+                ` : ''}
             </div>
         </div>
     `).join('');
@@ -202,6 +230,12 @@ function renderRecipes(recipesToRender = recipes) {
 }
 
 function openRecipeModal(recipe = null) {
+    // Prevenir apertura si es cliente
+    if (userRole === 'client') {
+        alert('You do not have permission to create or edit recipes.');
+        return;
+    }
+    
     currentRecipe = recipe;
     const modalTitle = document.getElementById('modalTitle');
     
@@ -386,11 +420,21 @@ function closeDetailModal() {
 }
 
 function editRecipe(id) {
+    if (userRole === 'client') {
+        alert('You do not have permission to edit recipes.');
+        return;
+    }
+    
     const recipe = recipes.find(r => r.id === id);
     if (recipe) openRecipeModal(recipe);
 }
 
 function deleteRecipe(id) {
+    if (userRole === 'client') {
+        alert('You do not have permission to delete recipes.');
+        return;
+    }
+    
     if (confirm('Are you sure you want to delete this recipe?')) {
         recipes = recipes.filter(r => r.id !== id);
         filterRecipes();
@@ -455,5 +499,6 @@ function getUnitName(unit) {
 }
 
 // Initialize
+checkUserRole();
 renderRecipes();
 lucide.createIcons();

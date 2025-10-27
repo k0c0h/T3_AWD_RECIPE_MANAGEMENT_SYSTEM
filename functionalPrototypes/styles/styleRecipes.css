@@ -134,6 +134,10 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+.recipe-card.read-only .recipe-actions {
+    justify-content: center;
+}
+
 .recipe-header {
     display: flex;
     justify-content: space-between;
@@ -176,6 +180,17 @@ body {
     width: 16px;
     height: 16px;
     color: #ba84a8;
+}
+
+.info-badge {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 10px;
 }
 
 .recipe-actions {
