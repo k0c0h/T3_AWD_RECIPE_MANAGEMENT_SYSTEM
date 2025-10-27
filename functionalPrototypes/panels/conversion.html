@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elegant Unit Converter</title>
+  <link rel="stylesheet" href="../styles/styleConversions.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <div class="conversion-container">
+      <h2><i data-lucide="scale"></i> Conversion Tools</h2>
+
+      <div class="conversion-card">
+        <h3><i data-lucide="refresh-cw"></i> Unit Converter</h3>
+
+        <div class="conversion-tool">
+          <div class="conversion-box glass">
+            <div class="form-group">
+              <label for="inputValue">Amount</label>
+              <input type="number" id="inputValue" value="1" min="0" step="any">
+            </div>
+            <div class="form-group">
+              <label for="inputUnit">From</label>
+              <select id="inputUnit">
+                <option value="g">Grams (g)</option>
+                <option value="kg">Kilograms (kg)</option>
+                <option value="oz">Ounces (oz)</option>
+                <option value="lb">Pounds (lb)</option>
+                <option value="ml">Milliliters (ml)</option>
+                <option value="l">Liters (l)</option>
+                <option value="tbsp">Tablespoons (tbsp)</option>
+                <option value="tsp">Teaspoons (tsp)</option>
+                <option value="cup">Cups (cup)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <i data-lucide="arrow-right"></i>
+          </div>
+
+          <div class="conversion-box glass">
+            <div class="form-group">
+              <label for="outputUnit">To</label>
+              <select id="outputUnit">
+                <option value="kitchen" selected>Cooking units (cup/tbsp/tsp)</option>
+                <option value="g">Grams (g)</option>
+                <option value="kg">Kilograms (kg)</option>
+                <option value="oz">Ounces (oz)</option>
+                <option value="lb">Pounds (lb)</option>
+                <option value="ml">Milliliters (ml)</option>
+                <option value="l">Liters (l)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="resultValue">Result</label>
+              <input type="text" id="resultValue" value="0" readonly>
+            </div>
+          </div>
+        </div>
+        <button id="btnConvert" class="btn-primary">
+          <i data-lucide="wand-2"></i> Convert
+        </button>
+
+      </div>
+    </div>
+
+
+  <script src="../scripts/conversions.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>

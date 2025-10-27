@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="../styles/styleCalendar.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <h2><i data-lucide="calendar"></i> Event Calendar</h2>
+            <div class="header-actions">
+                <button class="btn-primary" id="btnNewEvent">
+                    <i data-lucide="plus"></i>
+                    New Event
+                </button>
+                <button class="btn-secondary" id="btnToday">
+                    <i data-lucide="calendar-days"></i>
+                    Today
+                </button>
+            </div>
+        </div>
+
+        <div class="calendar-content">
+            <!-- Navigation -->
+            <div class="calendar-nav">
+                <button class="nav-btn" id="btnPrevMonth">
+                    <i data-lucide="chevron-left"></i>
+                </button>
+                <h3 id="currentMonth">November 2024</h3>
+                <button class="nav-btn" id="btnNextMonth">
+                    <i data-lucide="chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Legend -->
+            <div class="event-legend">
+                <div class="legend-item">
+                    <span class="legend-dot quotation"></span>
+                    <span>Quotation</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot delivery"></span>
+                    <span>Delivery</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot meeting"></span>
+                    <span>Meeting</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot custom"></span>
+                    <span>Custom</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot restock"></span>
+                    <span>Restock</span>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="calendar-grid">
+                <div class="calendar-weekdays">
+                    <div class="weekday">Sun</div>
+                    <div class="weekday">Mon</div>
+                    <div class="weekday">Tue</div>
+                    <div class="weekday">Wed</div>
+                    <div class="weekday">Thu</div>
+                    <div class="weekday">Fri</div>
+                    <div class="weekday">Sat</div>
+                </div>
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
+        </div>
+
+        <!-- Upcoming Events Sidebar -->
+        <div class="upcoming-events">
+            <h3><i data-lucide="bell"></i> Upcoming Events</h3>
+            <div class="events-list" id="upcomingEventsList"></div>
+        </div>
+
+        <!-- Modal to create/edit event -->
+        <div class="modal" id="eventModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">New Event</h3>
+                    <button class="btn-close" id="btnCloseModal">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <form id="eventForm">
+                    <div class="form-group">
+                        <label for="eventTitle">Event Title *</label>
+                        <input type="text" id="eventTitle" placeholder="e.g., Client meeting" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventType">Event Type *</label>
+                            <select id="eventType" required>
+                                <option value="quotation">Quotation</option>
+                                <option value="delivery">Delivery</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="restock">Restock</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDate">Date *</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventTime">Time</label>
+                            <input type="time" id="eventTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="eventPriority">Priority</label>
+                            <select id="eventPriority">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" rows="3" placeholder="Event details..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventClient">Client/Contact</label>
+                        <input type="text" id="eventClient" placeholder="Client name (optional)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="eventNotification">
+                            Enable notification reminder
+                        </label>
+                    </div>
+
+                    <div class="form-group" id="reminderGroup" style="display: none;">
+                        <label for="reminderTime">Remind me</label>
+                        <select id="reminderTime">
+                            <option value="15">15 minutes before</option>
+                            <option value="30">30 minutes before</option>
+                            <option value="60">1 hour before</option>
+                            <option value="1440">1 day before</option>
+                            <option value="2880">2 days before</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btnCancel">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Event Detail Modal -->
+        <div class="modal" id="detailModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="detailEventTitle"></h3>
+                    <button class="btn-close" id="btnCloseDetail">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="event-detail" id="eventDetail"></div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="btnEditFromDetail">
+                        <i data-lucide="edit"></i>
+                        Edit
+                    </button>
+                    <button class="btn-danger" id="btnDeleteFromDetail">
+                        <i data-lucide="trash-2"></i>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/scriptCalendar.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

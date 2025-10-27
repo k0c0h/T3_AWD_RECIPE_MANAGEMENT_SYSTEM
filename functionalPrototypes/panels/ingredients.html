@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingredient Management</title>
+    <link rel="stylesheet" href="../styles/styleIngredients.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="ingredients-container">
+        <div class="ingredients-header">
+            <h2><i data-lucide="apple"></i> Ingredient Management</h2>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="searchIngredient" placeholder="Search ingredients...">
+                </div>
+                <select id="filterCategory" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="spirit">Spirit</option>
+                    <option value="mixer">Mixer</option>
+                    <option value="juice">Juice</option>
+                    <option value="syrup">Syrup</option>
+                    <option value="garnish">Garnish</option>
+                    <option value="other">Other</option>
+                </select>
+                <button class="btn-primary" id="btnNewIngredient">
+                    <i data-lucide="plus"></i>
+                    New Ingredient
+                </button>
+            </div>
+        </div>
+
+        <div class="ingredients-table">
+            <table id="ingredientsTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Product/Brand</th>
+                        <th>Size</th>
+                        <th>Price</th>
+                        <th>Available Units</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ingredientsBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Modal to create/edit ingredient -->
+        <div class="modal" id="ingredientModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">New Ingredient</h3>
+                    <button class="btn-close" id="btnCloseModal">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <form id="ingredientForm">
+                    <div class="form-group">
+                        <label for="ingredientName">Ingredient Name *</label>
+                        <input type="text" id="ingredientName" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ingredientCategory">Category *</label>
+                            <select id="ingredientCategory" required>
+                                <option value="spirit">Spirit</option>
+                                <option value="mixer">Mixer</option>
+                                <option value="juice">Juice</option>
+                                <option value="syrup">Syrup</option>
+                                <option value="garnish">Garnish</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productBrand">Product/Brand *</label>
+                        <input type="text" id="productBrand" placeholder="e.g., Absolut Vodka" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productSize">Size *</label>
+                            <input type="text" id="productSize" placeholder="e.g., 1 liter, 750ml" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice">Price ($) *</label>
+                            <input type="number" id="productPrice" step="0.01" min="0" placeholder="0.00" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Available Measurement Units *</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="units" value="oz"> Ounces (oz)</label>
+                            <label><input type="checkbox" name="units" value="ml"> Milliliters (ml)</label>
+                            <label><input type="checkbox" name="units" value="cup"> Cups</label>
+                            <label><input type="checkbox" name="units" value="tbsp"> Tablespoons</label>
+                            <label><input type="checkbox" name="units" value="tsp"> Teaspoons</label>
+                            <label><input type="checkbox" name="units" value="dash"> Dash</label>
+                            <label><input type="checkbox" name="units" value="g"> Grams (g)</label>
+                            <label><input type="checkbox" name="units" value="unit"> Unit</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btnCancel">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Ingredient</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/scriptIngredients.js"></script>
+     <script>
+    lucide.createIcons();
+    </script>
+</body>
+</html>

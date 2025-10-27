@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Cost Analysis Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/styleCosts.css">
+</head>
+<body>
+  <div class="container">
+    <h2 class="title"><i data-lucide="dollar-sign"></i> Cost Analysis</h2>
+
+    <div class="card">
+      <div class="search-container">
+        <label class="label">Search Recipe:</label>
+        <div class="autocomplete-wrapper">
+          <div class="search-input-wrapper">
+            <span class="search-icon">
+              <i data-lucide="search"></i>
+            </span>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Type to search recipes..."
+            />
+          </div>
+          <div id="dropdown" class="dropdown"></div>
+        </div>
+      </div>
+
+      <div id="recipeContent" class="hidden">
+        <div class="table-wrapper">
+          <table id="ingredientsTable">
+            <thead>
+              <tr>
+                <th>Ingredient</th>
+                <th>Quantity</th>
+                <th>Unit Cost</th>
+                <th>Total Cost</th>
+              </tr>
+            </thead>
+            <tbody id="ingredientsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="summary-section">
+          <div class="cost-row">
+            <span>Ingredients Cost:</span>
+            <span class="cost-value" id="ingredientsCost">$0.00</span>
+          </div>
+
+          <div id="indirectCostsInput" class="form-group hidden">
+            <label class="small-label">Indirect Costs (%):</label>
+            <input
+              type="number"
+              id="indirectPercentage"
+              class="small-input"
+              value="10"
+            />
+          </div>
+
+          <div class="cost-row">
+            <span>Indirect Costs:</span>
+            <span class="cost-value" id="indirectCosts">$0.00</span>
+          </div>
+
+          <div class="cost-row total-row">
+            <span class="total-label">Total Cost:</span>
+            <span class="total-value" id="totalCost">$0.00</span>
+          </div>
+
+          <div id="costPerServing" class="cost-row hidden">
+            <span id="servingLabel">Cost per Serving:</span>
+            <span class="cost-value" id="servingCost">$0.00</span>
+          </div>
+
+          <div class="pricing-section">
+            <div id="cocktailFormula" class="hidden">
+              <div class="formula-box">
+                <p class="formula-text">
+                  Cocktail Pricing Formula: PC × 300% + Taxes (25%)
+                </p>
+              </div>
+              <div id="taxesRow" class="cost-row hidden">
+                <span>Taxes (15% + 10%):</span>
+                <span class="cost-value" id="taxes">$0.00</span>
+              </div>
+            </div>
+
+            <div id="profitMarginInput" class="form-group hidden">
+              <label class="small-label">Profit Margin (%):</label>
+              <input
+                type="number"
+                id="profitMargin"
+                class="small-input"
+                value="200"
+              />
+            </div>
+
+            <div class="final-price">
+              
+              <div>
+                <div class="price-label" id="priceLabel">
+                  Suggested Selling Price:
+                </div>
+                <div class="price-value" id="sellingPrice">$0.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">
+          <i data-lucide="search"></i>
+        </div>
+        <p class="empty-text">Select a recipe to view cost analysis</p>
+      </div>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+
+<script src="../scripts/scriptCosts.js"></script>
+</body>
+</html>

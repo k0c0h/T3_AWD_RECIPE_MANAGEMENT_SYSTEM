@@ -1,0 +1,149 @@
+/* === Global resets === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fef6f9;
+    color: #2c2c2c;
+    padding: 20px;
+}
+
+/* === Container === */
+.conversion-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(15px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* === Titles === */
+.conversion-container h2 {
+    color: #355070;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 35px;
+  font-size: 15px;
+}
+
+.conversion-card {
+ max-width: 1400px;
+    margin: 0 auto;
+}
+
+.conversion-card h3 {
+  color: #ba84a8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 25px;
+  font-size: 20px;
+  text-align: center;
+  justify-content: center;
+}
+
+.conversion-tool {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 25px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.conversion-box {
+  flex: 1;
+  min-width: 400px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.glass {
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(232, 196, 216, 0.6);
+}
+
+/* === Form elements === */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  color: #355070;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e8c4d8;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #ba84a8;
+  box-shadow: 0 0 6px rgba(186, 132, 168, 0.4);
+  outline: none;
+}
+
+.arrow {
+  font-size: 28px;
+  color: #ba84a8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === Button === */
+.btn-primary {
+  background-color: #ba84a8;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+}
+
+.btn-primary:hover {
+  background-color: #a16f91;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(161, 111, 145, 0.3);
+}
+
+/* === Responsive === */
+@media (max-width: 700px) {
+  .conversion-tool {
+    flex-direction: column;
+  }
+  .conversion-card {
+    padding: 20px;
+  }
+}
