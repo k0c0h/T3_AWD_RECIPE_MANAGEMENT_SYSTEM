@@ -127,3 +127,28 @@ async function deleteClient(id) {
     console.error('Error eliminando cliente:', error);
   }
 }
+// Actualizar cliente
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedClient = await Client.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedClient) return res.status(404).json({ message: 'Cliente no encontrado' });
+    res.json(updatedClient);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Eliminar cliente
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedClient = await Client.findByIdAndDelete(req.params.id);
+    if (!deletedClient) return res.status(404).json({ message: 'Cliente no encontrado' });
+    res.json({ message: 'Cliente eliminado correctamente' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

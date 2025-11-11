@@ -233,3 +233,85 @@ form {
 .btn-secondary:hover {
     background-color: #d4a5c5;
 }
+
+.clients-table {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.clients-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.clients-table th,
+.clients-table td {
+  padding: 14px 18px;
+  text-align: left;
+}
+
+.clients-table thead {
+  background-color: #f9f2f7;
+  color: #355070;
+  font-weight: 700;
+  font-size: 15px;
+  border-bottom: 2px solid #e8c4d8;
+}
+
+.clients-table th i {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;
+  color: #ba84a8;
+}
+
+.clients-table tbody tr {
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.clients-table tbody tr:nth-child(even) {
+  background-color: #fef6fa;
+}
+
+.clients-table tbody tr:hover {
+  background-color: #f4e1ed;
+  transform: scale(1.01);
+}
+
+.clients-table td {
+  color: #444;
+  font-size: 14px;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-icon i {
+  width: 18px;
+  height: 18px;
+  color: #355070;
+}
+
+.btn-icon:hover {
+  background-color: #e8c4d8;
+  transform: scale(1.1);
+}
+
+.btn-danger i {
+  color: #b23a48;
+}
+
+.btn-danger:hover {
+  background-color: #fce1e6;
+}

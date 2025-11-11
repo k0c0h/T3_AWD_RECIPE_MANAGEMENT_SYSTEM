@@ -1,77 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Management</title>
-  <link rel="stylesheet" href="../styles/styleClients.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Management</title>
+    <link rel="stylesheet" href="../styles/styleClients.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
-  <div class="clients-container">
-    <div class="clients-header">
-      <h2><i data-lucide="users"></i> Client Management</h2>
-      <div class="header-actions">
-        <div class="search-box">
-          <i data-lucide="search" class="search-icon"></i>
-          <input type="text" id="searchClient" placeholder="Search clients...">
+    <div class="clients-container">
+        <div class="clients-header">
+            <h2><i data-lucide="users"></i> Client Management</h2>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="searchClient" placeholder="Search clients...">
+                </div>
+                <button class="btn-primary" id="btnNewClient">
+                    <i data-lucide="plus"></i> New Client
+                </button>
+            </div>
         </div>
-        <button class="btn-primary" id="btnNewClient">
-          <i data-lucide="plus"></i> New Client
-        </button>
-      </div>
-    </div>
 
-    <div class="clients-table">
-      <table id="clientsTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="clientsBody"></tbody>
-      </table>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal" id="clientModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 id="modalTitle">New Client</h3>
-          <button class="btn-close" id="btnCloseModal"><i data-lucide="x"></i></button>
+        <div class="clients-table">
+            <table id="clientsTable">
+                <thead>
+                    <tr>
+                        <th><i data-lucide="user"></i> Name</th>
+                        <th><i data-lucide="mail"></i> Email</th>
+                        <th><i data-lucide="phone"></i> Phone</th>
+                        <th><i data-lucide="map-pin"></i> Address</th>
+                        <th><i data-lucide="settings"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsBody">
+                </tbody>
+            </table>
         </div>
-        <form id="clientForm">
-          <div class="form-group">
-            <label for="clientName">Name *</label>
-            <input type="text" id="clientName" required>
-          </div>
-          <div class="form-group">
-            <label for="clientEmail">Email</label>
-            <input type="email" id="clientEmail">
-          </div>
-          <div class="form-group">
-            <label for="clientPhone">Phone</label>
-            <input type="text" id="clientPhone">
-          </div>
-          <div class="form-group">
-            <label for="clientAddress">Address</label>
-            <input type="text" id="clientAddress">
-          </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn-secondary" id="btnCancel">Cancel</button>
-            <button type="submit" class="btn-primary">Save Client</button>
-          </div>
-        </form>
-      </div>
+
+        <!-- Modal -->
+        <div class="modal" id="clientModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">New Client</h3>
+                    <button class="btn-close" id="btnCloseModal"><i data-lucide="x"></i></button>
+                </div>
+                <form id="clientForm">
+                    <div class="form-group">
+                        <label for="clientName">Name *</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientEmail">Email</label>
+                        <input type="email" id="clientEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientPhone">Phone</label>
+                        <input type="text" id="clientPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientAddress">Address</label>
+                        <input type="text" id="clientAddress">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btnCancel">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Client</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script src="../scripts/scriptClients.js"></script>
-  <script>lucide.createIcons();</script>
+    <script src="../scripts/scriptClients.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
+
 </html>
