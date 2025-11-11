@@ -1,12 +1,13 @@
 const SECTION_FILES = {
-    calendar: '../panels/calendar.html',
-    recipes: '../panels/recipes.html',
-    ingredients: '../panels/ingredients.html',
-    conversion: '../panels/conversion.html',
-    scaling: '../panels/scaling.html',
-    costs: '../panels/costs.html',
-    quotes: '../panels/quotes.html',
-    profile: '../panels/profile.html'
+    calendar: './panels/calendar.html',
+    clients: './panels/clients.html',
+    recipes: './panels/recipes.html',
+    ingredients: './panels/ingredients.html',
+    conversion: './panels/conversion.html',
+    scaling: './panels/scaling.html',
+    costs: './panels/costs.html',
+    quotes: './panels/quotes.html',
+    profile: './panels/profile.html'
 };
 
 const DOM = {

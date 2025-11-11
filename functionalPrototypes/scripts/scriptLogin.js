@@ -4,7 +4,7 @@ const USERS = {
         password: 'chef123',
         role: 'chef',
         name: 'Chef Principal',
-        permissions: ['calendar', 'recipes', 'ingredients', 'conversion', 'scaling', 'costs', 'quotes']
+        permissions: ['calendar', 'clients','recipes', 'ingredients', 'conversion', 'scaling', 'costs', 'quotes']
     },
     cliente: {
         username: 'cliente',
