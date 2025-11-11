@@ -7,6 +7,8 @@ const path = require('path');
 const recipesRouter = require('./routes/recipes');
 const quotesRouter = require('./routes/quotes');
 const ingredientsRouter = require('./routes/ingredients');
+const clientRoutes = require('./routes/clients');
+
 
 const app = express();
 app.use(cors());
@@ -15,6 +17,8 @@ app.use(express.json());
 app.use('/api/recipes', recipesRouter);
 app.use('/api/quotes', quotesRouter);
 app.use('/api/ingredients', ingredientsRouter);
+app.use('/api/clients', clientRoutes);
+
 
 app.use(express.static(path.join(__dirname, '../')));
 
