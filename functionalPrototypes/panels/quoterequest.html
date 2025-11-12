@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Quote</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+   <link rel="stylesheet" href="../styles/styleRequest.css">
+</head>
+<body>
+  <div class="quote-container">
+    <div class="menu-header">
+      <h2>
+        <i data-lucide="chef-hat"></i>
+        Our Menu
+      </h2>
+      <p class="menu-subtitle">Explore our culinary offerings and request a customized quote for your event</p>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <div class="search-bar">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search dishes, ingredients, or descriptions..."
+        >
+        <i data-lucide="search" class="search-icon"></i>
+      </div>
+      
+      <div class="category-filters">
+        <button class="filter-btn active" data-category="all">
+          <i data-lucide="utensils"></i>
+          All Menu
+        </button>
+        <button class="filter-btn" data-category="cocktail">
+          <i data-lucide="glass-water"></i>
+          Cocktails
+        </button>
+        <button class="filter-btn" data-category="main">
+          <i data-lucide="beef"></i>
+          Main Course
+        </button>
+        <button class="filter-btn" data-category="dessert">
+          <i data-lucide="cake"></i>
+          Desserts
+        </button>
+      </div>
+    </div>
+
+    <div class="results-count" id="resultsCount"></div>
+
+    <div class="catalog-grid" id="catalogGrid">
+      <!-- Cocktail -->
+      <div class="recipe-card" data-category="cocktail" data-name="Cuba Libre" data-description="Classic Cuban cocktail with premium rum fresh lime juice and cola Served with ice and lime wedge">
+        <div class="recipe-image">
+          <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500&h=250&fit=crop" alt="Cuba Libre">
+        </div>
+        <div class="recipe-content">
+          <span class="recipe-category">COCKTAIL</span>
+          <h3 class="recipe-title">Cuba Libre</h3>
+          <p class="recipe-description">
+            Classic Cuban cocktail with premium rum, fresh lime juice, and cola. Served with ice and lime wedge.
+          </p>
+          <p class="recipe-price">$3.50 per serving</p>
+          <button class="btn-quote" onclick="openQuoteModal('Cuba Libre', 'Cocktail', 3.50)">
+            <i data-lucide="clipboard-list"></i>
+            Request Quote
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Course -->
+      <div class="recipe-card" data-category="main" data-name="Grilled Ribeye Steak" data-description="Premium ribeye steak grilled to perfection served with roasted vegetables and herb butter">
+        <div class="recipe-image">
+          <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=500&h=250&fit=crop" alt="Grilled Ribeye Steak">
+        </div>
+        <div class="recipe-content">
+          <span class="recipe-category">MAIN COURSE</span>
+          <h3 class="recipe-title">Grilled Ribeye Steak</h3>
+          <p class="recipe-description">
+            Premium ribeye steak grilled to perfection, served with roasted vegetables and herb butter.
+          </p>
+          <p class="recipe-price">$11.00 per plate</p>
+          <button class="btn-quote" onclick="openQuoteModal('Grilled Ribeye Steak', 'Main Course', 11.00)">
+            <i data-lucide="clipboard-list"></i>
+            Request Quote
+          </button>
+        </div>
+      </div>
+
+      <!-- Dessert -->
+      <div class="recipe-card" data-category="dessert" data-name="Chocolate Lava Cake" data-description="Warm chocolate cake with a molten center served with vanilla ice cream and fresh berries">
+        <div class="recipe-image">
+          <img src="https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&h=250&fit=crop" alt="Chocolate Lava Cake">
+        </div>
+        <div class="recipe-content">
+          <span class="recipe-category">DESSERT</span>
+          <h3 class="recipe-title">Chocolate Lava Cake</h3>
+          <p class="recipe-description">
+            Warm chocolate cake with a molten center, served with vanilla ice cream and fresh berries.
+          </p>
+          <p class="recipe-price">$4.00 per serving</p>
+          <button class="btn-quote" onclick="openQuoteModal('Chocolate Lava Cake', 'Dessert', 4.00)">
+            <i data-lucide="clipboard-list"></i>
+            Request Quote
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="quoteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i data-lucide="file-text"></i> Request Quote</h3>
+        <span class="close" onclick="closeModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="quoteForm">
+          <!-- Client Information -->
+          <div class="form-section">
+            <h4><i data-lucide="user"></i> Client Information</h4>
+            <div class="form-group">
+              <label for="clientName">Full Name *</label>
+              <input type="text" id="clientName" required>
+            </div>
+            <div class="form-group">
+              <label for="clientEmail">Email *</label>
+              <input type="email" id="clientEmail" required>
+            </div>
+            <div class="form-group">
+              <label for="clientPhone">Phone *</label>
+              <input type="tel" id="clientPhone" required>
+            </div>
+          </div>
+
+          <!-- Event Details -->
+          <div class="form-section">
+            <h4><i data-lucide="calendar"></i> Event Details</h4>
+            <div class="form-group">
+              <label for="eventDate">Event Date *</label>
+              <input type="date" id="eventDate" required>
+            </div>
+            <div class="form-group">
+              <label for="eventLocation">Location *</label>
+              <input type="text" id="eventLocation" placeholder="Address or venue name" required>
+            </div>
+            <div class="form-group">
+              <label for="eventGuests">Number of Guests *</label>
+              <input type="number" id="eventGuests" min="1" required>
+            </div>
+          </div>
+
+          <!-- Selected Products -->
+          <div class="form-section">
+            <h4><i data-lucide="shopping-cart"></i> Selected Products</h4>
+            <div class="selected-items" id="selectedItems">
+              <!-- Items will be added here dynamically -->
+            </div>
+
+            <button type="button" class="btn-add-more" onclick="toggleAddProduct()">
+              <i data-lucide="plus-circle"></i>
+              Add More Products
+            </button>
+            
+            <!-- Total Estimate -->
+            <div class="total-estimate" id="totalEstimate" style="display: none;">
+              <h4>Estimated Total</h4>
+              <div class="total-amount" id="totalAmount">$0.00</div>
+              <div class="estimate-disclaimer">
+                <i data-lucide="alert-circle"></i>
+                <span>This is an approximate estimate. Final price may vary based on negotiations, discounts, special requirements, or other factors discussed with our team.</span>
+              </div>
+            </div>
+
+            <div class="add-product-section" id="addProductSection">
+              <div class="form-group">
+                <label for="additionalProduct">Select Product</label>
+                <select id="additionalProduct">
+                  <option value="">-- Choose a product --</option>
+                  <option value="Cuba Libre|8.50">Cuba Libre - $3.50</option>
+                  <option value="Grilled Ribeye Steak|28.00">Grilled Ribeye Steak - $11.00</option>
+                  <option value="Chocolate Lava Cake|12.00">Chocolate Lava Cake - $4.00</option>
+                </select>
+              </div>
+              <button type="button" class="btn-quote" onclick="addProduct()" style="width: auto; margin-top: 10px;">
+                <i data-lucide="check"></i>
+                Add to Quote
+              </button>
+            </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div class="form-section">
+            <h4><i data-lucide="message-square"></i> Additional Notes</h4>
+            <div class="form-group">
+              <label for="notes">Special Requirements or Comments</label>
+              <textarea id="notes" rows="4" placeholder="Dietary restrictions, allergies, special requests..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <i data-lucide="send"></i>
+            Submit Quote Request
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="../scripts/scriptRequest.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

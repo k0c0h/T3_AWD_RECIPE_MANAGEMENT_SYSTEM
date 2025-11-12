@@ -7,6 +7,8 @@ const SECTION_FILES = {
     scaling: './panels/scaling.html',
     costs: './panels/costs.html',
     quotes: './panels/quotes.html',
+    quoterequest: './panels/quoterequest.html', 
+    history: './panels/history.html', 
     profile: './panels/profile.html'
 };
 

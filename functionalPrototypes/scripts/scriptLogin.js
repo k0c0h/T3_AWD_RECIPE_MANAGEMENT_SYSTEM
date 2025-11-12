@@ -11,7 +11,7 @@ const USERS = {
         password: 'cliente123',
         role: 'client',
         name: 'Cliente',
-        permissions: ['recipes', 'costs', 'quotes']
+        permissions: ['quoterequest', 'history']  // Solo estas dos secciones
     }
 };
 
