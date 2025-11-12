@@ -12,9 +12,11 @@ class QuoteManager {
     async init() {
         await this.fetchRecipes();
         await this.fetchQuotes();
+        await this.fetchClients(); 
         this.renderQuotesTable();
         this.attachEventListeners();
     }
+
 
     async fetchRecipes() {
         try {
@@ -277,6 +279,31 @@ class QuoteManager {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
     }
+
+    async fetchClients() {
+        try {
+            const res = await fetch(`${API_BASE}/clients`);
+            if (!res.ok) throw new Error('Clients fetch error');
+            const clients = await res.json();
+
+            const select = document.getElementById('clientSelect');
+            if (!select) return;
+
+            select.innerHTML = '<option value="">-- Select client --</option>';
+
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client._id || client.id;
+                option.textContent = client.name || `${client.firstName} ${client.lastName}` || 'Unnamed Client';
+                select.appendChild(option);
+            });
+
+            console.log(`✅ Clientes cargados: ${clients.length}`);
+        } catch (e) {
+            console.error('❌ Error al cargar clientes:', e);
+        }
+    }
+
 }
 
 const quoteManager = new QuoteManager();
