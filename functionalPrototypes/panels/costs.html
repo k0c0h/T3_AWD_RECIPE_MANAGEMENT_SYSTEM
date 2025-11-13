@@ -80,11 +80,22 @@
             <div id="cocktailFormula" class="hidden">
               <div class="formula-box">
                 <p class="formula-text">
-                  Cocktail Pricing Formula: PC × 300% + Taxes (25%)
+                  Cocktail Pricing Formula: PC × 300% + Taxes (user-defined)
                 </p>
               </div>
+
+              <div class="form-group">
+                <label class="small-label">Tax - IVA (%):</label>
+                <input type="number" id="tax15" class="small-input" value="15" min="0" step="0.1" />
+              </div>
+
+              <div class="form-group">
+                <label class="small-label">Tax- Service/Tip(%):</label>
+                <input type="number" id="tax10" class="small-input" value="10" min="0" step="0.1" />
+              </div>
+
               <div id="taxesRow" class="cost-row hidden">
-                <span>Taxes (15% + 10%):</span>
+                <span>Taxes (<span id="taxesBreakdown">15% + 10%</span>):</span>
                 <span class="cost-value" id="taxes">$0.00</span>
               </div>
             </div>

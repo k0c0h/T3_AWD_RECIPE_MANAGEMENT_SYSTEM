@@ -13,7 +13,6 @@ const ingredientsBody = document.getElementById('ingredientsBody');
 const indirectPercentage = document.getElementById('indirectPercentage');
 const profitMargin = document.getElementById('profitMargin');
 
-// Función para normalizar datos de MongoDB
 function normalizeMongoData(data) {
   if (Array.isArray(data)) {
     return data.map(item => normalizeMongoData(item));
@@ -22,10 +21,8 @@ function normalizeMongoData(data) {
   if (data && typeof data === 'object') {
     const normalized = {};
     for (const [key, value] of Object.entries(data)) {
-      // Limpiar espacios en blanco de las keys
       const cleanKey = key.trim();
-      
-      // Manejar tipos especiales de MongoDB
+
       if (value && typeof value === 'object') {
         if (value.$numberInt) {
           normalized[cleanKey] = parseInt(value.$numberInt);
@@ -46,7 +43,6 @@ function normalizeMongoData(data) {
   return data;
 }
 
-// Cargar todos los ingredientes al inicio
 async function loadAllIngredients() {
   try {
     const response = await fetch(`${API_URL}/ingredients`);
@@ -60,7 +56,6 @@ async function loadAllIngredients() {
   }
 }
 
-// Cargar recetas desde la BD
 async function loadRecipes(searchTerm = '') {
   try {
     const response = await fetch(`${API_URL}/recipes`);
@@ -90,7 +85,6 @@ function getCategoryLabel(category) {
 }
 
 function getIngredientAlternatives(ingredientName) {
-  // Normalizar el nombre para comparación (sin espacios extras, sin mayúsculas/minúsculas)
   const normalizedName = ingredientName.trim().toLowerCase();
   
   const alternatives = allIngredients.filter(ing => {
@@ -98,43 +92,26 @@ function getIngredientAlternatives(ingredientName) {
     return ingName === normalizedName;
   });
   
-  console.log(`Buscando alternativas para "${ingredientName}" (normalizado: "${normalizedName}")`);
-  console.log('Ingredientes disponibles:', allIngredients.map(i => i.name));
-  console.log('Alternativas encontradas:', alternatives);
-  
   return alternatives;
 }
 
 function calculateIngredientCost(ingredient, productId, quantity) {
-  // Buscar primero por productId
   let product = allIngredients.find(p => p.productId === productId);
-  
-  // Si no se encuentra por productId, buscar por nombre
+
   if (!product) {
     const normalizedName = ingredient.trim().toLowerCase();
     product = allIngredients.find(p => 
       (p.name || '').trim().toLowerCase() === normalizedName
     );
   }
-  
-  console.log(`Calculando costo para "${ingredient}":`, {
-    productId,
-    quantity,
-    productoEncontrado: product,
-    todosLosIngredientes: allIngredients.length
-  });
-  
+ 
   if (!product) {
-    console.error(`❌ Producto no encontrado: ${productId} / ${ingredient}`);
+    console.error(`Producto no encontrado: ${productId} / ${ingredient}`);
     console.error('ProductIds disponibles:', allIngredients.map(i => i.productId));
     return { unitCost: 0, totalCost: 0 };
   }
-
   const unitCost = product.price / product.size;
   const totalCost = quantity * unitCost;
-
-  console.log(`✓ Costo calculado: ${unitCost.toFixed(4)}/unidad, Total: ${totalCost.toFixed(2)}`);
-
   return {
     unitCost,
     totalCost,
@@ -165,8 +142,13 @@ function calculateCosts() {
   const recipeType = selectedRecipe.type || selectedRecipe.category;
   
   if (recipeType === 'cocktail') {
+    // Read user-entered tax parts (defaults provided in the DOM)
+    const tax15 = parseFloat(document.getElementById('tax15')?.value) || 0;
+    const tax10 = parseFloat(document.getElementById('tax10')?.value) || 0;
+    const totalTaxPercent = (tax15 + tax10) / 100;
+
     const basePriceWithMargin = totalCost * 3;
-    taxes = basePriceWithMargin * 0.25;
+    taxes = basePriceWithMargin * totalTaxPercent;
     sellingPrice = basePriceWithMargin + taxes;
   } else {
     sellingPrice = totalCost * (1 + (parseFloat(profitMargin.value) || 0) / 100);
@@ -215,8 +197,6 @@ function selectRecipe(recipe) {
   recipeIngredients = JSON.parse(JSON.stringify(recipe.ingredients));
   searchInput.value = recipe.name;
   dropdown.classList.remove('show');
-  console.log('Receta seleccionada:', selectedRecipe);
-  console.log('Ingredientes de la receta:', recipeIngredients);
   renderRecipeContent();
 }
 
@@ -273,7 +253,6 @@ function renderRecipeContent() {
     ingredientsBody.appendChild(row);
   });
 
-  // Event listeners
   document.querySelectorAll('.product-select').forEach(select => {
     select.addEventListener('change', (e) => {
       const index = parseInt(e.target.dataset.index);
@@ -338,15 +317,10 @@ function updateCostsDisplay() {
 
   const costs = calculateCosts();
   if (!costs) return;
-
-  console.log('Costos calculados:', costs);
-
-  // Update costs display
   document.getElementById('ingredientsCost').textContent = `$${costs.ingredientsCost.toFixed(2)}`;
   document.getElementById('indirectCosts').textContent = `$${costs.indirectCosts.toFixed(2)}`;
   document.getElementById('totalCost').textContent = `$${costs.totalCost.toFixed(2)}`;
 
-  // Update serving costs if applicable
   const servingDiv = document.getElementById('costPerServing');
   if (selectedRecipe.servings) {
     servingDiv.classList.remove('hidden');
@@ -358,9 +332,11 @@ function updateCostsDisplay() {
     servingDiv.classList.add('hidden');
   }
 
-  // Show/hide taxes for cocktails
   const recipeType = selectedRecipe.type || selectedRecipe.category;
-  if (recipeType === 'cocktail' && costs.taxes > 0) {
+  if (recipeType === 'cocktail') {
+    const tax15 = parseFloat(document.getElementById('tax15')?.value) || 0;
+    const tax10 = parseFloat(document.getElementById('tax10')?.value) || 0;
+    document.getElementById('taxesBreakdown').textContent = `${tax15}% + ${tax10}%`;
     document.getElementById('taxesRow').classList.remove('hidden');
     document.getElementById('taxes').textContent = `$${costs.taxes.toFixed(2)}`;
   } else {
@@ -387,6 +363,12 @@ document.addEventListener('click', (e) => {
 });
 indirectPercentage.addEventListener('input', updateCostsDisplay);
 profitMargin.addEventListener('input', updateCostsDisplay);
+
+// Tax inputs (for cocktails) should also trigger recalculation
+const tax15Input = document.getElementById('tax15');
+const tax10Input = document.getElementById('tax10');
+if (tax15Input) tax15Input.addEventListener('input', updateCostsDisplay);
+if (tax10Input) tax10Input.addEventListener('input', updateCostsDisplay);
 
 // Initialize
 loadAllIngredients();
