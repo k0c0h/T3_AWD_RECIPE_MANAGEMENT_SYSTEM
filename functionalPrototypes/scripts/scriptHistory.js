@@ -138,4 +138,70 @@ function updateStats() {
     document.querySelector('.stats-cards .stat-card:nth-child(4) .stat-value').textContent = `${total.toFixed(2)}`;
 }
 
+// helper: hex -> [r,g,b]
+function _hexToRgb(hex) {
+    const h = hex.replace('#', '');
+    return [parseInt(h.substring(0,2),16), parseInt(h.substring(2,4),16), parseInt(h.substring(4,6),16)];
+}
+
+function downloadPDF(quoteId) {
+    const quote = quotesData[quoteId];
+    if (!quote) return;
+
+    const jsPDFCtor = (window.jspdf && (window.jspdf.jsPDF || window.jspdf.default)) || window.jsPDF || null;
+    if (!jsPDFCtor) {
+        alert('jsPDF not available. Cannot generate PDF.');
+        return;
+    }
+
+    const PINK = '#e91e63';
+    const pinkRgb = _hexToRgb(PINK);
+
+    try {
+        const doc = new jsPDFCtor();
+        doc.setTextColor(...pinkRgb);
+        doc.setFontSize(14);
+        doc.text(`Quote ${quote.id}`, 14, 20);
+        doc.setTextColor(0,0,0);
+        doc.setFontSize(11);
+        doc.text(`Status: ${quote.status}`, 14, 28);
+        doc.text(`Event Date: ${quote.eventDate}`, 14, 34);
+        doc.text(`Location: ${quote.location}`, 14, 40);
+        doc.text(`Guests: ${quote.guests}`, 14, 46);
+
+        const body = quote.products.map(p => {
+            const lineTotal = (p.price || 0) * (p.quantity || 1);
+            return [p.name, String(p.quantity), `$${(p.price || 0).toFixed(2)}`, `$${lineTotal.toFixed(2)}`];
+        });
+
+        if (typeof doc.autoTable === 'function') {
+            doc.autoTable({
+                startY: 54,
+                head: [['Product', 'Qty', 'Unit Price', 'Total']],
+                body,
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: pinkRgb, textColor: 255 }
+            });
+            const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 8 : 54;
+            doc.setFontSize(11);
+            doc.setTextColor(...pinkRgb);
+            doc.text(`Total: $${(quote.total || 0).toFixed(2)}`, 14, finalY);
+        } else {
+            let y = 54;
+            body.forEach(row => {
+                doc.text(`${row[0]} — ${row[1]} x ${row[2]} = ${row[3]}`, 14, y);
+                y += 6;
+            });
+            doc.setTextColor(...pinkRgb);
+            doc.text(`Total: $${(quote.total || 0).toFixed(2)}`, 14, y + 6);
+        }
+
+        const filename = `${quote.id}.pdf`;
+        doc.save(filename);
+    } catch (e) {
+        console.error('Error generating PDF for history:', e);
+        alert('Failed to generate PDF.');
+    }
+}
+
 lucide.createIcons();

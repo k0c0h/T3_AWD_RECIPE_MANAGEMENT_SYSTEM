@@ -193,8 +193,16 @@ class QuoteManager {
         setText('totalAmount', `$${total.toFixed(2)}`);
     }
 
+    // helper to convert hex to [r,g,b]
+    _hexToRgb(hex) {
+        const h = hex.replace('#', '');
+        return [parseInt(h.substring(0,2),16), parseInt(h.substring(2,4),16), parseInt(h.substring(4,6),16)];
+    }
+
     async generatePDF() {
-        const clientId = document.getElementById('clientSelect')?.value;
+        const clientSelect = document.getElementById('clientSelect');
+        const clientId = clientSelect?.value;
+        const clientName = clientSelect?.selectedOptions?.[0]?.textContent || '';
         const eventDate = document.getElementById('eventDate')?.value;
         const numberOfPeople = parseInt(document.getElementById('numberOfPeople')?.value) || 50;
         const discountPercent = parseFloat(document.getElementById('discount')?.value) || 0;
@@ -209,20 +217,86 @@ class QuoteManager {
             return;
         }
 
-        const subtotalText = document.getElementById('subtotal')?.textContent || '$0.00';
-        const discountAmountText = document.getElementById('discountAmount')?.textContent || '$0.00';
-        const taxAmountText = document.getElementById('taxAmount')?.textContent || '$0.00';
-        const totalText = document.getElementById('totalAmount')?.textContent || '$0.00';
+        // Build rows and compute totals
+        let subtotal = 0;
+        const rows = [];
+        this.selectedRecipes.forEach((servings, recipeId) => {
+            const recipe = this.recipes.find(r => String(r.id) === String(recipeId));
+            if (recipe) {
+                const lineTotal = (recipe.pricePerServing || 0) * servings;
+                subtotal += lineTotal;
+                rows.push([recipe.name, String(servings), `$${(recipe.pricePerServing || 0).toFixed(2)}`, `$${lineTotal.toFixed(2)}`]);
+            }
+        });
 
-        const subtotal = parseFloat(subtotalText.replace(/[^0-9.-]+/g, '')) || 0;
-        const discountAmount = parseFloat(discountAmountText.replace(/[^0-9.-]+/g, '')) || 0;
-        const taxAmount = parseFloat(taxAmountText.replace(/[^0-9.-]+/g, '')) || 0;
-        const total = parseFloat(totalText.replace(/[^0-9.-]+/g, '')) || 0;
+        const discountAmount = subtotal * (discountPercent / 100);
+        const subtotalAfterDiscount = subtotal - discountAmount;
+        const taxAmount = subtotalAfterDiscount * TAX_RATE;
+        const total = subtotalAfterDiscount + taxAmount;
 
-        const quoteNumber = `QUO-${Date.now().toString().slice(-6)}`;
+        // style color (match page pink)
+        const PINK = '#e91e63';
+        const pinkRgb = this._hexToRgb(PINK);
 
+        // robust jsPDF ctor lookup
+        const jsPDFCtor = (window.jspdf && (window.jspdf.jsPDF || window.jspdf.default)) || window.jsPDF || null;
+        if (!jsPDFCtor) {
+            alert('jsPDF not available. Cannot generate PDF.');
+            return;
+        }
+
+        try {
+            const doc = new jsPDFCtor();
+            doc.setTextColor(...pinkRgb);
+            doc.setFontSize(16);
+            doc.text('Quote', 14, 22);
+            doc.setTextColor(0,0,0);
+            doc.setFontSize(11);
+
+            const quoteNumber = `QUO-${Date.now().toString().slice(-6)}`;
+            doc.text(`Number: ${quoteNumber}`, 14, 34);
+            doc.text(`Client: ${clientName}`, 14, 40);
+            doc.text(`Event Date: ${eventDate}`, 14, 46);
+            doc.text(`People: ${numberOfPeople}`, 14, 52);
+
+            if (typeof doc.autoTable === 'function') {
+                doc.autoTable({
+                    startY: 60,
+                    head: [['Recipe', 'Servings', 'Price/Serving', 'Total']],
+                    body: rows,
+                    styles: { fontSize: 10 },
+                    headStyles: { fillColor: pinkRgb, textColor: 255 }
+                });
+
+                const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 8 : 60;
+                doc.setFontSize(11);
+                doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 14, finalY);
+                doc.text(`Discount: -$${discountAmount.toFixed(2)}`, 14, finalY + 6);
+                doc.text(`Tax: $${taxAmount.toFixed(2)}`, 14, finalY + 12);
+                doc.setFontSize(12);
+                doc.setTextColor(...pinkRgb);
+                doc.text(`TOTAL: $${total.toFixed(2)}`, 14, finalY + 20);
+            } else {
+                // fallback simple layout
+                let y = 60;
+                rows.forEach(r => {
+                    doc.text(`${r[0]} — ${r[1]} x ${r[2]} = ${r[3]}`, 14, y);
+                    y += 6;
+                });
+                doc.setFontSize(11);
+                doc.text(`TOTAL: $${total.toFixed(2)}`, 14, y + 6);
+            }
+
+            const filename = `${quoteNumber}.pdf`;
+            doc.save(filename);
+        } catch (pdfErr) {
+            console.error('PDF generation failed:', pdfErr);
+            alert('PDF generation failed. The quote will still be saved.');
+        }
+
+        // Save quote to server (existing behavior)
         const newQuote = {
-            number: quoteNumber,
+            number: `QUO-${Date.now().toString().slice(-6)}`,
             clientId,
             date: eventDate,
             total,
@@ -249,6 +323,7 @@ class QuoteManager {
     viewQuoteDetails(quoteId) {
         const quote = this.quotes.find(q => String(q.id) === String(quoteId));
         if (quote) {
+            this.currentDetailQuote = quote; // <-- store current detail quote
             const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
             set('detailNumber', quote.number || '');
             set('detailClient', quote.client?.name || quote.client || '');
@@ -257,6 +332,73 @@ class QuoteManager {
             if (ds) ds.innerHTML = `<span class="status-badge status-${quote.status}">${quote.status}</span>`;
             set('detailTotal', `$${(quote.total || 0).toFixed(2)}`);
             this.showDetailModal();
+        }
+    }
+
+    // Generate a PDF for the quote currently shown in the detail modal
+    async generateDetailPDF() {
+        const quote = this.currentDetailQuote;
+        if (!quote) {
+            alert('No quote selected to generate PDF.');
+            return;
+        }
+
+        const jsPDFCtor = (window.jspdf && (window.jspdf.jsPDF || window.jspdf.default)) || window.jsPDF || null;
+        if (!jsPDFCtor) {
+            alert('jsPDF not available. Cannot generate PDF.');
+            return;
+        }
+
+        const PINK = '#e91e63';
+        const pinkRgb = this._hexToRgb(PINK);
+
+        try {
+            const doc = new jsPDFCtor();
+            doc.setTextColor(...pinkRgb);
+            doc.setFontSize(14);
+            doc.text(`Quote ${quote.number || quote.id || ''}`, 14, 20);
+            doc.setTextColor(0,0,0);
+            doc.setFontSize(11);
+            doc.text(`Status: ${quote.status || ''}`, 14, 30);
+            doc.text(`Event Date: ${this.formatDate(quote.date) || quote.eventDate || ''}`, 14, 36);
+            doc.text(`Client: ${quote.client?.name || quote.client || ''}`, 14, 42);
+
+            const items = (quote.recipes || quote.products || []);
+            const body = items.map(item => {
+                const name = item.name || item.recipeName || '';
+                const qty = item.quantity || item.servings || 1;
+                const unit = item.pricePerServing || item.price || 0;
+                const lineTotal = (unit || 0) * qty;
+                return [name, String(qty), `$${(unit || 0).toFixed(2)}`, `$${lineTotal.toFixed(2)}`];
+            });
+
+            if (body.length && typeof doc.autoTable === 'function') {
+                doc.autoTable({
+                    startY: 54,
+                    head: [['Item', 'Qty', 'Unit Price', 'Total']],
+                    body,
+                    styles: { fontSize: 10 },
+                    headStyles: { fillColor: pinkRgb, textColor: 255 }
+                });
+                const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 8 : 54;
+                doc.setFontSize(11);
+                doc.setTextColor(...pinkRgb);
+                doc.text(`Total: $${(quote.total || 0).toFixed(2)}`, 14, finalY);
+            } else {
+                let y = 54;
+                body.forEach(row => {
+                    doc.text(`${row[0]}  ${row[1]} x ${row[2]} = ${row[3]}`, 14, y);
+                    y += 6;
+                });
+                doc.setTextColor(...pinkRgb);
+                doc.text(`Total: $${(quote.total || 0).toFixed(2)}`, 14, y + 6);
+            }
+
+            const filename = `${quote.number || quote.id || 'quote'}.pdf`;
+            doc.save(filename);
+        } catch (err) {
+            console.error('Error generating detail PDF:', err);
+            alert('Failed to generate PDF.');
         }
     }
 
@@ -306,4 +448,8 @@ class QuoteManager {
 
 }
 
-const quoteManager = new QuoteManager();
+// instantiate only on pages that include the Quotes UI to avoid breaking other pages
+if (typeof document !== 'undefined' && (document.getElementById('quotesTableBody') || document.getElementById('quoteModal') || document.getElementById('clientSelect'))) {
+    const qm = new QuoteManager();
+    window.quoteManager = qm;
+}

@@ -171,7 +171,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-primary btn-small">
+                <button class="btn-primary btn-small" onclick="quoteManager.generateDetailPDF()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
@@ -189,6 +189,28 @@
     <script src="../scripts/scripQuotes.js"></script>
 
     <script>lucide.createIcons();</script>
+    <script>
+      (function() {
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('eventDate');
+        if (dateInput) {
+          dateInput.min = today;
+          dateInput.addEventListener('input', () => {
+            dateInput.setCustomValidity(dateInput.value && dateInput.value < today ? 'La fecha debe ser hoy o posterior.' : '');
+          });
+        }
+        // opcional: interceptar posible submit si existe un formulario en el futuro
+        const possibleForm = dateInput ? dateInput.closest('form') : null;
+        if (possibleForm && dateInput) {
+          possibleForm.addEventListener('submit', (e) => {
+            if (dateInput.value && dateInput.value < today) {
+              e.preventDefault();
+              dateInput.reportValidity();
+            }
+          });
+        }
+      })();
+    </script>
 </body>
 
 </html>

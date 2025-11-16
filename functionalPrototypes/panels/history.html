@@ -7,6 +7,9 @@
   <title>Quote History</title>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../styles/styleHistory.css">
+  <!-- add jsPDF + autoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 
 <body>
@@ -284,6 +287,27 @@
   </div>
   <script src="../scripts/scriptHistory.js"></script>
   <script>lucide.createIcons();</script>
+  <script>
+  (function() {
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('editEventDate');
+    const form = document.getElementById('editForm');
+    if (dateInput) {
+      dateInput.min = today;
+      dateInput.addEventListener('input', () => {
+        dateInput.setCustomValidity(dateInput.value && dateInput.value < today ? 'La fecha debe ser hoy o posterior.' : '');
+      });
+    }
+    if (form && dateInput) {
+      form.addEventListener('submit', (e) => {
+        if (dateInput.value && dateInput.value < today) {
+          e.preventDefault();
+          dateInput.reportValidity();
+        }
+      });
+    }
+  })();
+  </script>
 </body>
 
 </html>
