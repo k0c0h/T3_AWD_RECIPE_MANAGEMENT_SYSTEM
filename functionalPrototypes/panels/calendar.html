@@ -189,5 +189,27 @@
 
     <script src="../scripts/scriptCalendar.js"></script>
     <script>lucide.createIcons();</script>
+    <!-- insert: set min date and validation for #eventDate -->
+    <script>
+    (function() {
+      const today = new Date().toISOString().split('T')[0];
+      const dateInput = document.getElementById('eventDate');
+      const form = document.getElementById('eventForm');
+      if (dateInput) {
+        dateInput.min = today;
+        dateInput.addEventListener('input', () => {
+          dateInput.setCustomValidity(dateInput.value && dateInput.value < today ? 'La fecha debe ser hoy o posterior.' : '');
+        });
+      }
+      if (form && dateInput) {
+        form.addEventListener('submit', (e) => {
+          if (dateInput.value && dateInput.value < today) {
+            e.preventDefault();
+            dateInput.reportValidity();
+          }
+        });
+      }
+    })();
+    </script>
 </body>
 </html>
