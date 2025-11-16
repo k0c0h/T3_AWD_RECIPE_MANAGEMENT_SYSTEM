@@ -157,43 +157,157 @@ function downloadPDF(quoteId) {
     const PINK = '#e91e63';
     const pinkRgb = _hexToRgb(PINK);
 
-    try {
-        const doc = new jsPDFCtor();
-        doc.setTextColor(...pinkRgb);
-        doc.setFontSize(14);
-        doc.text(`Quote ${quote.id}`, 14, 20);
-        doc.setTextColor(0,0,0);
-        doc.setFontSize(11);
-        doc.text(`Status: ${quote.status}`, 14, 28);
-        doc.text(`Event Date: ${quote.eventDate}`, 14, 34);
-        doc.text(`Location: ${quote.location}`, 14, 40);
-        doc.text(`Guests: ${quote.guests}`, 14, 46);
+    // helper: infer type from name
+    function inferType(name) {
+        const n = name.toLowerCase();
+        if (n.includes('cake') || n.includes('cheesecake') || n.includes('dessert') || n.includes('lava')) return 'Dessert';
+        if (n.includes('cocktail') || n.includes('cuba') || n.includes('drink')) return 'Drink';
+        return 'Main';
+    }
 
-        const body = quote.products.map(p => {
-            const lineTotal = (p.price || 0) * (p.quantity || 1);
-            return [p.name, String(p.quantity), `$${(p.price || 0).toFixed(2)}`, `$${lineTotal.toFixed(2)}`];
+    try {
+        const doc = new jsPDFCtor({unit: 'pt', format: 'a4'});
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        // Header background
+        doc.setFillColor(pinkRgb[0], pinkRgb[1], pinkRgb[2]);
+        doc.rect(30, 30, pageWidth - 60, 70, 'F');
+
+        // Header text
+        doc.setTextColor(255,255,255);
+        doc.setFontSize(28);
+        doc.setFont('helvetica', 'bold');
+        doc.text('DishDash', 40, 60);
+
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Catering & Event Planning', 40, 78);
+
+        // Quote id and date (right aligned on header)
+        doc.setFontSize(10);
+        doc.text(`Quote ${quote.id}`, pageWidth - 40, 52, {align: 'right'});
+        const now = new Date();
+        const creationDate = now.toLocaleDateString('en-US');
+        doc.text(`Date: ${creationDate}`, pageWidth - 40, 68, {align: 'right'});
+
+        // Client Information box
+        const infoY = 110;
+        doc.setDrawColor(pinkRgb[0], pinkRgb[1], pinkRgb[2]);
+        doc.setFillColor(242,242,242);
+        doc.rect(30, infoY, pageWidth - 60, 60, 'F');
+        doc.setFontSize(14);
+        doc.setTextColor(30,40,50);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Client Information', 40, infoY + 18);
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        const clientName = quote.client || quote.clientName || 'Client';
+        const eventDate = quote.eventDate || '';
+        const guests = (quote.guests !== undefined) ? String(quote.guests) : '';
+        doc.text(`Client: ${clientName}`, 40, infoY + 36);
+        doc.text(`Event Date: ${eventDate}`, 220, infoY + 36);
+        doc.text(`Number of People: ${guests}`, 40, infoY + 52);
+
+        // Selected Items title
+        const itemsY = infoY + 80;
+        doc.setFontSize(14);
+        doc.setTextColor(30,40,50);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Selected Items', 40, itemsY);
+
+        // Prepare table data: Recipe, Type, Servings, Price/Serving, Total
+        const body = (quote.products || []).map(p => {
+            const qty = p.quantity || 1;
+            const unit = (p.price || 0);
+            const lineTotal = unit * qty;
+            return [
+                p.name || '',
+                inferType(p.name || ''),
+                String(qty),
+                `$${unit.toFixed(2)}`,
+                `$${lineTotal.toFixed(2)}`
+            ];
         });
 
+        // autoTable if available
         if (typeof doc.autoTable === 'function') {
             doc.autoTable({
-                startY: 54,
-                head: [['Product', 'Qty', 'Unit Price', 'Total']],
-                body,
-                styles: { fontSize: 10 },
-                headStyles: { fillColor: pinkRgb, textColor: 255 }
+                startY: itemsY + 8,
+                margin: {left: 40, right: 40},
+                head: [['Recipe','Type','Servings','Price/Serving','Total']],
+                body: body,
+                styles: { font: 'helvetica', fontSize: 10, textColor: [40,40,40] },
+                headStyles: { fillColor: pinkRgb, textColor: [255,255,255] },
+                columnStyles: {
+                    0: {cellWidth: 180},
+                    1: {cellWidth: 80},
+                    2: {cellWidth: 60, halign: 'right'},
+                    3: {cellWidth: 80, halign: 'right'},
+                    4: {cellWidth: 80, halign: 'right'}
+                },
+                styles: {overflow: 'linebreak'}
             });
-            const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 8 : 54;
-            doc.setFontSize(11);
-            doc.setTextColor(...pinkRgb);
-            doc.text(`Total: $${(quote.total || 0).toFixed(2)}`, 14, finalY);
+
+            // Totals block below table
+            const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 12 : itemsY + 120;
+
+            // calculate totals
+            const subtotal = (quote.products || []).reduce((s, p) => s + ((p.price || 0) * (p.quantity || 1)), 0);
+            const discount = quote.discount || 0; // assume absolute value or percentage? use absolute amount here
+            const tax = subtotal * 0.15;
+            const total = subtotal - (discount || 0) + tax;
+
+            // Totals panel
+            const panelX = 40;
+            const panelW = pageWidth - 80;
+            doc.setFillColor(245,245,245);
+            doc.rect(panelX, finalY, panelW, 80, 'F');
+
+            doc.setFontSize(10);
+            doc.setTextColor(60,70,80);
+            doc.text('Subtotal:', panelX + panelW - 160, finalY + 20, {align: 'left'});
+            doc.text(`$${subtotal.toFixed(2)}`, panelX + panelW - 40, finalY + 20, {align: 'right'});
+
+            doc.text('Discount (0%):', panelX + panelW - 160, finalY + 36, {align: 'left'});
+            doc.text(`-$${(discount || 0).toFixed(2)}`, panelX + panelW - 40, finalY + 36, {align: 'right'});
+
+            doc.text('Tax (15%):', panelX + panelW - 160, finalY + 52, {align: 'left'});
+            doc.text(`$${tax.toFixed(2)}`, panelX + panelW - 40, finalY + 52, {align: 'right'});
+
+            // TOTAL
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(pinkRgb[0], pinkRgb[1], pinkRgb[2]);
+            doc.text('TOTAL:', panelX + panelW - 160, finalY + 72, {align: 'left'});
+            doc.text(`$${total.toFixed(2)}`, panelX + panelW - 40, finalY + 72, {align: 'right'});
+
+            // Footer: Quoted by
+            const footerY = finalY + 100;
+            doc.setFontSize(9);
+            doc.setTextColor(60,70,80);
+            const quotedBy = quote.quotedBy || 'Rosi Caárte Galarza';
+            doc.text('Quoted by:', 40, footerY);
+            doc.text(quotedBy, 40, footerY + 12);
+            doc.text(`ID: ${quote.quotedId || '1316848215'}`, 40, footerY + 26);
+            doc.text('Jipijapa, Manabí, Ecuador', 40, footerY + 40);
+
         } else {
-            let y = 54;
-            body.forEach(row => {
-                doc.text(`${row[0]} — ${row[1]} x ${row[2]} = ${row[3]}`, 14, y);
-                y += 6;
+            // Fallback simple listing
+            let y = itemsY + 20;
+            doc.setFontSize(10);
+            (quote.products || []).forEach(p => {
+                const qty = p.quantity || 1;
+                const unit = (p.price || 0);
+                const lineTotal = unit * qty;
+                doc.text(`${p.name} — ${qty} x $${unit.toFixed(2)} = $${lineTotal.toFixed(2)}`, 40, y);
+                y += 12;
             });
-            doc.setTextColor(...pinkRgb);
-            doc.text(`Total: $${(quote.total || 0).toFixed(2)}`, 14, y + 6);
+            const subtotal = (quote.products || []).reduce((s, p) => s + ((p.price || 0) * (p.quantity || 1)), 0);
+            const tax = subtotal * 0.15;
+            const total = subtotal + tax;
+            doc.setTextColor(pinkRgb[0], pinkRgb[1], pinkRgb[2]);
+            doc.text(`Total: $${total.toFixed(2)}`, 40, y + 12);
         }
 
         const filename = `${quote.id}.pdf`;
