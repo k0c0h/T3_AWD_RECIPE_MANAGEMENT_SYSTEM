@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +8,20 @@
     <link rel="stylesheet" href="../styles/styleIngredients.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
     <div class="ingredients-container">
         <div class="ingredients-header">
             <h2><i data-lucide="apple"></i> Ingredient Management</h2>
             <div class="header-actions">
+
+                <!-- SEARCH -->
                 <div class="search-box">
                     <i data-lucide="search" class="search-icon"></i>
                     <input type="text" id="searchIngredient" placeholder="Search ingredients...">
                 </div>
+
+                <!-- CATEGORY FILTER -->
                 <select id="filterCategory" class="filter-select">
                     <option value="">All Categories</option>
                     <option value="spirit">Spirit</option>
@@ -25,6 +31,50 @@
                     <option value="garnish">Garnish</option>
                     <option value="other">Other</option>
                 </select>
+
+                <!-- EXPORT DROPDOWN -->
+                <div class="export-dropdown">
+                    <button class="btn-secondary" id="btnExportIngredients">
+                        <i data-lucide="download"></i> Export
+                    </button>
+
+                    <div class="dropdown-menu" id="ingredientsExportMenu">
+
+                        <!-- ORIGINAL OPTIONS -->
+                        <button id="exportIngredientsPDF">
+                            <i data-lucide="file-text"></i> Export PDF
+                        </button>
+                        <button id="exportIngredientsExcel">
+                            <i data-lucide="table"></i> Export Excel
+                        </button>
+
+                        <hr>
+
+                        <!-- NEW OPTIONS YOU REQUESTED -->
+                        <button id="exportAdvancedFilters">
+                            <i data-lucide="sliders"></i> Advanced Filters Export
+                        </button>
+
+                        <button id="exportByCategory">
+                            <i data-lucide="tag"></i> Export by Category
+                        </button>
+
+                        <button id="exportManualSelection">
+                            <i data-lucide="check-square"></i> Manual Selection Export
+                        </button>
+
+                        <button id="exportWithLogo">
+                            <i data-lucide="image"></i> Export with Logo/Design
+                        </button>
+
+                        <button id="exportWithTotals">
+                            <i data-lucide="calculator"></i> Export Inventory w/ Totals
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- NEW INGREDIENT -->
                 <button class="btn-primary" id="btnNewIngredient">
                     <i data-lucide="plus"></i>
                     New Ingredient
@@ -32,10 +82,12 @@
             </div>
         </div>
 
+        <!-- TABLE -->
         <div class="ingredients-table">
             <table id="ingredientsTable">
                 <thead>
                     <tr>
+                        <th>Select</th>
                         <th>Name</th>
                         <th>Category</th>
                         <th>Product/Brand</th>
@@ -49,16 +101,19 @@
             </table>
         </div>
 
-        <!-- Modal to create/edit ingredient -->
+        <!-- MODAL -->
         <div class="modal" id="ingredientModal">
             <div class="modal-content">
+
                 <div class="modal-header">
                     <h3 id="modalTitle">New Ingredient</h3>
                     <button class="btn-close" id="btnCloseModal">
                         <i data-lucide="x"></i>
                     </button>
                 </div>
+
                 <form id="ingredientForm">
+
                     <div class="form-group">
                         <label for="ingredientName">Ingredient Name *</label>
                         <input type="text" id="ingredientName" required>
@@ -88,6 +143,7 @@
                             <label for="productSize">Size *</label>
                             <input type="text" id="productSize" placeholder="e.g., 1 liter, 750ml" required>
                         </div>
+
                         <div class="form-group">
                             <label for="productPrice">Price ($) *</label>
                             <input type="number" id="productPrice" step="0.01" min="0" placeholder="0.00" required>
@@ -112,14 +168,47 @@
                         <button type="button" class="btn-secondary" id="btnCancel">Cancel</button>
                         <button type="submit" class="btn-primary">Save Ingredient</button>
                     </div>
+
                 </form>
             </div>
         </div>
+        <!-- UNIVERSAL EXPORT MODAL -->
+        <div class="modal" id="exportModal">
+            <div class="modal-content small">
+
+                <div class="modal-header">
+                    <h3 id="exportModalTitle">Export Options</h3>
+                    <button class="btn-close" onclick="closeExportModal()">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <div id="exportModalBody" class="modal-body">
+                    <!-- Aquí cambiaremos el contenido según la opción -->
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeExportModal()">Cancel</button>
+                    <button class="btn-primary" id="exportConfirmButton">Confirm</button>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
+    <!-- LIBRARIES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+    <!-- MAIN SCRIPT -->
     <script src="../scripts/scriptIngredients.js"></script>
-     <script>
-    lucide.createIcons();
+
+    <script>
+        lucide.createIcons();
     </script>
+
 </body>
+
 </html>

@@ -12,7 +12,7 @@ class QuoteManager {
     async init() {
         await this.fetchRecipes();
         await this.fetchQuotes();
-        await this.fetchClients(); 
+        await this.fetchClients();
         this.renderQuotesTable();
         this.attachEventListeners();
     }
@@ -116,7 +116,7 @@ class QuoteManager {
             const rid = String(recipe.id);
             const isChecked = this.selectedRecipes.has(rid);
             const servings = isChecked ? this.selectedRecipes.get(rid) : numberOfPeople;
-            
+
             return `
                 <tr>
                     <td><input type="checkbox" id="recipe-${rid}" ${isChecked ? 'checked' : ''} onchange="quoteManager.toggleRecipe('${rid}')"></td>
@@ -152,7 +152,7 @@ class QuoteManager {
         if (servingsInput) {
             servingsInput.value = parsed;
         }
-        
+
         if (this.selectedRecipes.has(String(recipeId))) {
             this.selectedRecipes.set(String(recipeId), parsed);
             this.calculateTotal();
@@ -161,12 +161,12 @@ class QuoteManager {
 
     updateAllServings() {
         const numberOfPeople = parseInt(document.getElementById('numberOfPeople')?.value) || 50;
-        
+
         this.recipes.forEach(recipe => {
             const rid = String(recipe.id);
             const servingsInput = document.getElementById(`servings-${rid}`);
             const checkbox = document.getElementById(`recipe-${rid}`);
-            
+
             if (servingsInput) {
                 if (checkbox && checkbox.checked) {
                     servingsInput.value = numberOfPeople;
@@ -176,13 +176,13 @@ class QuoteManager {
                 }
             }
         });
-        
+
         this.calculateTotal();
     }
 
     calculateTotal() {
         let subtotal = 0;
-        
+
         this.selectedRecipes.forEach((servings, recipeId) => {
             const recipe = this.recipes.find(r => String(r.id) === String(recipeId));
             if (recipe) {
@@ -212,7 +212,7 @@ class QuoteManager {
 
     _hexToRgb(hex) {
         const h = hex.replace('#', '');
-        return [parseInt(h.substring(0,2),16), parseInt(h.substring(2,4),16), parseInt(h.substring(4,6),16)];
+        return [parseInt(h.substring(0, 2), 16), parseInt(h.substring(2, 4), 16), parseInt(h.substring(4, 6), 16)];
     }
 
     async generatePDF() {
@@ -235,16 +235,15 @@ class QuoteManager {
         // Recalcular totales
         const totals = this.calculateTotal();
 
-        // Build items array SIN recipeId - solo snapshot de datos
+        // Build items array SIN recipeId - solo snapshot
         const items = [];
         const pdfRows = [];
-        
+
         this.selectedRecipes.forEach((servings, recipeId) => {
             const recipe = this.recipes.find(r => String(r.id) === String(recipeId));
             if (recipe) {
                 const lineTotal = (recipe.pricePerServing || 0) * servings;
-                
-                // ⚠️ SOLO guardamos las características, NO el ID de la receta
+
                 items.push({
                     recipeName: recipe.name,
                     type: recipe.type,
@@ -252,12 +251,12 @@ class QuoteManager {
                     pricePerServing: recipe.pricePerServing || 0,
                     subtotal: lineTotal
                 });
-                
+
                 pdfRows.push([
-                    recipe.name, 
+                    recipe.name,
                     recipe.type,
-                    String(servings), 
-                    `$${(recipe.pricePerServing || 0).toFixed(2)}`, 
+                    String(servings),
+                    `$${(recipe.pricePerServing || 0).toFixed(2)}`,
                     `$${lineTotal.toFixed(2)}`
                 ]);
             }
@@ -265,63 +264,105 @@ class QuoteManager {
 
         const quoteNumber = `QT-${Date.now().toString().slice(-6)}`;
 
-        // Generar PDF
+        // ---- 🎀 PDF ELEGANTE ----
         const PINK = '#e91e63';
+        const HEADER_BG = [255, 235, 240]; // rosado pastel
         const pinkRgb = this._hexToRgb(PINK);
 
-        const jsPDFCtor = (window.jspdf && (window.jspdf.jsPDF || window.jspdf.default)) || window.jsPDF || null;
+        const jsPDFCtor =
+            (window.jspdf && (window.jspdf.jsPDF || window.jspdf.default)) ||
+            window.jsPDF || null;
+
         if (jsPDFCtor) {
             try {
-                const doc = new jsPDFCtor();
+                const doc = new jsPDFCtor("p", "mm", "a4");
+
+                // --- HEADER ---
+                doc.setFillColor(...HEADER_BG);
+                doc.rect(0, 0, 210, 35, "F");
+
                 doc.setTextColor(...pinkRgb);
-                doc.setFontSize(18);
-                doc.text('DishDash Catering & Event Planning', 14, 20);
-                
-                doc.setTextColor(0,0,0);
+                doc.setFontSize(22);
+                doc.text("DishDash Catering & Event Planning", 14, 20);
+
+                doc.setTextColor(60, 60, 60);
+                doc.setFontSize(12);
+                doc.text("Quote / Cotización", 14, 28);
+
+                // --- CAJA DE INFORMACIÓN ---
+                doc.setFillColor(255, 248, 250);
+                doc.roundedRect(10, 40, 190, 40, 3, 3, "F");
+
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+
+                doc.text(`Quote Number:`, 14, 48);
+                doc.text(`${quoteNumber}`, 60, 48);
+
+                doc.text(`Client:`, 14, 54);
+                doc.text(`${clientName}`, 60, 54);
+
+                doc.text(`Event Date:`, 14, 60);
+                doc.text(`${eventDate}`, 60, 60);
+
+                doc.text(`Number of People:`, 14, 66);
+                doc.text(`${numberOfPeople}`, 60, 66);
+
+                doc.text(`Quote Date:`, 14, 72);
+                doc.text(`${new Date().toLocaleDateString()}`, 60, 72);
+
+                // --- TABLA DE ITEMS ---
+                doc.autoTable({
+                    startY: 86,
+                    head: [['Recipe', 'Type', 'Servings', 'Price/Serving', 'Total']],
+                    body: pdfRows,
+                    styles: { fontSize: 10, cellPadding: 2 },
+                    headStyles: {
+                        fillColor: pinkRgb,
+                        textColor: 255,
+                        fontSize: 11,
+                    },
+                    alternateRowStyles: { fillColor: [255, 245, 248] },
+                    margin: { left: 10, right: 10 }
+                });
+
+                const finalY = doc.lastAutoTable.finalY + 10;
+
+                // --- TOTALES BONITOS ---
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+
+                const rightX = 160;
+
+                doc.text(`Subtotal:`, rightX, finalY);
+                doc.text(`$${totals.subtotal.toFixed(2)}`, rightX + 30, finalY);
+
+                doc.text(`Discount (${totals.discountPercent}%):`, rightX, finalY + 6);
+                doc.text(`-$${totals.discountAmount.toFixed(2)}`, rightX + 30, finalY + 6);
+
+                doc.text(`Tax (15%):`, rightX, finalY + 12);
+                doc.text(`$${totals.taxAmount.toFixed(2)}`, rightX + 30, finalY + 12);
+
+                // TOTAL FINAL
                 doc.setFontSize(14);
-                doc.text('Quote', 14, 30);
-                
+                doc.setTextColor(...pinkRgb);
+                doc.text(`TOTAL: $${totals.total.toFixed(2)}`, rightX, finalY + 22);
+
+                // --- FOOTER ---
                 doc.setFontSize(10);
-                doc.text(`Quote Number: ${quoteNumber}`, 14, 40);
-                doc.text(`Client: ${clientName}`, 14, 46);
-                doc.text(`Number of People: ${numberOfPeople}`, 14, 52);
-                doc.text(`Event Date: ${eventDate}`, 14, 58);
-                doc.text(`Quote Date: ${new Date().toLocaleDateString()}`, 14, 64);
-
-                if (typeof doc.autoTable === 'function') {
-                    doc.autoTable({
-                        startY: 72,
-                        head: [['Recipe', 'Type', 'Servings', 'Price/Serving', 'Total']],
-                        body: pdfRows,
-                        styles: { fontSize: 9 },
-                        headStyles: { fillColor: pinkRgb, textColor: 255 }
-                    });
-
-                    const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 10 : 72;
-                    doc.setFontSize(10);
-                    doc.text(`Subtotal: $${totals.subtotal.toFixed(2)}`, 14, finalY);
-                    doc.text(`Discount (${totals.discountPercent}%): -$${totals.discountAmount.toFixed(2)}`, 14, finalY + 6);
-                    doc.text(`Tax (15%): $${totals.taxAmount.toFixed(2)}`, 14, finalY + 12);
-                    
-                    doc.setFontSize(12);
-                    doc.setTextColor(...pinkRgb);
-                    doc.text(`TOTAL: $${totals.total.toFixed(2)}`, 14, finalY + 20);
-                    
-                    doc.setFontSize(9);
-                    doc.setTextColor(0,0,0);
-                    doc.text('Quoted by: Rosi Caárte Galarza', 14, finalY + 32);
-                    doc.text('ID: 1316848215', 14, finalY + 37);
-                    doc.text('Jipijapa, Manabí, Ecuador', 14, finalY + 42);
-                }
+                doc.setTextColor(120, 120, 120);
+                doc.text("Quoted by: Rosi Caárte Galarza", 14, finalY + 40);
+                doc.text("ID: 1316848215", 14, finalY + 45);
+                doc.text("Jipijapa, Manabí, Ecuador", 14, finalY + 50);
 
                 const filename = `${quoteNumber}.pdf`;
                 doc.save(filename);
             } catch (pdfErr) {
-                console.error('PDF generation failed:', pdfErr);
+                console.error("PDF generation failed:", pdfErr);
             }
         }
 
-        // ⚠️ ESTRUCTURA SIN recipeId - solo snapshot de características
+        // Guardar en el backend
         const newQuote = {
             number: quoteNumber,
             clientId: clientId,
@@ -329,7 +370,7 @@ class QuoteManager {
                 numberOfPeople: numberOfPeople,
                 eventDate: eventDate
             },
-            items: items, // Ya no incluye recipeId
+            items: items,
             pricing: {
                 subtotal: totals.subtotal,
                 discountPercentage: totals.discountPercent,
@@ -340,33 +381,27 @@ class QuoteManager {
             },
             total: totals.total,
             date: new Date().toISOString(),
-            status: 'pending'
+            status: "pending"
         };
-
-        console.log('📤 Sending quote to server (WITHOUT recipeId):');
-        console.log(JSON.stringify(newQuote, null, 2));
 
         try {
             const res = await fetch(`${API_BASE}/quotes`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newQuote)
             });
-            
+
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || 'Save quote failed');
+                const err = await res.json();
+                throw new Error(err.message || "Save quote failed");
             }
-            
-            const saved = await res.json();
-            console.log('✅ Quote saved:', saved);
-            
+
+            await res.json();
             await this.fetchQuotes();
             this.renderQuotesTable();
             this.closeModal();
-            alert('Quote saved successfully!');
+            alert("Quote saved successfully!");
         } catch (err) {
-            console.error('❌ Error saving quote:', err);
             alert(`Error saving quote: ${err.message}`);
         }
     }
@@ -376,16 +411,16 @@ class QuoteManager {
         if (quote) {
             this.currentDetailQuote = quote;
             const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
-            
+
             set('detailNumber', quote.number || '');
             set('detailClient', quote.client?.name || quote.client || '');
             set('detailDate', this.formatDate(quote.eventInfo?.eventDate || quote.date));
-            
+
             const ds = document.getElementById('detailStatus');
             if (ds) ds.innerHTML = `<span class="status-badge status-${quote.status}">${quote.status}</span>`;
-            
+
             set('detailTotal', `$${(quote.pricing?.total || quote.total || 0).toFixed(2)}`);
-            
+
             this.showDetailModal();
         }
     }
@@ -411,11 +446,11 @@ class QuoteManager {
             doc.setTextColor(...pinkRgb);
             doc.setFontSize(18);
             doc.text('DishDash Catering & Event Planning', 14, 20);
-            
-            doc.setTextColor(0,0,0);
+
+            doc.setTextColor(0, 0, 0);
             doc.setFontSize(14);
             doc.text(`Quote ${quote.number || quote.id || ''}`, 14, 30);
-            
+
             doc.setFontSize(10);
             doc.text(`Status: ${quote.status || ''}`, 14, 40);
             doc.text(`Client: ${quote.client?.name || quote.client || ''}`, 14, 46);
@@ -439,22 +474,22 @@ class QuoteManager {
                     styles: { fontSize: 9 },
                     headStyles: { fillColor: pinkRgb, textColor: 255 }
                 });
-                
+
                 const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 10 : 66;
                 doc.setFontSize(10);
-                
+
                 if (quote.pricing) {
                     doc.text(`Subtotal: $${quote.pricing.subtotal.toFixed(2)}`, 14, finalY);
                     doc.text(`Discount (${quote.pricing.discountPercentage}%): -$${quote.pricing.discountAmount.toFixed(2)}`, 14, finalY + 6);
                     doc.text(`Tax (${quote.pricing.taxPercentage}%): $${quote.pricing.taxAmount.toFixed(2)}`, 14, finalY + 12);
                 }
-                
+
                 doc.setFontSize(12);
                 doc.setTextColor(...pinkRgb);
                 doc.text(`TOTAL: $${(quote.pricing?.total || quote.total || 0).toFixed(2)}`, 14, finalY + 20);
-                
+
                 doc.setFontSize(9);
-                doc.setTextColor(0,0,0);
+                doc.setTextColor(0, 0, 0);
                 doc.text('Quoted by: Rosi Caárte Galarza', 14, finalY + 32);
                 doc.text('ID: 1316848215', 14, finalY + 37);
                 doc.text('Jipijapa, Manabí, Ecuador', 14, finalY + 42);

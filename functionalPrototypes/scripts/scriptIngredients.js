@@ -38,12 +38,17 @@ filterCategory.addEventListener('change', filterIngredients);
 function renderIngredients(ingredientsToRender = ingredients) {
     ingredientsBody.innerHTML = ingredientsToRender.map(ingredient => `
         <tr>
+
+            <!-- CHECKBOX: ESTO FALTABA -->
+            <td><input type="checkbox" class="row-select"></td>
+
             <td>${ingredient.name}</td>
             <td><span class="category-badge">${getCategoryName(ingredient.category)}</span></td>
             <td>${ingredient.product}</td>
             <td>${ingredient.size}</td>
             <td>$${ingredient.price.toFixed(2)}</td>
             <td>${ingredient.units.join(', ')}</td>
+
             <td>
                 <button class="btn-icon" onclick="editIngredient(${ingredient.id})" title="Edit">
                     <i data-lucide="edit"></i>
@@ -52,11 +57,13 @@ function renderIngredients(ingredientsToRender = ingredients) {
                     <i data-lucide="trash-2"></i>
                 </button>
             </td>
+
         </tr>
     `).join('');
-    
+
     lucide.createIcons();
 }
+
 
 function openIngredientModal(ingredient = null) {
     currentIngredient = ingredient;
@@ -157,6 +164,188 @@ function getCategoryName(category) {
     };
     return categories[category] || category;
 }
+// EXPORT BUTTON
+document.getElementById("btnExportIngredients").addEventListener("click", () => {
+    const menu = document.getElementById("ingredientsExportMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+});
+
+// Close dropdown if clicked outside
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".export-dropdown")) {
+        document.getElementById("ingredientsExportMenu").style.display = "none";
+    }
+});
+
+function exportToPDF(data, filename, withLogo = false) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    if (withLogo) {
+        doc.setFontSize(20);
+        doc.text("🍸 My Bar Inventory", 14, 20);
+    } else {
+        doc.setFontSize(16);
+        doc.text("Ingredients Export", 14, 20);
+    }
+
+    const rows = data.map(i => [
+        i.name,
+        getCategoryName(i.category),
+        i.product,
+        i.size,
+        `$${i.price.toFixed(2)}`,
+        i.units.join(", ")
+    ]);
+
+    doc.autoTable({
+        startY: 30,
+        head: [["Name", "Category", "Brand", "Size", "Price", "Units"]],
+        body: rows
+    });
+
+    doc.save(filename);
+}
+
+// EXPORT PDF
+document.getElementById("exportIngredientsPDF").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const rows = ingredients.map(i => [
+        i.name,
+        getCategoryName(i.category),
+        i.product,
+        i.size,
+        `$ ${i.price.toFixed(2)}`,
+        i.units.join(", ")
+    ]);
+
+    doc.setFontSize(16);
+    doc.text("Ingredients List", 14, 20);
+
+    doc.autoTable({
+        startY: 30,
+        head: [["Name", "Category", "Brand", "Size", "Price", "Units"]],
+        body: rows
+    });
+
+    doc.save("ingredients.pdf");
+});
+
+// EXPORT EXCEL
+document.getElementById("exportIngredientsExcel").addEventListener("click", () => {
+    const data = ingredients.map(i => ({
+        Name: i.name,
+        Category: getCategoryName(i.category),
+        Brand: i.product,
+        Size: i.size,
+        Price: i.price,
+        Units: i.units.join(", ")
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Ingredients");
+    XLSX.writeFile(workbook, "ingredients.xlsx");
+});
+
+function openExportModal(title, htmlContent, confirmCallback) {
+    document.getElementById("exportModalTitle").textContent = title;
+    document.getElementById("exportModalBody").innerHTML = htmlContent;
+
+    const confirmBtn = document.getElementById("exportConfirmButton");
+    confirmBtn.onclick = confirmCallback;
+
+    document.getElementById("exportModal").classList.add("active");
+    lucide.createIcons();
+}
+
+function closeExportModal() {
+    document.getElementById("exportModal").classList.remove("active");
+}
+
+document.getElementById("exportAdvancedFilters").addEventListener("click", () => {
+
+    const html = `
+        <label>Minimum Price:</label>
+        <input type="number" id="minPrice" class="export-input" min="0" placeholder="0.00">
+    `;
+
+    openExportModal("Advanced Filters", html, () => {
+        const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
+
+        const filtered = ingredients.filter(i => i.price >= minPrice);
+
+        exportToPDF(filtered, "ingredients_filtered.pdf");
+        closeExportModal();
+    });
+});
+
+
+document.getElementById("exportByCategory").addEventListener("click", () => {
+
+    const categorySelect = `
+        <label>Select a category:</label>
+        <select id="exportCategorySelect" class="export-input">
+            <option value="spirit">Spirit</option>
+            <option value="mixer">Mixer</option>
+            <option value="juice">Juice</option>
+            <option value="syrup">Syrup</option>
+            <option value="garnish">Garnish</option>
+            <option value="other">Other</option>
+        </select>
+    `;
+
+    openExportModal("Export by Category", categorySelect, () => {
+        const selected = document.getElementById("exportCategorySelect").value;
+
+        const filtered = ingredients.filter(i => i.category === selected);
+
+        exportToPDF(filtered, `ingredients_${selected}.pdf`);
+        closeExportModal();
+    });
+});
+
+
+
+document.getElementById("exportManualSelection").addEventListener("click", () => {
+    const selectedRows = [...document.querySelectorAll(".row-select:checked")];
+    if (selectedRows.length === 0) {
+        alert("Select at least one ingredient.");
+        return;
+    }
+
+    const selectedIngredients = selectedRows.map(chk => {
+        const row = chk.closest("tr");
+        const name = row.children[1].textContent;
+        return ingredients.find(i => i.name === name);
+    });
+
+    exportToPDF(selectedIngredients, "selected_ingredients.pdf");
+});
+
+
+document.getElementById("exportWithLogo").addEventListener("click", () => {
+    openExportModal("Export with Logo", "<p>This export will include your business logo.</p>", () => {
+        exportToPDF(ingredients, "ingredients_logo.pdf", true);
+        closeExportModal();
+    });
+});
+
+
+document.getElementById("exportWithTotals").addEventListener("click", () => {
+    const total = ingredients.reduce((sum, i) => sum + i.price, 0);
+
+    openExportModal("Export Inventory with Totals", 
+        `<p>Total Inventory Value: <strong>$${total.toFixed(2)}</strong></p>`,
+    () => {
+        exportToPDF(ingredients, "inventory_totals.pdf");
+        closeExportModal();
+    });
+});
+
 
 // Initialize
 renderIngredients();

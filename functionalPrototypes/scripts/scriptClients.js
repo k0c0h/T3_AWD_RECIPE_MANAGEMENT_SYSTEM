@@ -127,3 +127,53 @@ async function deleteClient(id) {
     console.error('Error eliminando cliente:', error);
   }
 }
+
+document.getElementById("exportPDF").addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const rows = clients.map(c => [
+    c.name,
+    c.email || '',
+    c.phone || '',
+    c.address || ''
+  ]);
+
+  doc.setFontSize(16);
+  doc.text("Client List", 14, 20);
+
+  doc.autoTable({
+    startY: 30,
+    head: [["Name", "Email", "Phone", "Address"]],
+    body: rows
+  });
+
+  doc.save("clients.pdf");
+});
+
+
+document.getElementById("exportExcel").addEventListener("click", () => {
+  const data = clients.map(c => ({
+    Name: c.name,
+    Email: c.email || "",
+    Phone: c.phone || "",
+    Address: c.address || ""
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Clients");
+  XLSX.writeFile(workbook, "clients.xlsx");
+});
+
+document.getElementById("btnExport").addEventListener("click", () => {
+  const menu = document.getElementById("exportMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+});
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".export-dropdown")) {
+    document.getElementById("exportMenu").style.display = "none";
+  }
+});
