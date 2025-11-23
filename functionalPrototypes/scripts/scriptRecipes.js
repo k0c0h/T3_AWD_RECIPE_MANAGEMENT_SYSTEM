@@ -389,7 +389,7 @@ function viewRecipe(id) {
     document.getElementById('recipeDetail').innerHTML = `
         <div class="detail-section">
             <h4>General Information</h4>
-            <p><strong>Type:</strong> ${getCategoryName(recipe.category)}</p>
+            <p><strong>Category:</strong> ${getCategoryName(recipe.category)}</p>
             <p><strong>Yield:</strong> ${recipe.servings} ${recipe.servings === 1 ? 'serving' : 'servings'}</p>
             ${recipe.description ? `<p><strong>Description:</strong> ${recipe.description}</p>` : ''}
         </div>
