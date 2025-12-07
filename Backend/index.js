@@ -8,7 +8,16 @@ mongoose.connect(process.env.MONGODB_URI ||'mongodb+srv://mrsproudd:mrsproudd@cl
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to Database'));
+
 app.use(express.json());
+
+// Inicializar Passport
+const passport = require('./config/passport');
+app.use(passport.initialize());
+
+// Rutas de autenticación
+const authRoutes = require('./routes/authRoutes');
+app.use('/dishdash', authRoutes);
 
 const ingredientRoutes = require('./routes/ingredientRoutes');
 app.use('/dishdash', ingredientRoutes);
