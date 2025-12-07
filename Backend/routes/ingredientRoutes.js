@@ -102,8 +102,29 @@ router.delete('/ingredient/:productId', async (req, res) => {
         if (ingredientObject == null) {
             return res.status(404).json({message: 'Ingredient not found'});
         }
-        await Ingredient.deleteOne({productId: req.params.productId}); 
-        res.json({message: 'Ingredient deleted successfully'});
+
+        ingredientObject.isActive = false;
+        ingredientObject.deletedAt = new Date();
+        await ingredientObject.save();
+        
+        res.json({message: 'Ingredient deactivated successfully', ingredient: ingredientObject});
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+});
+
+router.patch('/ingredient/:productId/restore', async (req, res) => {
+    try {
+        const ingredientObject = await Ingredient.findOne({productId: req.params.productId, isActive: false}); 
+        if (ingredientObject == null) {
+            return res.status(404).json({message: 'Deleted ingredient not found'});
+        }
+        
+        ingredientObject.isActive = true;
+        ingredientObject.deletedAt = null;
+        await ingredientObject.save();
+        
+        res.json({message: 'Ingredient restored successfully', ingredient: ingredientObject});
     } catch (err) {
         res.status(500).json({message: err.message});
     }
