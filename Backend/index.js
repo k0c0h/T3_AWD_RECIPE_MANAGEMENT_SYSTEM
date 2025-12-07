@@ -12,5 +12,8 @@ app.use(express.json());
 
 const ingredientRoutes = require('./routes/ingredientRoutes');
 app.use('/dishdash', ingredientRoutes);
+const recipeRoutes = require('./routes/recipeRoutes');
+app.use('/dishdash', recipeRoutes);
+
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
