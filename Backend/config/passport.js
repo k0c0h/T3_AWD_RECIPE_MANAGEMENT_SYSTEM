@@ -11,17 +11,17 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                // Buscar si el usuario ya existe
+
                 let user = await User.findOne({ googleId: profile.id });
 
                 if (user) {
-                    // Usuario existe, actualizar último login
+
                     user.lastLogin = new Date();
                     await user.save();
                     return done(null, user);
                 }
 
-                // Usuario no existe, crear uno nuevo
+
                 user = await User.create({
                     googleId: profile.id,
                     email: profile.emails[0].value,
