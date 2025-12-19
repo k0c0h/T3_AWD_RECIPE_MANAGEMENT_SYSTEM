@@ -30,4 +30,7 @@ app.use('/dishdash', unitsRoutes);
 const conversionsRoutes = require('./routes/conversionRoutes');
 app.use('/dishdash', conversionsRoutes);
 
+const scaledRecipeRoutes = require('./routes/scaledRecipeRoutes');
+app.use('/dishdash', scaledRecipeRoutes);
+
 app.listen(port, () => console.log(`Server is running on port ${port}`));
