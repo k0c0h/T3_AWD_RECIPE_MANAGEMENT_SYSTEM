@@ -50,23 +50,24 @@ router.post('/conversion', async (req, res) => {
             return res.status(400).json({ message: 'Invalid value' });
         }
 
-        let densityUsed = density || 1;
+        let densityUsed = density ?? 1;
         let ingredientName = null;
 
         if (ingredientId) {
-            const ingredient = await Ingredient.findOne({ productId: ingredientId });
+            const ingredient = await Ingredient.findOne({
+                productId: ingredientId
+            });
 
             if (!ingredient) {
                 return res.status(400).json({ message: 'Ingredient not found' });
             }
 
-            densityUsed = ingredient.density;
+            densityUsed = ingredient.density ?? 1;
             ingredientName = ingredient.name;
         }
 
         const result = await convert(value, fromUnit, toUnit, densityUsed);
 
-        // 🔥 GUARDAR conversión
         await Conversion.create({
             value,
             fromUnit,

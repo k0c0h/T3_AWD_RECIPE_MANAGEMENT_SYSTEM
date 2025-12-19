@@ -3,7 +3,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-
+// Ruta para iniciar el login con Google
 router.get('/auth/google',
     passport.authenticate('google', { 
         scope: ['profile', 'email'],
@@ -11,14 +11,14 @@ router.get('/auth/google',
     })
 );
 
-
+// Ruta de callback después del login con Google
 router.get('/auth/google/callback',
     passport.authenticate('google', { 
         session: false,
         failureRedirect: '/dishdash/auth/failure'
     }),
     (req, res) => {
-
+        // Generar JWT token
         const token = jwt.sign(
             { 
                 id: req.user._id,
@@ -29,7 +29,7 @@ router.get('/auth/google/callback',
             { expiresIn: '7d' }
         );
 
-
+        // Enviar el token como respuesta JSON
         res.json({
             success: true,
             message: 'Login successful',
@@ -44,7 +44,7 @@ router.get('/auth/google/callback',
     }
 );
 
-
+// Ruta de fallo de autenticación
 router.get('/auth/failure', (req, res) => {
     res.status(401).json({
         success: false,
@@ -52,7 +52,7 @@ router.get('/auth/failure', (req, res) => {
     });
 });
 
-
+// Ruta para verificar el token (opcional, para testing)
 router.get('/auth/verify', (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     

@@ -17,9 +17,6 @@ const unitSchema = new mongoose.Schema({
     toBase: {
         type: Number,
         required: true
-        // factor a unidad base
-        // peso → gramos
-        // volumen → mililitros
     },
 
     isActive: {
