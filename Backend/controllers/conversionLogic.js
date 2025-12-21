@@ -1,5 +1,4 @@
 const Unit = require('../models/units');
-const Ingredient = require('../models/ingredient');
 
 async function convert(value, from, to, density = 1) {
     const fromUnit = await Unit.findOne({ name: from, isActive: true });
@@ -25,7 +24,7 @@ async function convert(value, from, to, density = 1) {
         return grams / toUnit.toBase;
     }
 
-    throw new Error('Unsupported conversion');
+    throw new Error('Unsupported conversion type');
 }
 
 function formatKitchenUnits(valueInMl) {
