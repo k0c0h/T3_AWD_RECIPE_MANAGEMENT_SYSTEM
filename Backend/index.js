@@ -26,8 +26,11 @@ app.use('/dishdash', recipeRoutes);
 const unitsRoutes = require('./routes/unitsRoutes');
 app.use('/dishdash', unitsRoutes);
 
-const conversionsRoutes = require('./routes/conversionRoutes');
-app.use('/dishdash', conversionsRoutes);
+const conversionCrudRoutes = require('./routes/crud/conversionCrudRoutes');
+app.use('/dishdash/crud', conversionCrudRoutes);
+
+const conversionBusinessRoutes = require('./routes/business/conversionBusinessRoutes');
+app.use('/dishdash/business', conversionBusinessRoutes);
 
 const scaledRecipeRoutes = require('./routes/scaledRecipeRoutes');
 app.use('/dishdash', scaledRecipeRoutes);
@@ -35,7 +38,6 @@ app.use('/dishdash', scaledRecipeRoutes);
 const costAnalysisRoutes = require('./routes/costAnalysisRoutes');
 app.use('/dishdash', costAnalysisRoutes);
 
-// Root: list available URIs as JSON
 app.get('/', (req, res) => {
 	res.json({
 		ingredients: {
@@ -63,11 +65,16 @@ app.get('/', (req, res) => {
 			GET: '/dishdash/units',
 			GET_all: '/dishdash/unitsall'
 		},
-		conversions: {
-			GET: '/dishdash/conversions',
-			POST_convert: '/dishdash/conversion',
-			POST_kitchen: '/dishdash/conversion/kitchen'
-		},
+        conversions: {
+			//Crud operations
+            GET: '/dishdash/crud/conversions',
+            PATCH: '/dishdash/crud/conversion/:id',
+            DELETE: '/dishdash/crud/conversion/:id',
+
+			// Business rules
+			POST_convert: '/dishdash/business/conversion',
+            POST_kitchen: '/dishdash/business/conversion/kitchen'
+        },
 		scaledRecipes: {
 			GET: '/dishdash/scaled-recipes',
 			GET_by_recipe: '/dishdash/scaled-recipes/recipe/:recipeId',
