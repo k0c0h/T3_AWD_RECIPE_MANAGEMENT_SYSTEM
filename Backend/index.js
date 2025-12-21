@@ -14,12 +14,12 @@ app.use(express.json());
 const passport = require('./config/passport');
 app.use(passport.initialize());
 
-
 const authRoutes = require('./routes/authRoutes');
 app.use('/dishdash', authRoutes);
 
 const ingredientRoutes = require('./routes/ingredientRoutes');
 app.use('/dishdash', ingredientRoutes);
+
 const recipeRoutes = require('./routes/recipeRoutes');
 app.use('/dishdash', recipeRoutes);
 
@@ -27,16 +27,25 @@ const unitsRoutes = require('./routes/unitsRoutes');
 app.use('/dishdash', unitsRoutes);
 
 const conversionCrudRoutes = require('./routes/crud/conversionCrudRoutes');
-app.use('/dishdash/crud', conversionCrudRoutes);
+app.use('/dishdash', conversionCrudRoutes);
 
 const conversionBusinessRoutes = require('./routes/business/conversionBusinessRoutes');
-app.use('/dishdash/business', conversionBusinessRoutes);
+app.use('/dishdash', conversionBusinessRoutes);
 
 const scaledRecipeRoutes = require('./routes/scaledRecipeRoutes');
 app.use('/dishdash', scaledRecipeRoutes);
 
-const costAnalysisRoutes = require('./routes/costAnalysisRoutes');
-app.use('/dishdash', costAnalysisRoutes);
+const costAnalysisCrudRoutes = require('./routes/crud/costAnalysisCrudRoutes');
+app.use('/dishdash', costAnalysisCrudRoutes);
+
+const costAnalysisBusinessRoutes = require('./routes/business/costAnalysisBusinessRoutes');
+app.use('/dishdash', costAnalysisBusinessRoutes);
+
+const quotationCrudRoutes = require('./routes/crud/quotationCrudRoutes');
+app.use('/dishdash', quotationCrudRoutes);
+
+const quotationBusinessRoutes = require('./routes/business/quotationBusinessRoutes');
+app.use('/dishdash', quotationBusinessRoutes);
 
 app.get('/', (req, res) => {
 	res.json({
@@ -65,16 +74,13 @@ app.get('/', (req, res) => {
 			GET: '/dishdash/units',
 			GET_all: '/dishdash/unitsall'
 		},
-        conversions: {
-			//Crud operations
-            GET: '/dishdash/crud/conversions',
-            PATCH: '/dishdash/crud/conversion/:id',
-            DELETE: '/dishdash/crud/conversion/:id',
-
-			// Business rules
-			POST_convert: '/dishdash/business/conversion',
-            POST_kitchen: '/dishdash/business/conversion/kitchen'
-        },
+		conversions: {
+			GET: '/dishdash/conversions',
+			PATCH: '/dishdash/conversion/:id',
+			DELETE: '/dishdash/conversion/:id',
+			POST_convert: '/dishdash/conversion',
+			POST_kitchen: '/dishdash/conversion/kitchen'
+		},
 		scaledRecipes: {
 			GET: '/dishdash/scaled-recipes',
 			GET_by_recipe: '/dishdash/scaled-recipes/recipe/:recipeId',
@@ -89,13 +95,24 @@ app.get('/', (req, res) => {
 			GET_verify: '/dishdash/auth/verify'
 		},
 		costanalysis: {
-			GET_recipe_ingredients_options: '/dishdash/costanalysis/recipe/:id/ingredients-options',
 			POST_calculate: '/dishdash/costanalysis/calculate',
+			GET_recipe_ingredients_options: '/dishdash/costanalysis/recipe/:id/ingredients-options',
 			POST: '/dishdash/costanalysis',
 			GET: '/dishdash/costanalysis',
 			GET_by_id: '/dishdash/costanalysis/:id',
 			PUT: '/dishdash/costanalysis/:id',
 			DELETE: '/dishdash/costanalysis/:id'
+		},
+		quotations: {
+			POST_client_request: '/dishdash/quotations/client-request',
+			POST_chef_calculate: '/dishdash/quotations/chef-calculate',
+			POST_chef_quotation: '/dishdash/quotations/chef-quotation',
+			POST: '/dishdash/quotations',
+			GET: '/dishdash/quotations',
+			GET_by_id: '/dishdash/quotations/:id',
+			PUT: '/dishdash/quotations/:id',
+			PATCH_status: '/dishdash/quotations/:id/status',
+			DELETE: '/dishdash/quotations/:id'
 		}
 	});
 });
