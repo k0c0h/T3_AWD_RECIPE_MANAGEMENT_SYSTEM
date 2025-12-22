@@ -4,20 +4,24 @@ const {
     calculateIndirectCosts
 } = require('./costAnalysisBusinessController');
 
+const {
+    createCalendarEventForQuotation
+} = require('./calendarBusinessController');
+
 async function calculateRecipeCost(recipeId, selectedIngredients, servings) {
     const recipe = await Recipe.findById(recipeId);
     if (!recipe) throw new Error(`Recipe with id ${recipeId} not found`);
-    
+
     const lines = await Promise.all(
         selectedIngredients.map(selection => processIngredientLine(selection))
     );
-    
+
     const ingredientsCost = lines.reduce((sum, line) => sum + line.totalCost, 0);
     const indirectCost = calculateIndirectCosts(ingredientsCost);
     const totalCost = ingredientsCost + indirectCost;
+
     const actualServings = servings || recipe.servings || 1;
-    const costPerServing = totalCost / actualServings;
-    
+
     return {
         recipeId,
         recipeName: recipe.name,
@@ -26,7 +30,7 @@ async function calculateRecipeCost(recipeId, selectedIngredients, servings) {
         ingredientsCost,
         indirectCost,
         totalCost,
-        costPerServing
+        costPerServing: totalCost / actualServings
     };
 }
 
@@ -41,8 +45,7 @@ function calculateQuotationTaxes(amount, ivaPercent = 0, servicePercent = 0, oth
     const ivaAmount = amount * (ivaPercent / 100);
     const serviceAmount = amount * (servicePercent / 100);
     const otherAmount = amount * (otherPercent / 100);
-    const totalTaxes = ivaAmount + serviceAmount + otherAmount;
-    
+
     return {
         ivaPercent,
         servicePercent,
@@ -50,7 +53,7 @@ function calculateQuotationTaxes(amount, ivaPercent = 0, servicePercent = 0, oth
         ivaAmount,
         serviceAmount,
         otherAmount,
-        totalTaxes
+        totalTaxes: ivaAmount + serviceAmount + otherAmount
     };
 }
 
@@ -61,14 +64,23 @@ function estimateClientQuotationCost(numberOfGuests, eventType) {
         birthday_party: 15,
         other: 18
     };
-    
-    const baseRate = baseRates[eventType] || baseRates.other;
-    return numberOfGuests * baseRate;
+
+    return numberOfGuests * (baseRates[eventType] || baseRates.other);
+}
+
+async function handleQuotationApproved(quotation) {
+    await createCalendarEventForQuotation(quotation);
+
+    return {
+        success: true,
+        message: "Quotation approved and calendar event created."
+    };
 }
 
 module.exports = {
     calculateRecipeCost,
     calculateDiscount,
     calculateQuotationTaxes,
-    estimateClientQuotationCost
+    estimateClientQuotationCost,
+    handleQuotationApproved
 };

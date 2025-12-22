@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Quotation = require('../../models/quotation');
+const {
+    createCalendarEventForQuotation
+} = require('../../controllers/calendarBusinessController');
 
 router.post('/quotations', async (req, res) => {
     try {
@@ -69,24 +72,29 @@ router.put('/quotations/:id', async (req, res) => {
 router.patch('/quotations/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
-        
+
         if (!['pending', 'approved', 'completed', 'cancelled'].includes(status)) {
             return res.status(400).json({ message: 'Invalid status value' });
         }
-        
-        const document = await Quotation.findByIdAndUpdate(
+
+        const quotation = await Quotation.findByIdAndUpdate(
             req.params.id,
             { status },
             { new: true }
         );
-        
-        if (!document) return res.status(404).json({ message: 'Quotation not found' });
-        
-        res.json(document);
+
+        if (!quotation) return res.status(404).json({ message: 'Quotation not found' });
+
+        if (status === 'approved') {
+            await createCalendarEventForQuotation(quotation);
+        }
+
+        res.json(quotation);
+
     } catch (error) {
-        res.status(500).json({ 
-            message: 'Error updating quotation status', 
-            error: error.message 
+        res.status(500).json({
+            message: 'Error updating quotation status',
+            error: error.message
         });
     }
 });

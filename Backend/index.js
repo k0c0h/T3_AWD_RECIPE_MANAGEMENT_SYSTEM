@@ -17,7 +17,7 @@ app.use(passport.initialize());
 const authRoutes = require('./routes/authRoutes');
 app.use('/dishdash', authRoutes);
 
-const ingredientRoutes = require('./routes/ingredientRoutes');
+const ingredientRoutes = require('./routes/crud/ingredientCrudRoutes');
 app.use('/dishdash', ingredientRoutes);
 
 const recipeRoutes = require('./routes/recipeRoutes');
@@ -46,6 +46,17 @@ app.use('/dishdash', quotationCrudRoutes);
 
 const quotationBusinessRoutes = require('./routes/business/quotationBusinessRoutes');
 app.use('/dishdash', quotationBusinessRoutes);
+
+const calendarCrudRoutes = require('./routes/crud/calendarCrudRoutes');
+app.use('/dishdash', calendarCrudRoutes);
+
+const calendarBusinessRoutes = require('./routes/business/calendarBusinessRoutes');
+app.use('/dishdash', calendarBusinessRoutes);
+
+const calendarMeetingRoutes = require('./routes/calendar');
+app.use('/dishdash', calendarMeetingRoutes);
+
+
 
 app.get('/', (req, res) => {
 	res.json({
@@ -107,12 +118,25 @@ app.get('/', (req, res) => {
 			POST_client_request: '/dishdash/quotations/client-request',
 			POST_chef_calculate: '/dishdash/quotations/chef-calculate',
 			POST_chef_quotation: '/dishdash/quotations/chef-quotation',
-			POST: '/dishdash/quotations',
 			GET: '/dishdash/quotations',
 			GET_by_id: '/dishdash/quotations/:id',
 			PUT: '/dishdash/quotations/:id',
 			PATCH_status: '/dishdash/quotations/:id/status',
 			DELETE: '/dishdash/quotations/:id'
+		},
+		calendar: {
+			POST :   '/dishdash/calendar/events',
+			GET   :  '/dishdash/calendar/events',
+			GET    : '/dishdash/calendar/events/:id',
+			PUT     :'/dishdash/calendar/events/:id',
+			DELETE : '/dishdash/calendar/events/:id',
+			GET     :'/dishdash/calendar/events/quotation/:quotationId',
+			GET     :'/dishdash/calendar/events/recipe/:recipeId',
+			PATCH   :'/dishdash/calendar/events/:id/complete',
+			GET     :'/dishdash/calendar/events/upcoming',
+			GET     :'/dishdash/calendar/timeline/:quotationId',
+			POST    :'/dishdash/calendar/events/create-from-quotation/:id',
+			POST    :'/dishdash/calendar/meeting'
 		}
 	});
 });
