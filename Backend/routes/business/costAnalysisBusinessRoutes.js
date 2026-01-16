@@ -1,55 +1,70 @@
 const express = require('express');
 const router = express.Router();
-const Recipe = require('../../models/recipe');
 const {
-    processIngredientLine,
-    calculateIndirectCosts,
-    calculateTaxes
+    calculateIngredientsCost,
+    calculateProductCost,
+    calculateTaxes,
+    calculateCompleteCostAnalysis
 } = require('../../controllers/costAnalysisBusinessController');
 
-router.post('/costanalysis/calculate', async (req, res) => {
+router.post('/costanalysis/calculate/ingredients-cost', async (req, res) => {
     try {
-        const { recipeId, selectedIngredients, ivaPercent = 0, servicePercent = 0 } = req.body;
+        const { selectedIngredients } = req.body;
         
-        if (!recipeId || !selectedIngredients || selectedIngredients.length === 0) {
-            return res.status(400).json({ 
-                message: 'recipeId and selectedIngredients are required' 
-            });
-        }
+        const result = await calculateIngredientsCost(selectedIngredients);
+        
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ 
+            message: 'Error calculating ingredients cost', 
+            error: error.message 
+        });
+    }
+});
 
-        const recipe = await Recipe.findById(recipeId);
-        if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
+router.post('/costanalysis/calculate/product-cost', async (req, res) => {
+    try {
+        const { 
+            ingredientsCost,
+            indirectCost,
+            servings,
+            margin = 3
+        } = req.body;
         
-        const lines = await Promise.all(
-            selectedIngredients.map(selection => processIngredientLine(selection))
+        const result = calculateProductCost(
+            ingredientsCost,
+            indirectCost,
+            servings,
+            margin
         );
         
-        const ingredientsCost = lines.reduce((sum, line) => sum + line.totalCost, 0);
-        const indirectCost = calculateIndirectCosts(ingredientsCost);
-        const totalCost = ingredientsCost + indirectCost;
-        
-        const servings = recipe.servings || 1;
-        const costPerServing = totalCost / servings;
-        const basePrice = costPerServing * 3;
-        
-        const taxes = calculateTaxes(basePrice, ivaPercent, servicePercent);
-        const suggestedPricePerServing = basePrice + taxes.totalTaxes;
-        
-        res.json({ 
-            recipeId, 
-            recipeName: recipe.name, 
-            servings, 
-            lines, 
-            ingredientsCost, 
-            indirectCost, 
-            totalCost, 
-            costPerServing, 
-            taxes,
-            suggestedPricePerServing
-        });
+        res.json(result);
     } catch (error) {
-        res.status(500).json({ 
-            message: 'Error calculating cost', 
+        res.status(400).json({ 
+            message: 'Error calculating product cost', 
+            error: error.message 
+        });
+    }
+});
+
+router.post('/costanalysis/calculate/taxes', async (req, res) => {
+    try {
+        const { 
+            suggestedPricePerServing,
+            ivaPercent = 0, 
+            servicePercent = 0
+        } = req.body;
+        
+        const result = calculateTaxes(
+            suggestedPricePerServing,
+            ivaPercent,
+            servicePercent
+        );
+        
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ 
+            message: 'Error calculating taxes', 
             error: error.message 
         });
     }
