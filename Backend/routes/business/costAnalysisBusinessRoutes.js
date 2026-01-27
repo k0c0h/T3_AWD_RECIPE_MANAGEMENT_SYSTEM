@@ -3,8 +3,7 @@ const router = express.Router();
 const {
     calculateIngredientsCost,
     calculateProductCost,
-    calculateTaxes,
-    calculateCompleteCostAnalysis
+    calculateTaxes
 } = require('../../controllers/costAnalysisBusinessController');
 
 router.post('/costanalysis/calculate/ingredients-cost', async (req, res) => {
@@ -69,5 +68,4 @@ router.post('/costanalysis/calculate/taxes', async (req, res) => {
         });
     }
 });
-
 module.exports = router;
