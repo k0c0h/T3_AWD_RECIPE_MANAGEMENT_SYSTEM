@@ -6,7 +6,7 @@ const Ingredient = require('../../models/ingredient');
 const {
     calculateIngredientsCost,
     calculateProductCost,
-    calculateTaxes
+    calculateTaxes,
 } = require('../../controllers/costAnalysisBusinessController');
 
 router.get('/costanalysis/recipe/:id/ingredients-options', async (req, res) => {
@@ -38,7 +38,6 @@ router.get('/costanalysis/recipe/:id/ingredients-options', async (req, res) => {
         });
     }
 });
-
 router.post('/costanalysis', async (req, res) => {
     try {
         const { 
@@ -54,18 +53,22 @@ router.post('/costanalysis', async (req, res) => {
             if (!recipe) {
                 return res.status(404).json({ message: 'Recipe not found' });
             }
+
             const step1 = await calculateIngredientsCost(selectedIngredients);
+
             const step2 = calculateProductCost(
                 step1.ingredientsCost,
                 step1.indirectCost,
                 recipe.servings,
                 margin
             );
+
             const step3 = calculateTaxes(
                 step2.suggestedPricePerServing,
                 ivaPercent,
                 servicePercent
             );
+
             const document = new CostAnalysis({
                 recipeId: recipe._id,
                 recipeName: recipe.name,
@@ -82,6 +85,7 @@ router.post('/costanalysis', async (req, res) => {
             await document.save();
             return res.status(201).json(document);
         }
+        
         const document = new CostAnalysis(req.body);
         await document.save();
         
@@ -194,7 +198,6 @@ router.put('/costanalysis/:id', async (req, res) => {
 
             req.body.taxes = step3.taxes;
         }
-        
         const document = await CostAnalysis.findByIdAndUpdate(
             req.params.id, 
             req.body, 
@@ -209,7 +212,6 @@ router.put('/costanalysis/:id', async (req, res) => {
         });
     }
 });
-
 router.delete('/costanalysis/:id', async (req, res) => {
     try {
         const document = await CostAnalysis.findByIdAndDelete(req.params.id);

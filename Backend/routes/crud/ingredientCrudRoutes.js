@@ -37,7 +37,7 @@ router.get('/ingredients/:productId', async (req, res) => {
     }
 });
 
-router.get('/ingredients/name/:name', async (req, res) => {
+/* router.get('/ingredients/name/:name', async (req, res) => {
     try {
         const ingredient = await Ingredient.findOne({name: req.params.name});
         if (ingredient == null) {
@@ -48,6 +48,28 @@ router.get('/ingredients/name/:name', async (req, res) => {
     } catch(err) {
         res.status(500).json({message: err.message});
     }
+}); */
+
+router.get('/ingredients/name/:term', async (req, res) => {
+  try {
+    const term = req.params.term || '';
+
+    const ingredients = await Ingredient.find({
+      name: { $regex: term, $options: 'i' },
+      isActive: { $ne: false }
+    }).limit(50);
+
+    return res.status(200).json({
+      success: true,
+      data: ingredients,
+      count: ingredients.length
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
 });
 
 router.post('/ingredient', async (req, res) => {
