@@ -1,7 +1,5 @@
-const Ingredient = require('../models/ingredient');
-const Conversion = require('../models/conversion');
+const crudService = require('../config/crudService');
 const { convert, formatKitchenUnits } = require('./conversionLogic');
-const Unit = require('../models/units');
 
 module.exports = {
     convertAndSave: async (req, res) => {
@@ -16,9 +14,11 @@ module.exports = {
             let ingredientName = null;
 
             if (ingredientId) {
-                const ingredient = await Ingredient.findOne({ productId: ingredientId });
+                const ingredient = await crudService.getIngredientByProductId(ingredientId);
 
-                if (!ingredient) return res.status(404).json({ message: 'Ingredient not found' });
+                if (!ingredient) {
+                    return res.status(404).json({ message: 'Ingredient not found' });
+                }
 
                 densityUsed = ingredient.density ?? 1;
                 ingredientName = ingredient.name;
@@ -26,8 +26,7 @@ module.exports = {
 
             const result = await convert(value, fromUnit, toUnit, densityUsed);
 
-            // Automatically save conversion record
-            await Conversion.create({
+            await crudService.saveConversion({
                 value,
                 fromUnit,
                 toUnit,
@@ -51,21 +50,26 @@ module.exports = {
     kitchenConversion: async (req, res) => {
         try {
             const { value, fromUnit, ingredientId, density } = req.body;
-            const unit = await Unit.findOne({ name: fromUnit, isActive: true });
 
-            if (!unit) return res.status(400).json({ message: 'Invalid unit' });
+            const unit = await crudService.getUnitByName(fromUnit);
 
-            let densityUsed = density || 1;
+            if (!unit) {
+                return res.status(400).json({ message: 'Invalid unit' });
+            }
+
+            let densityUsed = density ?? 1;
 
             if (ingredientId) {
-                const ingredient = await Ingredient.findOne({ productId: ingredientId });
+                const ingredient = await crudService.getIngredientByProductId(ingredientId);
 
-                if (!ingredient) return res.status(404).json({ message: 'Ingredient not found' });
+                if (!ingredient) {
+                    return res.status(404).json({ message: 'Ingredient not found' });
+                }
 
                 densityUsed = ingredient.density;
             }
 
-            let ml = unit.type === 'volume'
+            const ml = unit.type === 'volume'
                 ? value * unit.toBase
                 : (value * unit.toBase) / densityUsed;
 
