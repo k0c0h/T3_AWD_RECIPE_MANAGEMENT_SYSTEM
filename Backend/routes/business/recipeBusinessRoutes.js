@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const recipeBusinessController = require('../../controllers/recipeBusinessController');
+const recipeCrudController = require('../../controllers/recipeCrudController');
 const authorizeRoles = require('../../middleware/authorizeRoles');
 const authenticateToken = require('../../middleware/auth');
 const upload = require('../../middleware/upload');
 
-// POST - Solo chef
-//router.post('/recipe', authorizeRoles('chef'), recipeBusinessController.createRecipe);
 router.post(
   '/recipe',
   authenticateToken,
@@ -15,8 +14,16 @@ router.post(
   recipeBusinessController.createRecipe
 );
 
-// GET - Ambos roles
+router.put(
+  '/recipe/:id/with-calculations',
+  authenticateToken,
+  authorizeRoles('chef'),
+  upload.single('image'),
+  recipeCrudController.updateRecipeWithCalculations
+);
+
 router.get('/recipes/category/:category', recipeBusinessController.getRecipesByCategory);
+
 router.get('/recipes/name/:name', recipeBusinessController.getRecipeByName);
 
 module.exports = router;

@@ -3,15 +3,27 @@ const recipeLogic = require('./recipeLogic');
 
 exports.createRecipe = async (req, res) => {
   try {
-    let { name, servings, description, ingredients, instructions, category } = req.body;
+    let {
+      name,
+      servings,
+      description,
+      ingredients,
+      instructions,
+      category,
+    } = req.body;
 
-    if (typeof ingredients === 'string') {
+    if (typeof ingredients === "string") {
       ingredients = JSON.parse(ingredients);
     }
 
+    if (typeof instructions === "string") {
+      instructions = JSON.parse(instructions);
+    }
 
-    if (!ingredients || !servings) {
-      return res.status(400).json({ message: 'Ingredients and servings are required' });
+    if (!ingredients || ingredients.length === 0 || !servings) {
+      return res.status(400).json({
+        message: "Ingredients and servings are required",
+      });
     }
 
     const { updatedIngredients, costPerServing, pricePerServing } =
@@ -26,7 +38,7 @@ exports.createRecipe = async (req, res) => {
       servings,
       description,
       ingredients: updatedIngredients,
-      instructions,
+      instructions, 
       category,
       costPerServing,
       pricePerServing,
@@ -38,9 +50,11 @@ exports.createRecipe = async (req, res) => {
     res.status(201).json(newRecipe);
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 
 exports.getRecipesByCategory = async (req, res) => {
@@ -57,8 +71,11 @@ exports.getRecipesByCategory = async (req, res) => {
 
 exports.getRecipeByName = async (req, res) => {
   try {
-    const recipe = await Recipe.findOne({ name: req.params.name, isActive: true });
-    if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
+    const recipe = await Recipe.find({ 
+      name: { $regex: req.params.name, $options: 'i' }, 
+      isActive: true 
+    });
+    if (!recipe || recipe.length === 0) return res.status(404).json({ message: 'Recipe not found' });
     res.json(recipe);
   } catch (err) {
     res.status(500).json({ message: err.message });
