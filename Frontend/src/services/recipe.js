@@ -1,27 +1,27 @@
-import { axiosInstance } from "./api";
+import { axiosInstance, axiosBusinessInstance } from "./api";
 
 const recipeService = {
   getAll: async () => {
     return await axiosInstance.get("/recipes");
   },
-  getByCategory: async (category) => {
-    return await axiosInstance.get(
-      `/recipes/category/${encodeURIComponent(category)}`
-    );
-  },
-  getByName: async (name) => {
-    return await axiosInstance.get(
-      `/recipes/name/${encodeURIComponent(name)}`
-    );
-  },
+
   getById: async (id) => {
     return await axiosInstance.get(`/recipes/${encodeURIComponent(id)}`);
   },
+
   create: async (data) => {
-    return await axiosInstance.post("/recipe", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    return await axiosInstance.post('/recipes', data);
   },
+
+  createWithCosts: async (data) => {
+    const recipe = await axiosInstance.post('/recipes', data);
+    const recipeId = recipe._id;
+
+    return await axiosBusinessInstance.post(
+      `/recipe/${encodeURIComponent(recipeId)}/calculate-costs`
+    );
+  },
+
 
   update: async (id, data) => {
     return await axiosInstance.put(
@@ -35,6 +35,7 @@ const recipeService = {
       `/recipe/${encodeURIComponent(id)}`
     );
   },
+
   forceDelete: async (id) => {
     return await axiosInstance.delete(
       `/recipe/${encodeURIComponent(id)}/force`
@@ -44,6 +45,37 @@ const recipeService = {
   restore: async (id) => {
     return await axiosInstance.patch(
       `/recipe/${encodeURIComponent(id)}/restore`
+    );
+  },
+
+  getByCategory: async (category) => {
+    return await axiosBusinessInstance.get(
+      `/recipes/category/${encodeURIComponent(category)}`
+    );
+  },
+
+  getByName: async (name) => {
+    return await axiosBusinessInstance.get(
+      `/recipes/name/${encodeURIComponent(name)}`
+    );
+  },
+
+  calculateCosts: async (id) => {
+    return await axiosBusinessInstance.post(
+      `/recipe/${encodeURIComponent(id)}/calculate-costs`
+    );
+  },
+
+  recalculateCosts: async (id) => {
+    return await axiosBusinessInstance.put(
+      `/recipe/${encodeURIComponent(id)}/recalculate-costs`
+    );
+  },
+
+  scale: async (id, data) => {
+    return await axiosBusinessInstance.post(
+      `/recipes/${encodeURIComponent(id)}/scale`,
+      data
     );
   },
 };

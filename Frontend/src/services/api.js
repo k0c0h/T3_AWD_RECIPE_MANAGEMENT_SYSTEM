@@ -1,110 +1,112 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3007/dishdash';
+const API_CRUD_URL = import.meta.env.VITE_API_CRUD_URL;
+const API_BUSINESS_URL = import.meta.env.VITE_API_BUSINESS_URL;
 
 const axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_CRUD_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+const axiosBusinessInstance = axios.create({
+  baseURL: API_BUSINESS_URL,
+  headers: {
+    'Content-Type': 'application/json',
   },
-  (error) => {
-    return Promise.reject(error);
+});
+
+const requestInterceptor = (config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
+};
+
+const requestErrorInterceptor = (error) => Promise.reject(error);
+
+axiosInstance.interceptors.request.use(
+  requestInterceptor,
+  requestErrorInterceptor
 );
 
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
-  (error) => {
-    if (error.response) {
-      const { status, data } = error.response;
+axiosBusinessInstance.interceptors.request.use(
+  requestInterceptor,
+  requestErrorInterceptor
+);
 
-      if (status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-      }
+const responseSuccessInterceptor = (response) => response.data;
 
-      if (status === 403) {
-        console.error('Access forbidden:', data.message);
-      }
+const responseErrorInterceptor = (error) => {
+  if (error.response) {
+    const { status, data } = error.response;
 
-      return Promise.reject({
-        status,
-        message: data.message || 'An error occurred',
-        ...data,
-      });
-    } else if (error.request) {
-      return Promise.reject({
-        message: 'No response from server',
-      });
-    } else {
-      return Promise.reject({
-        message: error.message || 'Request error',
-      });
+    if (status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
     }
+
+    if (status === 403) {
+      console.error('Access forbidden:', data && data.message ? data.message : data);
+    }
+
+    let responseData = {};
+    if (data && typeof data === 'object') {
+      responseData = data;
+    } else {
+      responseData = { raw: data };
+    }
+
+    const message = (responseData && responseData.message) ? responseData.message : (typeof data === 'string' ? data : 'An error occurred');
+
+    return Promise.reject({
+      status,
+      message,
+      ...responseData,
+    });
   }
+
+  if (error.request) {
+    return Promise.reject({ message: 'No response from server' });
+  }
+
+  return Promise.reject({
+    message: error.message || 'Request error',
+  });
+};
+
+axiosInstance.interceptors.response.use(
+  responseSuccessInterceptor,
+  responseErrorInterceptor
+);
+
+axiosBusinessInstance.interceptors.response.use(
+  responseSuccessInterceptor,
+  responseErrorInterceptor
 );
 
 const api = {
   auth: {
-    login: async (email, password) => {
-      return await axiosInstance.post('/auth/login', { email, password });
-    },
-    register: async (email, password, name) => {
-      return await axiosInstance.post('/auth/register', { email, password, name });
-    },
-    googleAuth: () => {
-      window.location.href = `${API_BASE_URL}/auth/google`;
-    },
-  },
-  recipes: {
-    getAll: async () => {
-      return await axiosInstance.get('/recipes');
-    },
-    getById: async (id) => {
-      return await axiosInstance.get(`/recipe/${id}`);
-    },
-    create: async (recipeData) => {
-      return await axiosInstance.post('/recipe', recipeData);
-    },
-    update: async (id, recipeData) => {
-      return await axiosInstance.put(`/recipe/${id}`, recipeData);
-    },
-    delete: async (id) => {
-      return await axiosInstance.delete(`/recipe/${id}`);
-    },
-  },
+    login: (email, password) =>
+      axiosBusinessInstance.post('/auth/login', { email, password }),
 
-  quotations: {
-    getAll: async () => {
-      return await axiosInstance.get('/quotations');
+    register: (email, password, name) =>
+      axiosBusinessInstance.post('/auth/register', {
+        email,
+        password,
+        name,
+      }),
+
+    googleAuth: () => {
+      window.location.href = `${API_BUSINESS_URL}/auth/google`;
     },
-    getById: async (id) => {
-      return await axiosInstance.get(`/quotation/${id}`);
-    },
-    create: async (quotationData) => {
-      return await axiosInstance.post('/quotations', quotationData);
-    },
-    update: async (id, quotationData) => {
-      return await axiosInstance.put(`/quotation/${id}`, quotationData);
-    },
-    delete: async (id) => {
-      return await axiosInstance.delete(`/quotation/${id}`);
-    },
+
+    verify: () => axiosBusinessInstance.get('/auth/verify'),
   },
 };
 
-export { axiosInstance };
+export { axiosInstance, axiosBusinessInstance };
 export default api;

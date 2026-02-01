@@ -1,31 +1,33 @@
-import { axiosInstance } from "./api";
+import { axiosInstance, axiosBusinessInstance } from "./api";
 
 const costAnalysisService = {
   calculateIngredientsCost: async (selectedIngredients) => {
-    return await axiosInstance.post(
+    return await axiosBusinessInstance.post(
       "/costanalysis/calculate/ingredients-cost",
       { selectedIngredients }
     );
   },
 
   calculateProductCost: async (data) => {
-    return await axiosInstance.post(
+    return await axiosBusinessInstance.post(
       "/costanalysis/calculate/product-cost",
       data
     );
   },
 
   calculateTaxes: async (data) => {
-    console.log("SERVICE TAXES PAYLOAD", data);
-
-    return await axiosInstance.post(
+    return await axiosBusinessInstance.post(
       "/costanalysis/calculate/taxes",
       data
     );
   },
 
-
-
+  calculateCompleteCostAnalysis: async (payload) => {
+    return await axiosBusinessInstance.post(
+      "/costanalysis/calculate/complete",
+      payload
+    );
+  },
 
   getIngredientsOptions: async (recipeId) => {
     return await axiosInstance.get(
