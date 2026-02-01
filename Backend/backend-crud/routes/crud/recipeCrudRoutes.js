@@ -6,6 +6,19 @@ const authorizeRoles = require('../../middleware/authorizeRoles');
 
 router.get('/recipes', recipeCrudController.getAllActiveRecipes);
 router.get('/recipes/:id', recipeCrudController.getRecipeById);
+router.post(
+  '/recipes',
+  authorizeRoles('chef'),
+  upload.single('image'),
+  recipeCrudController.createRecipe
+);
+
+router.post(
+  '/recipe',
+  authorizeRoles('chef'),
+  upload.single('image'),
+  recipeCrudController.createRecipe
+);
 
 router.put(
   '/recipe/:id',

@@ -3,8 +3,9 @@ const router = express.Router();
 const CostAnalysis = require('../../models/costAnalysis');
 const Recipe = require('../../models/recipe');
 const Ingredient = require('../../models/ingredient');
+const axios = require('axios');
+const BUSINESS_API = process.env.BUSINESS_API_URL || 'http://localhost:3009/dishdash';
 
-// GET - Obtener opciones de ingredientes para una receta (CRUD PURO)
 router.get('/costanalysis/recipe/:id/ingredients-options', async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
@@ -115,6 +116,58 @@ router.delete('/costanalysis/:id', async (req, res) => {
             message: 'Error deleting cost analysis', 
             error: error.message 
         });
+    }
+});
+
+router.post('/costanalysis/calculate/complete', async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const url = `${BUSINESS_API}/costanalysis/calculate/complete`;
+        const response = await axios.post(url, req.body, { headers: { Authorization: authHeader } });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Proxy calculate/complete failed:', error.response ? error.response.data : error.message);
+        const status = error.response ? error.response.status : 500;
+        res.status(status).json(error.response ? error.response.data : { message: error.message });
+    }
+});
+
+router.post('/costanalysis/calculate/ingredients-cost', async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const url = `${BUSINESS_API}/costanalysis/calculate/ingredients-cost`;
+        const response = await axios.post(url, req.body, { headers: { Authorization: authHeader } });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Proxy calculate/ingredients-cost failed:', error.response ? error.response.data : error.message);
+        const status = error.response ? error.response.status : 500;
+        res.status(status).json(error.response ? error.response.data : { message: error.message });
+    }
+});
+
+router.post('/costanalysis/calculate/product-cost', async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const url = `${BUSINESS_API}/costanalysis/calculate/product-cost`;
+        const response = await axios.post(url, req.body, { headers: { Authorization: authHeader } });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Proxy calculate/product-cost failed:', error.response ? error.response.data : error.message);
+        const status = error.response ? error.response.status : 500;
+        res.status(status).json(error.response ? error.response.data : { message: error.message });
+    }
+});
+
+router.post('/costanalysis/calculate/taxes', async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const url = `${BUSINESS_API}/costanalysis/calculate/taxes`;
+        const response = await axios.post(url, req.body, { headers: { Authorization: authHeader } });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Proxy calculate/taxes failed:', error.response ? error.response.data : error.message);
+        const status = error.response ? error.response.status : 500;
+        res.status(status).json(error.response ? error.response.data : { message: error.message });
     }
 });
 

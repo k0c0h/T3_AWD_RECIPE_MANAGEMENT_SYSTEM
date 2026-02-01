@@ -1,4 +1,45 @@
 const Recipe = require('../models/recipe');
+const axios = require('axios');
+const BUSINESS_API = process.env.BUSINESS_API_URL || 'http://localhost:3007/dishdash';
+
+exports.createRecipe = async (req, res) => {
+  try {
+
+    let { name, servings, description, ingredients, instructions, category, costPerServing = 0, pricePerServing = 0 } = req.body;
+
+    if (typeof ingredients === 'string') ingredients = JSON.parse(ingredients);
+    if (typeof instructions === 'string') instructions = JSON.parse(instructions);
+
+    const recipe = new Recipe({
+      name,
+      servings,
+      description,
+      ingredients,
+      instructions,
+      category,
+      costPerServing,
+      pricePerServing,
+      isActive: true,
+      imageUrl: req.file ? `/uploads/recipes/${req.file.filename}` : null
+    });
+
+    const saved = await recipe.save();
+
+    try {
+      const authHeader = req.headers['authorization'];
+      const url = `${BUSINESS_API}/recipes/${encodeURIComponent(saved._id)}/calculate-costs`;
+      console.log(`Triggering business calc: ${url}`);
+      await axios.post(url, {}, { headers: { Authorization: authHeader } });
+      const updated = await Recipe.findById(saved._id);
+      return res.status(201).json(updated);
+    } catch (businessErr) {
+      console.error('Business calculation failed:', businessErr.response ? businessErr.response.data : businessErr.message);
+      return res.status(201).json({ message: 'Recipe created but cost calculation failed', recipe: saved, calculationError: businessErr.response ? businessErr.response.data : businessErr.message });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 exports.getAllActiveRecipes = async (req, res) => {
   try {
@@ -21,9 +62,6 @@ exports.getRecipeById = async (req, res) => {
   }
 };
 
-// PUT - Actualizar receta SIN recalcular costos (CRUD PURO)
-// NOTA: Esta versión solo actualiza los campos directamente sin cálculos
-// Para recalcular costos, usar PUT /recipe/:id/recalculate-costs (Business Routes)
 exports.updateRecipe = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
@@ -33,11 +71,10 @@ exports.updateRecipe = async (req, res) => {
 
     const updates = req.body;
 
-    // Si se sube una nueva imagen
     if (req.file) {
       updates.imageUrl = `/uploads/recipes/${req.file.filename}`;
     }
-    
+
     Object.assign(recipe, updates);
 
     const updatedRecipe = await recipe.save();
