@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const axios = require('axios');
+const passport = require('passport');
 
 exports.register = async (req, res) => {
     try {
@@ -204,5 +206,186 @@ exports.verifyToken = (req, res) => {
             valid: false,
             message: 'Invalid token'
         });
+    }
+};
+
+// ============================================
+// GOOGLE CALENDAR LINKING
+// ============================================
+
+// Iniciar vinculación de Google Calendar
+exports.initiateGoogleCalendarLink = (req, res, next) => {
+    // El userId viene del JWT (req.user.id)
+    const userId = req.user.id;
+    
+    // Iniciamos OAuth con la estrategia de calendar
+    passport.authenticate('google-calendar-link', {
+        scope: [
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/calendar.events',
+            'profile',
+            'email'
+        ],
+        accessType: 'offline',
+        prompt: 'consent',
+        state: userId, // Pasamos el userId en state para recuperarlo después
+        session: false
+    })(req, res, next);
+};
+
+// Callback de Google Calendar
+exports.googleCalendarCallback = async (req, res) => {
+    try {
+        const userId = req.query.state; // Recuperamos el userId del state
+        
+        if (!userId) {
+            throw new Error('User ID not found in state');
+        }
+
+        // Autenticamos para obtener los tokens
+        passport.authenticate('google-calendar-link', { session: false }, async (err, calendarData) => {
+            if (err || !calendarData) {
+                console.error('❌ Error en Google Calendar callback:', err);
+                const frontendURL = process.env.NODE_ENV === 'production'
+                    ? (process.env.FRONTEND_URL_PROD || 'https://dishdashfrontend.onrender.com')
+                    : (process.env.FRONTEND_URL || 'http://localhost:5173');
+                
+                return res.redirect(`${frontendURL}/calendar?google=error&message=${encodeURIComponent(err?.message || 'Authentication failed')}`);
+            }
+
+            try {
+                // Actualizar usuario en la BD del backend-business
+                const user = await User.findById(userId);
+                
+                if (!user) {
+                    throw new Error('User not found');
+                }
+
+                if (user.role !== 'chef') {
+                    throw new Error('Only chefs can link Google Calendar');
+                }
+
+                // Actualizar datos de Google Calendar
+                user.googleCalendar = {
+                    isLinked: true,
+                    accessToken: calendarData.accessToken,
+                    refreshToken: calendarData.refreshToken,
+                    tokenExpiry: calendarData.tokenExpiry,
+                    email: calendarData.email,
+                    scope: calendarData.scope
+                };
+
+                await user.save();
+
+                console.log('✅ Google Calendar vinculado exitosamente para:', user.email);
+
+                // Redirigir al frontend con éxito
+                const frontendURL = process.env.NODE_ENV === 'production'
+                    ? (process.env.FRONTEND_URL_PROD || 'https://dishdashfrontend.onrender.com')
+                    : (process.env.FRONTEND_URL || 'http://localhost:5173');
+                
+                res.redirect(`${frontendURL}/calendar?google=linked`);
+            } catch (updateError) {
+                console.error('❌ Error actualizando usuario:', updateError);
+                const frontendURL = process.env.NODE_ENV === 'production'
+                    ? (process.env.FRONTEND_URL_PROD || 'https://dishdashfrontend.onrender.com')
+                    : (process.env.FRONTEND_URL || 'http://localhost:5173');
+                
+                res.redirect(`${frontendURL}/calendar?google=error&message=${encodeURIComponent(updateError.message)}`);
+            }
+        })(req, res);
+    } catch (error) {
+        console.error('❌ Error en Google Calendar callback:', error);
+        const frontendURL = process.env.NODE_ENV === 'production'
+            ? (process.env.FRONTEND_URL_PROD || 'https://dishdashfrontend.onrender.com')
+            : (process.env.FRONTEND_URL || 'http://localhost:5173');
+        
+        res.redirect(`${frontendURL}/calendar?google=error&message=${encodeURIComponent(error.message)}`);
+    }
+};
+
+// Verificar estado de vinculación
+exports.checkGoogleCalendarStatus = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({
+            isLinked: user.googleCalendar?.isLinked || false,
+            email: user.googleCalendar?.email || null,
+            hasValidToken: user.googleCalendar?.tokenExpiry ? new Date(user.googleCalendar.tokenExpiry) > new Date() : false
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            message: 'Error checking calendar status', 
+            error: error.message 
+        });
+    }
+};
+
+// Desvincular Google Calendar
+exports.unlinkGoogleCalendar = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Limpiar datos de Google Calendar
+        user.googleCalendar = {
+            isLinked: false,
+            accessToken: null,
+            refreshToken: null,
+            tokenExpiry: null,
+            email: null,
+            scope: null
+        };
+
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Google Calendar unlinked successfully'
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            message: 'Error unlinking calendar', 
+            error: error.message 
+        });
+    }
+};
+
+// Refrescar token de Google (método interno para usar en otras funciones)
+exports.refreshGoogleToken = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+
+        if (!user || !user.googleCalendar?.refreshToken) {
+            throw new Error('No refresh token available');
+        }
+
+        const response = await axios.post('https://oauth2.googleapis.com/token', {
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            refresh_token: user.googleCalendar.refreshToken,
+            grant_type: 'refresh_token'
+        });
+
+        // Actualizar access token
+        user.googleCalendar.accessToken = response.data.access_token;
+        user.googleCalendar.tokenExpiry = new Date(Date.now() + response.data.expires_in * 1000);
+
+        await user.save();
+
+        return response.data.access_token;
+    } catch (error) {
+        console.error('❌ Error refreshing Google token:', error);
+        throw error;
     }
 };

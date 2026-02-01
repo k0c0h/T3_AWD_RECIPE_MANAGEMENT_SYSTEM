@@ -3,6 +3,8 @@ const passport = require('passport');
 const router = express.Router();
 
 const authBusinessController = require('../../controllers/authBusinessController');
+const authenticateToken = require('../../middleware/auth');
+const authorizeRoles = require('../../middleware/authorizeRoles');
 
 
 router.post('/auth/register', authBusinessController.register);
@@ -29,5 +31,36 @@ router.get('/auth/google/callback',
 router.get('/auth/failure', authBusinessController.authFailure);
 
 router.get('/auth/verify', authBusinessController.verifyToken);
+
+// ============================================
+// GOOGLE CALENDAR LINKING ROUTES
+// ============================================
+
+// Iniciar vinculación de Google Calendar (requiere JWT y rol chef)
+// Acepta token por header o query parameter: ?token=xxx
+router.get('/auth/google-calendar/link',
+    authenticateToken,
+    authorizeRoles('chef'),
+    authBusinessController.initiateGoogleCalendarLink
+);
+
+// Callback de Google Calendar
+router.get('/auth/google-calendar/callback',
+    authBusinessController.googleCalendarCallback
+);
+
+// Verificar estado de vinculación
+router.get('/auth/google-calendar/status',
+    authenticateToken,
+    authorizeRoles('chef'),
+    authBusinessController.checkGoogleCalendarStatus
+);
+
+// Desvincular Google Calendar
+router.delete('/auth/google-calendar/unlink',
+    authenticateToken,
+    authorizeRoles('chef'),
+    authBusinessController.unlinkGoogleCalendar
+);
 
 module.exports = router;

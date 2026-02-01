@@ -14,7 +14,15 @@ const userSchema = new mongoose.Schema(
             required: true 
         },
         isActive: { type: Boolean, default: true },
-        lastLogin: { type: Date, default: Date.now }
+        lastLogin: { type: Date, default: Date.now },
+        googleCalendar: {
+            isLinked: { type: Boolean, default: false },
+            accessToken: { type: String, default: null },
+            refreshToken: { type: String, default: null },
+            tokenExpiry: { type: Date, default: null },
+            email: { type: String, default: null },
+            scope: { type: String, default: null }
+        }
     },
     {
         collection: 'users',

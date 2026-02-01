@@ -105,6 +105,22 @@ const api = {
     },
 
     verify: () => axiosBusinessInstance.get('/auth/verify'),
+
+    // Google Calendar linking
+    googleCalendarLink: () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found. Please login again.');
+      }
+      // Enviamos el token como query parameter porque window.location no puede enviar headers
+      window.location.href = `${API_BUSINESS_URL}/auth/google-calendar/link?token=${token}`;
+    },
+
+    checkGoogleCalendarStatus: () =>
+      axiosBusinessInstance.get('/auth/google-calendar/status'),
+
+    unlinkGoogleCalendar: () =>
+      axiosBusinessInstance.delete('/auth/google-calendar/unlink'),
   },
 };
 

@@ -2,6 +2,26 @@ const express = require('express');
 const router = express.Router();
 const Quotation = require('../../models/quotation');
 
+// ============================================
+// RUTAS ESPECÍFICAS PRIMERO (antes de :id)
+// ============================================
+
+// GET - Obtener cotizaciones aprobadas con información completa para calendario
+router.get('/quotations/calendar', async (req, res) => {
+    try {
+        const quotations = await Quotation.find({ 
+            status: { $in: ['approved', 'completed'] }
+        }).sort({ 'eventInfo.eventDate': 1 });
+        
+        res.json(quotations);
+    } catch (error) {
+        res.status(500).json({ 
+            message: 'Error fetching quotations for calendar', 
+            error: error.message 
+        });
+    }
+});
+
 // POST - Crear solicitud de cliente (CRUD - crear)
 // Nota: Usar POST /quotations/client-request/estimate para estimar costo sin guardar
 router.post('/quotations/client-request', async (req, res) => {
@@ -93,6 +113,11 @@ router.post('/quotations', async (req, res) => {
     }
 });
 
+// ============================================
+// RUTAS GENÉRICAS DESPUÉS (con :id)
+// ============================================
+
+// GET - Obtener todas las cotizaciones (con filtros opcionales)
 router.get('/quotations', async (req, res) => {
     try {
         const { quotationType, status } = req.query;
@@ -111,6 +136,7 @@ router.get('/quotations', async (req, res) => {
     }
 });
 
+// GET - Obtener cotización por ID
 router.get('/quotations/:id', async (req, res) => {
     try {
         const document = await Quotation.findById(req.params.id);
@@ -125,6 +151,7 @@ router.get('/quotations/:id', async (req, res) => {
     }
 });
 
+// PUT - Actualizar cotización
 router.put('/quotations/:id', async (req, res) => {
     try {
         const document = await Quotation.findByIdAndUpdate(
@@ -172,6 +199,7 @@ router.patch('/quotations/:id/status', async (req, res) => {
     }
 });
 
+// DELETE - Eliminar cotización
 router.delete('/quotations/:id', async (req, res) => {
     try {
         const document = await Quotation.findByIdAndDelete(req.params.id);

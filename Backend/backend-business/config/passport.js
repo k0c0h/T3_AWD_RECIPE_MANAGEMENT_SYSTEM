@@ -42,4 +42,34 @@ passport.use(
     )
 );
 
+// Estrategia para vinculación de Google Calendar (solo tokens, no crea/loguea usuarios)
+passport.use('google-calendar-link',
+    new GoogleStrategy(
+        {
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: process.env.NODE_ENV === 'production'
+                ? 'https://recipemanagementbusiness.onrender.com/dishdash/auth/google-calendar/callback'
+                : 'http://localhost:3007/dishdash/auth/google-calendar/callback',
+            passReqToCallback: true
+        },
+        async (req, accessToken, refreshToken, profile, done) => {
+            try {
+                // Solo retornamos los tokens y el perfil, NO creamos/actualizamos usuario aquí
+                const calendarData = {
+                    accessToken,
+                    refreshToken,
+                    email: profile.emails[0].value,
+                    tokenExpiry: new Date(Date.now() + 3600 * 1000), // 1 hora
+                    scope: req.query.scope || ''
+                };
+                
+                done(null, calendarData);
+            } catch (error) {
+                done(error, null);
+            }
+        }
+    )
+);
+
 module.exports = passport;
