@@ -253,13 +253,13 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Tipo de Conversión */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Tipo de Conversión
         </label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
           <label className="flex items-center cursor-pointer">
             <input
               type="radio"
@@ -269,7 +269,7 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
               onChange={handleChange}
               className="w-4 h-4 text-[#9FB9B3]"
             />
-            <span className="ml-2 text-gray-700">Conversión Estándar</span>
+            <span className="ml-2 text-sm md:text-base text-gray-700">Conversión Estándar</span>
           </label>
         </div>
       </div>
@@ -291,7 +291,7 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
       </div>
 
       {/* Cantidad y Unidad Origen */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Cantidad
@@ -304,7 +304,7 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
             step="0.01"
             min="0"
             placeholder="Ej: 250"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent"
+            className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent text-sm md:text-base"
           />
         </div>
 
@@ -316,7 +316,7 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
             name="fromUnit"
             value={formData.fromUnit}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent"
+            className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent text-sm md:text-base"
           >
             <option value="">Seleccionar...</option>
             {units.weight.length > 0 && (
@@ -347,7 +347,7 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
             name="toUnit"
             value={formData.toUnit}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent"
+            className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent text-sm md:text-base"
           >
             <option value="">Seleccionar...</option>
             {units.weight.length > 0 && (
@@ -381,7 +381,7 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
           step="0.01"
           min="0"
           placeholder="Ej: 1.2 (opcional)"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent"
+          className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent text-sm md:text-base"
         />
         <p className="text-xs text-gray-500 mt-1">
           {formData.ingredientId 
@@ -392,23 +392,23 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
 
       {/* Resultado */}
       {result && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-sm text-gray-600 mb-2">Resultado de la conversión:</p>
-          <div className="flex items-center justify-between">
-            <div className="text-center flex-1">
-              <p className="text-gray-600 text-sm">De</p>
-              <p className="text-xl font-semibold text-gray-800">{result.from}</p>
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 md:p-4">
+          <p className="text-xs md:text-sm text-gray-600 mb-2">Resultado de la conversión:</p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-center flex-1 w-full sm:w-auto">
+              <p className="text-gray-600 text-xs md:text-sm">De</p>
+              <p className="text-lg md:text-xl font-semibold text-gray-800 break-words">{result.from}</p>
             </div>
-            <div className="flex items-center justify-center px-4">
-              <RefreshCw className="w-5 h-5 text-[#9FB9B3]" />
+            <div className="flex items-center justify-center px-2 md:px-4">
+              <RefreshCw className="w-4 h-4 md:w-5 md:h-5 text-[#9FB9B3]" />
             </div>
-            <div className="text-center flex-1">
-              <p className="text-gray-600 text-sm">A</p>
-              <p className="text-xl font-semibold text-gray-800">{result.to}</p>
+            <div className="text-center flex-1 w-full sm:w-auto">
+              <p className="text-gray-600 text-xs md:text-sm">A</p>
+              <p className="text-lg md:text-xl font-semibold text-gray-800 break-words">{result.to}</p>
             </div>
           </div>
           {result.densityUsed && (
-            <p className="text-xs text-gray-500 mt-3 text-center">
+            <p className="text-xs text-gray-500 mt-2 md:mt-3 text-center">
               Densidad utilizada: {result.densityUsed} g/ml
             </p>
           )}
@@ -416,19 +416,19 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
       )}
 
       {/* Botones */}
-      <div className="flex gap-3 pt-4">
+      <div className="flex flex-col sm:flex-row gap-3 pt-2 md:pt-4">
         <button
           type="button"
           onClick={handleSave}
           disabled={!result || loading}
-          className="flex-1 px-6 py-3 bg-[#9FB9B3] text-white rounded-lg hover:bg-[#8FA3A0] disabled:opacity-50 disabled:cursor-not-allowed font-medium transition"
+          className="w-full sm:flex-1 px-4 md:px-6 py-2.5 md:py-3 bg-[#9FB9B3] text-white rounded-lg hover:bg-[#8FA3A0] disabled:opacity-50 disabled:cursor-not-allowed font-medium transition text-sm md:text-base"
         >
           {loading ? 'Guardando...' : 'Guardar Conversión'}
         </button>
         <button
           type="button"
           onClick={handleReset}
-          className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition"
+          className="w-full sm:w-auto px-4 md:px-6 py-2.5 md:py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition text-sm md:text-base"
         >
           Limpiar
         </button>
@@ -437,7 +437,7 @@ const ConversionForm = ({ ingredients, units, onSuccess, onSaveSuccess }) => {
       {/* Mensaje de error si hay */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-          <p className="text-sm text-red-700">{error}</p>
+          <p className="text-xs md:text-sm text-red-700">{error}</p>
         </div>
       )}
     </div>

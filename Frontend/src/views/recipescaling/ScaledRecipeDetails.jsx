@@ -163,11 +163,13 @@ const ScaledRecipeDetails = ({ scaledRecipe }) => {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-3 md:p-4 space-y-3 md:space-y-4">
       {/* Información de Receta */}
-      <div className="p-4 bg-[#adc4bc] rounded shadow">
-        <h2 className="text-lg font-bold mb-2 text-white">Información de Receta</h2>
-        <div className="text-white space-y-1">
+      <div className="p-3 md:p-4 bg-[#adc4bc] rounded shadow">
+        <h2 className="text-base md:text-lg font-bold mb-2 text-white">
+          Información de Receta
+        </h2>
+        <div className="text-white space-y-1 text-sm md:text-base">
           <p>
             <strong>Nombre:</strong> {scaledRecipe.recipeName}
           </p>
@@ -190,9 +192,44 @@ const ScaledRecipeDetails = ({ scaledRecipe }) => {
       </div>
 
       {/* Ingredientes escalados */}
-      <div className="p-4 bg-white rounded shadow">
-        <h2 className="text-lg font-bold mb-2">Ingredientes Escalados</h2>
-        <div className="overflow-x-auto">
+      <div className="p-3 md:p-4 bg-white rounded shadow">
+        <h2 className="text-base md:text-lg font-bold mb-2">
+          Ingredientes Escalados
+        </h2>
+        
+        {/* Vista móvil - tarjetas */}
+        <div className="md:hidden space-y-2">
+          {scaledRecipe.ingredients.map((ing, idx) => (
+            <div
+              key={idx}
+              className="p-3 rounded border border-gray-300 bg-gray-50"
+            >
+              <div className="font-medium text-gray-800 mb-2">
+                {ing.ingredientName}
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                <div>
+                  <span className="font-medium">Original:</span>
+                  <br />
+                  {ing.originalQuantity} {ing.originalUnit}
+                </div>
+                <div>
+                  <span className="font-medium">Escalado:</span>
+                  <br />
+                  {ing.scaledQuantity} {ing.scaledUnit}
+                </div>
+              </div>
+              <div className="mt-2 pt-2 border-t border-gray-300">
+                <span className="font-bold text-gray-800">
+                  Costo: ${ing.cost.toFixed(2)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Vista desktop - tabla */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full border border-gray-300">
             <thead className="bg-[#adc4bc] text-white">
               <tr>
@@ -221,28 +258,30 @@ const ScaledRecipeDetails = ({ scaledRecipe }) => {
       </div>
 
       {/* Costos */}
-      <div className="p-4 bg-white rounded shadow">
-        <h2 className="text-lg font-bold mb-2">Resumen de Costos</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="p-3 bg-gray-100 rounded">
+      <div className="p-3 md:p-4 bg-white rounded shadow">
+        <h2 className="text-base md:text-lg font-bold mb-2">
+          Resumen de Costos
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2 md:gap-3">
+          <div className="p-2 md:p-3 bg-gray-100 rounded text-sm md:text-base">
             <strong>Costo total:</strong> ${scaledRecipe.costs.totalCost.toFixed(2)}
           </div>
-          <div className="p-3 bg-gray-100 rounded">
+          <div className="p-2 md:p-3 bg-gray-100 rounded text-sm md:text-base">
             <strong>Costo por porción:</strong> $
             {scaledRecipe.costs.costPerServing.toFixed(2)}
           </div>
-          <div className="p-3 bg-gray-100 rounded">
+          <div className="p-2 md:p-3 bg-gray-100 rounded text-sm md:text-base">
             <strong>Margen de ganancia:</strong> {scaledRecipe.costs.profitMargin}
           </div>
-          <div className="p-3 bg-gray-100 rounded">
+          <div className="p-2 md:p-3 bg-gray-100 rounded text-sm md:text-base">
             <strong>Precio por porción:</strong> $
             {scaledRecipe.costs.pricePerServing.toFixed(2)}
           </div>
-          <div className="p-3 bg-green-100 rounded">
+          <div className="p-2 md:p-3 bg-green-100 rounded text-sm md:text-base">
             <strong>Precio total:</strong> $
             {scaledRecipe.costs.totalPrice.toFixed(2)}
           </div>
-          <div className="p-3 bg-green-100 rounded">
+          <div className="p-2 md:p-3 bg-green-100 rounded text-sm md:text-base">
             <strong>Ganancia total:</strong> $
             {scaledRecipe.costs.totalProfit.toFixed(2)}
           </div>
@@ -251,9 +290,11 @@ const ScaledRecipeDetails = ({ scaledRecipe }) => {
 
       {/* Insumos aproximados */}
       {scaledRecipe.supplies && scaledRecipe.supplies.length > 0 && (
-        <div className="p-4 bg-white rounded shadow">
-          <h2 className="text-lg font-bold mb-2">Insumos Aproximados</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-3 md:p-4 bg-white rounded shadow">
+          <h2 className="text-base md:text-lg font-bold mb-2">
+            Insumos Aproximados
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
             {scaledRecipe.supplies.map((supply, idx) => {
               let approxText = "";
 
@@ -268,7 +309,7 @@ const ScaledRecipeDetails = ({ scaledRecipe }) => {
               }
 
               return (
-                <div key={idx} className="p-3 bg-gray-100 rounded">
+                <div key={idx} className="p-2 md:p-3 bg-gray-100 rounded text-sm md:text-base">
                   <strong>{supply.ingredientName}</strong>
                   <br />
                   {supply.quantityNeeded} {supply.unit}
@@ -283,7 +324,10 @@ const ScaledRecipeDetails = ({ scaledRecipe }) => {
 
       {/* Botón exportar */}
       <div className="flex justify-end">
-        <Button onClick={exportPDF} className="bg-[#9bb3ac] hover:bg-[#adc4bc]">
+        <Button 
+          onClick={exportPDF} 
+          className="w-full sm:w-auto bg-[#9bb3ac] hover:bg-[#adc4bc] text-sm md:text-base"
+        >
           Exportar PDF
         </Button>
       </div>

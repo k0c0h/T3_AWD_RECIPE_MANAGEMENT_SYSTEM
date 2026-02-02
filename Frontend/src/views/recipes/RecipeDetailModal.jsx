@@ -1,8 +1,9 @@
 import React from "react";
+import { formatCurrency, formatNumber } from '../../utils/format';
 
 const API_BASE =
-  import.meta.env.VITE_API_URL?.replace("/dishdash", "") ||
-  "https://recipemanagement-caj9.onrender.com";
+  import.meta.env.VITE_API_CRUD?.replace("/dishdash", "") ||
+  "http://recipemanagementcrud.onrender.com/dishdash";
 
 const getImageUrl = (path) => (path ? `${API_BASE}${path}` : "");
 
@@ -11,45 +12,49 @@ const RecipeDetailModal = ({ recipe, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div className="bg-white rounded-xl w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
-
-        {/* Header */}
-        <div className="relative p-6 pb-4">
+      <div
+        className="w-full max-w-3xl rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto"
+        style={{ backgroundColor: "#f5f2eb" }}
+      >
+        {/* HEADER */}
+        <div className="relative p-6">
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl"
-            aria-label="Cerrar"
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl"
           >
             ✕
           </button>
 
-          <div className="flex gap-5 items-start">
-            {/* Info */}
-            <div className="flex-1 space-y-2">
-              <h2 className="text-2xl font-semibold text-gray-800">
-                {recipe.name}
-              </h2>
-
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-[#9FB9B3]/20 text-[#5a7f78]">
+          <div className="flex gap-6 items-start">
+            {/* INFO */}
+            <div className="flex-1 space-y-3">
+              <span
+                className="inline-block px-3 py-1 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: "#adc4bc", color: "#355f5b" }}
+              >
                 {recipe.category}
               </span>
 
-              <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 mt-3">
-                <p>
-                  <strong>Porciones:</strong> {recipe.servings}
-                </p>
-                <p>
-                  <strong>Precio:</strong> ${recipe.pricePerServing}
-                </p>
-                <p>
-                  <strong>Costo:</strong> ${recipe.costPerServing}
-                </p>
+              <h2 className="text-2xl font-bold text-gray-800">
+                {recipe.name}
+              </h2>
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  🍽 <strong>{recipe.servings}</strong> porciones
+                </div>
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  💲 Precio: <strong>{formatCurrency(recipe.pricePerServing)}</strong>
+                </div>
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  💰 Costo: <strong>{formatCurrency(recipe.costPerServing)}</strong>
+                </div>
               </div>
             </div>
 
-            {/* Image */}
+            {/* IMAGE */}
             {recipe.imageUrl ? (
-              <div className="w-28 h-28 rounded-lg overflow-hidden border bg-gray-100 shrink-0">
+              <div className="w-40 h-40 rounded-xl overflow-hidden border bg-white shadow-sm shrink-0">
                 <img
                   src={getImageUrl(recipe.imageUrl)}
                   alt={recipe.name}
@@ -57,39 +62,44 @@ const RecipeDetailModal = ({ recipe, onClose }) => {
                 />
               </div>
             ) : (
-              <div className="w-28 h-28 flex items-center justify-center text-xs text-gray-400 border rounded-lg bg-gray-50 shrink-0">
+              <div className="w-40 h-40 flex items-center justify-center text-xs text-gray-400 border rounded-xl bg-white shrink-0">
                 Sin imagen
               </div>
             )}
           </div>
         </div>
 
-        {/* Content */}
-        <div className="px-6 pb-6 space-y-5 text-sm">
-
-          {/* Description */}
-          <div>
-            <h4 className="font-semibold text-gray-800 mb-1">Descripción</h4>
+        {/* CONTENT */}
+        <div className="px-6 pb-6 space-y-6 text-sm">
+          {/* Descripción */}
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <h4 className="font-semibold text-gray-800 mb-1">
+              Descripción
+            </h4>
             <p className="text-gray-700">
               {recipe.description || "Sin descripción"}
             </p>
           </div>
 
-          {/* Ingredients */}
-          <div>
-            <h4 className="font-semibold text-gray-800 mb-2">Ingredientes</h4>
+          {/* Ingredientes */}
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <h4 className="font-semibold text-gray-800 mb-3">
+              Ingredientes
+            </h4>
+
             {recipe.ingredients?.length > 0 ? (
               <ul className="space-y-2">
                 {recipe.ingredients.map((ing, i) => (
                   <li
-                    key={ing._id || ing.productId || i}
-                    className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-md"
+                    key={ing._id || i}
+                    className="flex justify-between items-center px-3 py-2 rounded-lg"
+                    style={{ backgroundColor: "#f5f2eb" }}
                   >
                     <span className="text-gray-800">
                       {ing.ingredientName || ing.name}
                     </span>
                     <span className="text-gray-600">
-                      {ing.quantity} {ing.unit}
+                      {typeof ing.quantity === 'number' ? formatNumber(ing.quantity) : ing.quantity} {ing.unit}
                     </span>
                   </li>
                 ))}
@@ -99,12 +109,15 @@ const RecipeDetailModal = ({ recipe, onClose }) => {
             )}
           </div>
 
-          {/* Instructions */}
-          <div>
-            <h4 className="font-semibold text-gray-800 mb-2">Instrucciones</h4>
+          {/* Instrucciones */}
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <h4 className="font-semibold text-gray-800 mb-3">
+              Instrucciones
+            </h4>
+
             {Array.isArray(recipe.instructions) &&
             recipe.instructions.length > 0 ? (
-              <ol className="space-y-2 list-decimal list-inside text-gray-700">
+              <ol className="list-decimal list-inside space-y-2 text-gray-700">
                 {recipe.instructions.map((step, i) => (
                   <li key={i}>{step}</li>
                 ))}
@@ -115,16 +128,16 @@ const RecipeDetailModal = ({ recipe, onClose }) => {
           </div>
 
           {/* Footer */}
-          <div className="pt-4 flex justify-end">
+          <div className="flex justify-end">
             <button
               onClick={onClose}
-              className="px-5 py-2 rounded-md text-white font-medium bg-[#9FB9B3] hover:opacity-90"
+              className="px-6 py-2 rounded-lg text-white font-medium"
+              style={{ backgroundColor: "#adc4bc" }}
             >
               Cerrar
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -1,4 +1,7 @@
+import ClientQuoteForm from "../../views/quotations/client/ClientQuoteForm";
+
 const Quotes = () => {
-  return <div>Página de Cotizaciones - Por implementar</div>;
+  return <ClientQuoteForm />;
 };
+
 export default Quotes;

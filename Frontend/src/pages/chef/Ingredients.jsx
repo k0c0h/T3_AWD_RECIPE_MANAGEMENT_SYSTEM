@@ -4,6 +4,7 @@ import IngredientsStats from '../../views/ingredients/IngredientsStats';
 import IngredientsFilters from '../../views/ingredients/IngredientsFilters';
 import IngredientsTable from '../../views/ingredients/IngredientsTable';
 import IngredientsModal from '../../views/ingredients/IngredientsModal';
+import ExportIngredientsModal from '../../views/ingredients/ExportIngredientsModal';
 import ConfirmationModal from '../../components/ui/ConfirmationModal';
 import Toast from '../../components/ui/Toast';
 
@@ -19,6 +20,7 @@ const Ingredients = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingIngredient, setEditingIngredient] = useState(null);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -211,6 +213,7 @@ const Ingredients = () => {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           onOpenModal={() => handleOpenModal()}
+          onOpenExportModal={() => setIsExportModalOpen(true)}
           categories={categories}
         />
 
@@ -233,6 +236,12 @@ const Ingredients = () => {
           initialData={editingIngredient}
           categories={categories}
         />
+
+        <ExportIngredientsModal
+          isOpen={isExportModalOpen}
+          onClose={() => setIsExportModalOpen(false)}
+          ingredients={ingredients.filter(ing => ing.isActive !== false)}
+        />
       </div>
 
       <ConfirmationModal
@@ -251,5 +260,4 @@ const Ingredients = () => {
     </>
   );
 };
-
 export default Ingredients;

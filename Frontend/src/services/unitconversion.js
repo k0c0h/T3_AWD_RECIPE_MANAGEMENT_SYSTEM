@@ -11,7 +11,7 @@ const unitConversionService = {
   },
 
   getAll: async () => {
-    return await axiosBusinessInstance.get('/conversions');
+    return await axiosInstance.get('/conversions');
   },
 
   getAllUnits: async () => {

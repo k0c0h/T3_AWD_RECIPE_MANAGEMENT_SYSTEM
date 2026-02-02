@@ -1,61 +1,83 @@
 import React from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
+const API_BASE =
+  import.meta.env.VITE_API_CRUD?.replace("/dishdash", "") ||
+  "http://localhost:3007";
+
+const getImageUrl = (path) =>
+  path ? `${API_BASE}${path}` : "/placeholder.jpg";
+
 const RecipesGrid = ({ recipes, onView, onEdit, onDelete }) => {
   if (!recipes.length) {
     return (
-      <p className="text-center text-gray-500 mt-8">
+      <p className="text-center text-gray-500 mt-12">
         No hay recetas disponibles
       </p>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {recipes.map((recipe) => (
         <div
           key={recipe._id}
-          className="rounded-lg p-4 shadow-sm flex flex-col justify-between"
-          style={{ backgroundColor: "#adc4bc" }}
+          className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition bg-[#f5f2eb]"
         >
-          <div>
-            <p className="text-sm text-white/80">
-              {recipe.category}
-            </p>
-            <h3 className="text-xl font-bold text-white mt-1">
-              {recipe.name}
-            </h3>
-
-            <p className="text-white/90 text-sm mt-2 line-clamp-3">
-              {recipe.description || "Sin descripción"}
-            </p>
-
-            <p className="text-xs text-white/70 mt-2">
-              🍽 {recipe.servings} porciones
-            </p>
+          {/* Image */}
+          <div className="h-40 bg-gray-200 overflow-hidden">
+            <img
+              src={getImageUrl(recipe.imageUrl || recipe.image)}
+              alt={recipe.name}
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          <div className="flex justify-end gap-2 mt-4">
-            <button
-              onClick={() => onView(recipe)}
-              className="p-2 rounded bg-white/20 hover:bg-white/30 text-white"
-            >
-              <Eye size={16} />
-            </button>
+          {/* Content */}
+          <div className="p-4 flex flex-col justify-between h-[230px]">
+            <div>
+              <span className="inline-block mb-1 px-3 py-1 text-xs rounded-full bg-[#e7c78a]/60 text-gray-800 font-medium">
+                {recipe.category}
+              </span>
 
-            <button
-              onClick={() => onEdit(recipe)}
-              className="p-2 rounded bg-white/20 hover:bg-white/30 text-white"
-            >
-              <Pencil size={16} />
-            </button>
+              <h3 className="text-lg font-bold text-gray-800">
+                {recipe.name}
+              </h3>
 
-            <button
-              onClick={() => onDelete(recipe._id)}
-              className="p-2 rounded bg-red-500 hover:bg-red-600 text-white"
-            >
-              <Trash2 size={16} />
-            </button>
+              <p className="text-sm text-gray-600 mt-2 line-clamp-3">
+                {recipe.description || "Sin descripción"}
+              </p>
+
+              <p className="text-xs text-gray-500 mt-2">
+                🍽 {recipe.servings} porciones
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={() => onView(recipe)}
+                className="p-2 rounded-lg bg-[#adc4bc] hover:bg-[#9fb9b3] text-white"
+              >
+                <Eye size={16} />
+              </button>
+
+              <button
+                onClick={() => onEdit(recipe)}
+                className="p-2 rounded-lg bg-[#c8d0d2] hover:bg-[#b6c0c2] text-gray-800"
+              >
+                <Pencil size={16} />
+              </button>
+
+              {onDelete && (
+                <button
+                  onClick={() => onDelete(recipe._id)}
+                  className="p-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       ))}

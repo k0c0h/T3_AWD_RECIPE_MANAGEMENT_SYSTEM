@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import SearchableSelect from "../../../components/ui/SearchableSelect";
-import Button from "../../../components/ui/Button";
 import Toast from "../../../components/ui/Toast";
 import ConfirmationModal from "../../../components/ui/ConfirmationModal";
+import Input from "../../../components/ui/Input";
+import Select from "../../../components/ui/Select";
 import recipeService from "../../../services/recipe";
 import quotationService from "../../../services/quotation";
 import { useAuth } from "../../../context/AuthContext";
@@ -94,6 +95,14 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
     message: "",
     confirmText: "Aceptar",
   });
+
+  const minEventDate = (() => {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  })();
 
   useEffect(() => {
     const loadRecipes = async () => {
@@ -257,6 +266,12 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
       showToast("Completa fecha y hora del evento", "error");
       return false;
     }
+
+    // Asegurar que la fecha no sea anterior a hoy
+    if (eventInfo.eventDate && eventInfo.eventDate < minEventDate) {
+      showToast('La fecha del evento debe ser desde hoy en adelante', 'error');
+      return false;
+    }
     if (!calculation) {
       showToast("Primero calcula la cotización", "error");
       return false;
@@ -336,11 +351,11 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f2eb] p-4 md:p-8">
+    <div className="min-h-screen bg-[#FFFFFF] p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-800">
+            <h1 className="text-3xl font-semibold text-[#6b7280]">
               Nueva Cotización
             </h1>
             <p className="text-gray-600 mt-1">
@@ -348,13 +363,13 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Button 
-              onClick={onShowHistory} 
-              className="bg-[#9FB9B3] hover:bg-[#8aa59f] text-white"
+            <button
+              onClick={onShowHistory}
+              className="bg-[#e7c78a] hover:bg-[#d4b06f] text-white font-semibold px-4 py-2 rounded-md shadow-sm transition-colors"
             >
               Ver historial
-            </Button>
-            <Button 
+            </button>
+            <button
               onClick={() =>
                 openConfirm({
                   action: "clear",
@@ -363,17 +378,17 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   confirmText: "Limpiar",
                 })
               }
-              className="bg-gray-300 text-gray-800 hover:bg-gray-400"
+              className="bg-[#f5f2eb] hover:bg-[#e5dfd8] text-gray-800 font-semibold px-4 py-2 rounded-md shadow-sm transition-colors border border-[#e5dfd8]"
             >
               Limpiar
-            </Button>
+            </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-200">
+            <section className="bg-white p-6 rounded-lg border shadow-sm" style={{ borderColor: "#e5dfd8" }}>
+              <h2 className="text-lg font-semibold text-gray-800 mb-5 pb-3 border-b" style={{ borderColor: "#e5dfd8" }}>
                 Información del cliente
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -381,9 +396,9 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Nombre completo" 
                   description="Nombre del cliente"
                 >
-                  <input
+                  <Input
                     type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                    className="w-full"
                     placeholder="Ej: Juan García"
                     value={clientInfo.name}
                     onChange={(e) =>
@@ -395,9 +410,9 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Teléfono" 
                   description="Número de contacto"
                 >
-                  <input
+                  <Input
                     type="tel"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                    className="w-full"
                     placeholder="Ej: +57 300 123 4567"
                     value={clientInfo.phone}
                     onChange={(e) =>
@@ -409,9 +424,9 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Email" 
                   description="Correo electrónico"
                 >
-                  <input
+                  <Input
                     type="email"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                    className="w-full"
                     placeholder="Ej: juan@example.com"
                     value={clientInfo.email}
                     onChange={(e) =>
@@ -422,8 +437,8 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
               </div>
             </section>
 
-            <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-200">
+            <section className="bg-white p-6 rounded-lg border shadow-sm" style={{ borderColor: "#e5dfd8" }}>
+              <h2 className="text-lg font-semibold text-gray-800 mb-5 pb-3 border-b" style={{ borderColor: "#e5dfd8" }}>
                 Información del evento
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -431,8 +446,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Tipo de evento" 
                   description="Categoría del evento"
                 >
-                  <select
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Select className="w-full"
                     value={eventInfo.eventType}
                     onChange={(e) =>
                       setEventInfo((prev) => ({
@@ -446,16 +460,13 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                         {type.label}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </FormField>
                 <FormField 
                   label="Número de invitados" 
                   description="Cantidad total de personas"
                 >
-                  <input
-                    type="number"
-                    min="1"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="number" min="1" className="w-full"
                     placeholder="Ej: 50"
                     value={eventInfo.numberOfGuests}
                     onChange={(e) =>
@@ -470,25 +481,26 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Fecha del evento" 
                   description="Cuándo es el evento"
                 >
-                  <input
-                    type="date"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="date" className="w-full"
+                    min={minEventDate}
                     value={eventInfo.eventDate}
-                    onChange={(e) =>
-                      setEventInfo((prev) => ({
-                        ...prev,
-                        eventDate: e.target.value,
-                      }))
-                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val && val < minEventDate) {
+                        showToast('Selecciona una fecha desde hoy en adelante', 'error');
+                        // forzar a la fecha mínima
+                        setEventInfo((prev) => ({ ...prev, eventDate: minEventDate }));
+                      } else {
+                        setEventInfo((prev) => ({ ...prev, eventDate: val }));
+                      }
+                    }}
                   />
                 </FormField>
                 <FormField 
                   label="Hora del evento" 
                   description="A qué hora comienza"
                 >
-                  <input
-                    type="time"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="time" className="w-full"
                     value={eventInfo.eventTime}
                     onChange={(e) =>
                       setEventInfo((prev) => ({
@@ -502,9 +514,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Dirección" 
                   description="Ubicación del evento"
                 >
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="text" className="w-full"
                     placeholder="Ej: Calle 10 #50-30, Bogotá"
                     value={eventInfo.location.address}
                     onChange={(e) =>
@@ -519,9 +529,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Nombre del lugar" 
                   description="Salón, hotel, etc."
                 >
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="text" className="w-full"
                     placeholder="Ej: Salón Mi Gusto"
                     value={eventInfo.location.venueName}
                     onChange={(e) =>
@@ -539,9 +547,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Restricciones alimentarias" 
                   description="Alergias, preferencias, etc."
                 >
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="text" className="w-full"
                     placeholder="Ej: Sin gluten, veganos, alérgicos a frutos secos"
                     value={eventInfo.dietaryRestrictions}
                     onChange={(e) =>
@@ -556,9 +562,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Requerimientos especiales" 
                   description="Servicio, decoración, etc."
                 >
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="text" className="w-full"
                     placeholder="Ej: Meseros, decoración temática"
                     value={eventInfo.specialRequirements}
                     onChange={(e) =>
@@ -573,9 +577,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Cocina preferida" 
                   description="Estilo o tipo de comida"
                 >
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="text" className="w-full"
                     placeholder="Ej: Francesa, italiana, fusión"
                     value={eventInfo.preferredCuisine}
                     onChange={(e) =>
@@ -590,9 +592,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Notas adicionales" 
                   description="Información relevante"
                 >
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="text" className="w-full"
                     placeholder="Ej: Presupuesto flexible, margen de negociación"
                     value={eventInfo.additionalNotes}
                     onChange={(e) =>
@@ -606,8 +606,8 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
               </div>
             </section>
 
-            <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5 pb-3 border-b border-gray-200">
+            <section className="bg-white p-6 rounded-lg border shadow-sm" style={{ borderColor: "#e5dfd8" }}>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5 pb-3 border-b" style={{ borderColor: "#e5dfd8" }}>
                 <h2 className="text-lg font-semibold text-gray-800">
                   Recetas del menú
                 </h2>
@@ -637,7 +637,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
               ) : (
                 <div className="space-y-3">
                   {selectedRecipes.map((recipe) => (
-                    <div key={recipe.recipeId} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div key={recipe.recipeId} className="border rounded-lg p-4" style={{ borderColor: "#e5dfd8", backgroundColor: "#f5f2eb" }}>
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
                         <div>
                           <h3 className="font-semibold text-gray-800">
@@ -648,7 +648,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                           </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-md px-2 py-1">
+                          <div className="flex items-center gap-2 bg-white border rounded-md px-2 py-1" style={{ borderColor: "#e5dfd8" }}>
                             <label className="text-xs font-medium text-gray-600">
                               Porciones:
                             </label>
@@ -683,7 +683,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                       </div>
 
                       {recipe.expanded && (
-                        <div className="mt-4 pt-3 border-t border-gray-300 space-y-2">
+                        <div className="mt-4 pt-3 border-t space-y-2" style={{ borderColor: "#e5dfd8" }}>
                           <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs font-medium text-gray-600 mb-2">
                             <div className="md:col-span-2">Ingrediente</div>
                             <div>Cantidad</div>
@@ -694,14 +694,14 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                               key={`${recipe.recipeId}-${index}`}
                               className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center"
                             >
-                              <div className="md:col-span-2 text-sm text-gray-700 bg-white p-2 rounded border border-gray-200">
+                              <div className="md:col-span-2 text-sm text-gray-700 bg-white p-2 rounded border" style={{ borderColor: "#e5dfd8" }}>
                                 {ing.name || "Ingrediente"}
                               </div>
                               <input
                                 type="number"
                                 min="0"
                                 step="0.01"
-                                className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none"
+                                className="border rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none" style={{ borderColor: "#e5dfd8" }}
                                 value={ing.quantity}
                                 onChange={(e) =>
                                   handleIngredientChange(
@@ -714,7 +714,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                               />
                               <input
                                 type="text"
-                                className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none"
+                                className="border rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none" style={{ borderColor: "#e5dfd8" }}
                                 placeholder="g, ml, oz..."
                                 value={ing.unit}
                                 onChange={(e) =>
@@ -736,8 +736,8 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
               )}
             </section>
 
-            <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-200">
+            <section className="bg-white p-6 rounded-lg border shadow-sm" style={{ borderColor: "#e5dfd8" }}>
+              <h2 className="text-lg font-semibold text-gray-800 mb-5 pb-3 border-b" style={{ borderColor: "#e5dfd8" }}>
                 Descuentos e impuestos
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -745,23 +745,19 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Tipo de descuento" 
                   description="Porcentaje o monto fijo"
                 >
-                  <select
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Select className="w-full"
                     value={discountType}
                     onChange={(e) => setDiscountType(e.target.value)}
                   >
                     <option value="percentage">Porcentaje (%)</option>
                     <option value="fixed">Monto fijo ($)</option>
-                  </select>
+                  </Select>
                 </FormField>
                 <FormField 
                   label="Valor del descuento" 
                   description="Descuento a aplicar"
                 >
-                  <input
-                    type="number"
-                    min="0"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="number" min="0" className="w-full"
                     placeholder="0"
                     value={discountValue}
                     onChange={(e) => setDiscountValue(e.target.value)}
@@ -771,11 +767,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="IVA (%)" 
                   description="Impuesto al valor agregado"
                 >
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="number" min="0" max="100" className="w-full"
                     placeholder="0"
                     value={ivaPercent}
                     onChange={(e) => setIvaPercent(e.target.value)}
@@ -785,11 +777,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Servicio (%)" 
                   description="Propina o costo de servicio"
                 >
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="number" min="0" max="100" className="w-full"
                     placeholder="0"
                     value={servicePercent}
                     onChange={(e) => setServicePercent(e.target.value)}
@@ -799,11 +787,7 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   label="Otros (%)" 
                   description="Otros impuestos o recargos"
                 >
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent outline-none transition"
+                  <Input type="number" min="0" max="100" className="w-full"
                     placeholder="0"
                     value={otherPercent}
                     onChange={(e) => setOtherPercent(e.target.value)}
@@ -813,14 +797,14 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
             </section>
 
             <div className="flex flex-wrap gap-3">
-              <Button 
-                onClick={handleCalculate} 
+              <button
+                onClick={handleCalculate}
                 disabled={isCalculating}
-                className="bg-[#9FB9B3] hover:bg-[#8aa59f] text-white"
+                className="bg-[#adc4bc] hover:bg-[#9db1a8] text-white font-semibold px-4 py-2 rounded-md shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isCalculating ? "Calculando..." : "Calcular cotización"}
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={() =>
                   openConfirm({
                     action: "save",
@@ -830,17 +814,17 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                   })
                 }
                 disabled={isSaving || !calculation}
-                className="bg-[#adc4bc] hover:bg-[#9db1a8] text-white"
+                className="bg-[#edcab4] hover:bg-[#ddb89f] text-[#6b7280] font-semibold px-4 py-2 rounded-md shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSaving ? "Guardando..." : "Guardar cotización"}
-              </Button>
+              </button>
             </div>
           </div>
 
           {/* Resumen lateral */}
           <aside className="lg:row-span-2">
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm sticky top-8">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-200">
+            <div className="bg-white p-6 rounded-lg border shadow-sm sticky top-8" style={{ borderColor: "#e5dfd8" }}>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4 pb-3 border-b" style={{ borderColor: "#e5dfd8" }}>
                 Resumen de costos
               </h2>
               {calculation ? (
@@ -862,21 +846,21 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                         +{formatCurrency(calculation.taxes?.totalTaxes)}
                       </span>
                     </div>
-                    <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between">
+                    <div className="border-t pt-2 mt-2 flex justify-between" style={{ borderColor: "#e5dfd8" }}>
                       <span className="font-semibold text-gray-800">Total</span>
-                      <span className="text-lg font-bold" style={{ color: "#9FB9B3" }}>
+                      <span className="text-lg font-bold" style={{ color: "#2f6f5c" }}>
                         {formatCurrency(calculation.totalAmount)}
                       </span>
                     </div>
                   </div>
 
-                  <div className="border-t border-gray-200 pt-4">
+                  <div className="border-t pt-4" style={{ borderColor: "#e5dfd8" }}>
                     <h3 className="font-semibold text-gray-700 mb-3 text-sm">
                       Desglose de recetas
                     </h3>
                     <div className="space-y-3">
                       {calculation.recipes?.map((recipe) => (
-                        <div key={recipe.recipeId} className="text-sm bg-gray-50 p-3 rounded">
+                        <div key={recipe.recipeId} className="text-sm p-3 rounded" style={{ backgroundColor: "#f5f2eb" }}>
                           <div className="flex justify-between font-medium text-gray-800 mb-1">
                             <span className="truncate">{recipe.recipeName}</span>
                             <span className="ml-2">{formatCurrency(recipe.totalCost)}</span>
@@ -889,8 +873,8 @@ const ChefQuoteForm = ({ onShowHistory, onSaved }) => {
                     </div>
                   </div>
 
-                  <div className="border-t border-gray-200 pt-4">
-                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  <div className="border-t pt-4" style={{ borderColor: "#e5dfd8" }}>
+                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "#f5e8d8", color: "#8b5a2b" }}>
                       ⊘ Pendiente de guardar
                     </div>
                   </div>

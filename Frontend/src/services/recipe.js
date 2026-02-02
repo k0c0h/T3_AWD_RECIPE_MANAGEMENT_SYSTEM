@@ -1,8 +1,15 @@
 import { axiosInstance, axiosBusinessInstance } from "./api";
+import axiosPublic from './apiPublic';
+import axios from 'axios';
+
 
 const recipeService = {
+  getAllRecipes: async () => {
+    return await axiosPublic.get('/public/recipes');
+  },
+
   getAll: async () => {
-    return await axiosInstance.get("/recipes");
+    return await axiosInstance.get('/recipes');
   },
 
   getById: async (id) => {
