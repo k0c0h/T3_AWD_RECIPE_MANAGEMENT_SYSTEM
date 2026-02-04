@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 3008;
+const port = process.env.PORT || 3007;
 const path = require('path');
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://mrsproudd:mrsproudd@cluster0.ad7fs0q.mongodb.net/recipemanagementsystem?appName=Cluster0');
@@ -29,6 +29,12 @@ const authorizeRoles = require('./middleware/authorizeRoles');
 // ============================================
 // CRUD ROUTES 
 // ============================================
+
+const recipePublicRoutes = require('./routes/crud/recipePublicRoutes');
+app.use('/dishdash/public', recipePublicRoutes);
+
+const quotationPublicRoutes = require('./routes/crud/quotationPublicRoutes');
+app.use('/dishdash', quotationPublicRoutes);
 
 const userCrudRoutes = require('./routes/crud/userCrudRoutes');
 app.use('/dishdash', authenticateToken, authorizeRoles('chef'), userCrudRoutes);
@@ -58,7 +64,7 @@ const recipeCrudRoutes = require('./routes/crud/recipeCrudRoutes');
 app.use('/dishdash', authenticateToken, recipeCrudRoutes);
 
 const quotationCrudRoutes = require('./routes/crud/quotationCrudRoutes');
-app.use('/dishdash', authenticateToken, quotationCrudRoutes);
+app.use('/dishdash', authenticateToken, authorizeRoles('chef', 'client'), quotationCrudRoutes);
 
 // ============================================
 // API Documentation

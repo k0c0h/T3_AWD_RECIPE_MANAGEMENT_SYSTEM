@@ -138,13 +138,28 @@ async function eventExists({ type, quotationId, startDate }) {
 
 async function createCalendarEventForQuotation(quotation) {
     // Crear evento local con zona horaria correcta
-    // Extraer solo la fecha (sin hora) del eventDate
-    const eventDateStr = quotation.eventInfo.eventDate.toString();
+    // Validar que existan los campos necesarios
+    if (!quotation.eventInfo.eventDate || !quotation.eventInfo.eventTime) {
+        throw new Error('Event date and time are required in quotation.eventInfo');
+    }
+
+    // Extraer solo la fecha (sin hora) del eventDate usando toISOString para evitar problemas de zona horaria
+    const eventDateStr = quotation.eventInfo.eventDate.toISOString();
     const eventDateOnly = eventDateStr.split('T')[0]; // "2026-02-15"
     const [hours, minutes] = quotation.eventInfo.eventTime.split(':'); // ["18", "00"]
     
+    // Validar que se pudieron extraer horas y minutos
+    if (!hours || !minutes) {
+        throw new Error(`Invalid eventTime format: ${quotation.eventInfo.eventTime}. Expected format: HH:mm`);
+    }
+    
     // Crear fecha en zona horaria local combinando fecha + hora
     const eventStartDate = new Date(`${eventDateOnly}T${hours}:${minutes}:00`);
+    
+    // Validar que la fecha creada es válida
+    if (isNaN(eventStartDate.getTime())) {
+        throw new Error(`Invalid date created from eventDate: ${quotation.eventInfo.eventDate} and eventTime: ${quotation.eventInfo.eventTime}`);
+    }
 
     const exists = await eventExists({
         type: 'delivery',

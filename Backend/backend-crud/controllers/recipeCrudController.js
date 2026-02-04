@@ -1,6 +1,6 @@
 const Recipe = require('../models/recipe');
 const axios = require('axios');
-const BUSINESS_API = process.env.BUSINESS_API_URL || 'http://localhost:3007/dishdash';
+const BUSINESS_API = process.env.BUSINESS_API_URL || 'http://localhost:3008/dishdash';
 
 exports.createRecipe = async (req, res) => {
   try {
@@ -69,7 +69,16 @@ exports.updateRecipe = async (req, res) => {
       return res.status(404).json({ message: 'Recipe not found' });
     }
 
-    const updates = req.body;
+    let updates = { ...req.body };
+
+    // 🔹 IMPORTANTE: multipart/form-data → todo llega como string
+    if (typeof updates.ingredients === 'string') {
+      updates.ingredients = JSON.parse(updates.ingredients);
+    }
+
+    if (typeof updates.instructions === 'string') {
+      updates.instructions = JSON.parse(updates.instructions);
+    }
 
     if (req.file) {
       updates.imageUrl = `/uploads/recipes/${req.file.filename}`;
@@ -78,7 +87,27 @@ exports.updateRecipe = async (req, res) => {
     Object.assign(recipe, updates);
 
     const updatedRecipe = await recipe.save();
+
+    try {
+      await axios.put(
+        `${BUSINESS_API}/recipes/${updatedRecipe._id}/recalculate-costs`,
+        {
+          ingredients: updatedRecipe.ingredients,
+          servings: updatedRecipe.servings
+        },
+        {
+          headers: { Authorization: req.headers.authorization }
+        }
+      );
+    } catch (businessErr) {
+      console.error(
+        'Recalculation failed:',
+        businessErr.response?.data || businessErr.message
+      );
+    }
+
     res.json(updatedRecipe);
+
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 3009;
+const port = process.env.PORT || 3007;
 const path = require('path');
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://mrsproudd:mrsproudd@cluster0.ad7fs0q.mongodb.net/recipemanagementsystem?appName=Cluster0');

@@ -12,12 +12,15 @@ router.post('/calendar/events/:id/sync-google', async (req, res) => {
         const event = await CalendarEvent.findById(req.params.id).populate('quotationId');
         if (!event) return res.status(404).json({ message: 'Event not found' });
 
-        const quotation = event.quotationId;
-        if (!quotation || !quotation.chefId) {
-            return res.status(400).json({ message: 'Quotation or chef not found' });
+        // Usar el chefId del usuario autenticado (req.user.id) en lugar del chefId de la cotización
+        // Esto permite sincronizar eventos de client_request que no tienen chefId asignado
+        const chefId = req.user.id;
+        
+        if (!chefId) {
+            return res.status(400).json({ message: 'User not authenticated' });
         }
 
-        const calendar = await businessController.getGoogleCalendarClient(quotation.chefId);
+        const calendar = await businessController.getGoogleCalendarClient(chefId);
         if (!calendar) {
             return res.status(400).json({ message: 'Chef does not have Google Calendar linked' });
         }
