@@ -32,6 +32,7 @@ const Calendar = () => {
     loading: true
   });
   const [quotations, setQuotations] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedQuotation, setSelectedQuotation] = useState(null);
@@ -42,6 +43,7 @@ const Calendar = () => {
     checkGoogleStatus();
     handleUrlParams();
     loadQuotations();
+    loadPendingRequests();
   }, []);
 
   const handleUrlParams = () => {
@@ -88,6 +90,59 @@ const Calendar = () => {
     }
   };
 
+  const loadPendingRequests = async () => {
+    try {
+      const data = await quotationService.getAll({ 
+        status: 'pending', 
+        quotationType: 'client_request' 
+      });
+      setPendingRequests(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error loading pending requests:', error);
+    }
+  };
+
+  const handleAcceptRequest = async (requestId) => {
+    setConfirm({
+      open: true,
+      action: 'accept',
+      payload: requestId,
+      loading: false
+    });
+  };
+
+  const handleRejectRequest = async (requestId) => {
+    setConfirm({
+      open: true,
+      action: 'reject',
+      payload: requestId,
+      loading: false
+    });
+  };
+
+  const confirmAction = async () => {
+    const { action, payload } = confirm;
+    setConfirm(prev => ({ ...prev, loading: true }));
+
+    try {
+      if (action === 'accept') {
+        await quotationService.approveAndSchedule(payload);
+        showToast('Solicitud aceptada y evento creado', 'success');
+        loadPendingRequests();
+        loadQuotations();
+      } else if (action === 'reject') {
+        await quotationService.updateStatus(payload, 'cancelled');
+        showToast('Solicitud rechazada', 'success');
+        loadPendingRequests();
+      }
+      setConfirm({ open: false, action: null, payload: null, loading: false });
+    } catch (error) {
+      console.error('Error processing request:', error);
+      showToast(error?.message || 'Error al procesar la solicitud', 'error');
+      setConfirm(prev => ({ ...prev, loading: false }));
+    }
+  };
+
   const handleLinkGoogle = () => {
     api.auth.googleCalendarLink();
   };
@@ -119,8 +174,30 @@ const Calendar = () => {
     }
   };
 
+  const handleConfirmAction = () => {
+    const { action } = confirm;
+    if (action === 'unlink') {
+      confirmUnlink();
+    } else if (action === 'sync') {
+      handleSyncWithGoogle(confirm.payload);
+    } else if (action === 'accept' || action === 'reject') {
+      confirmAction();
+    }
+  };
+
   const showToast = (message, type = 'success') => {
     setToast({ id: Date.now(), message, type });
+  };
+
+  const getEventTypeLabel = (type) => {
+    const labels = {
+      wedding: 'Boda',
+      birthday: 'Cumpleaños',
+      corporate: 'Corporativo',
+      private: 'Privado',
+      other: 'Otro'
+    };
+    return labels[type] || type;
   };
 
   // Funciones para navegar el calendario
@@ -162,16 +239,6 @@ const Calendar = () => {
 
   const formatMonthYear = () => {
     return currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-  };
-
-  const getEventTypeLabel = (type) => {
-    const labels = {
-      wedding: 'Boda',
-      corporate_event: 'Evento Corporativo',
-      birthday_party: 'Fiesta de Cumpleaños',
-      other: 'Otro'
-    };
-    return labels[type] || type;
   };
 
   const getStatusColor = (status) => {
@@ -325,6 +392,108 @@ const Calendar = () => {
           )}
         </div>
       </div>
+
+      {/* Solicitudes Pendientes */}
+      {pendingRequests.length > 0 && (
+        <div className="max-w-7xl mx-auto mb-6">
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{ color: '#9FB9B3' }}>
+              <Users size={24} />
+              Solicitudes Pendientes de Cotización ({pendingRequests.length})
+            </h2>
+            <p className="text-sm mb-4" style={{ color: '#B8C9D0' }}>
+              Clientes que han solicitado cotizaciones y esperan tu respuesta
+            </p>
+            
+            <div className="space-y-3">
+              {pendingRequests.map((request) => (
+                <div
+                  key={request._id}
+                  className="border rounded-lg p-4 transition-all hover:shadow-md"
+                  style={{ borderColor: '#E8D5C7', backgroundColor: '#FAFAFA' }}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 p-2 rounded-lg" style={{ backgroundColor: '#FFF3E0' }}>
+                          <Users size={20} style={{ color: '#FF9800' }} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-lg" style={{ color: '#9FB9B3' }}>
+                            {request.clientInfo.name}
+                          </h3>
+                          <div className="text-sm space-y-1 mt-1" style={{ color: '#666' }}>
+                            <p className="flex items-center gap-2">
+                              <span className="font-semibold">📧</span> {request.clientInfo.email}
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <span className="font-semibold">📱</span> {request.clientInfo.phone}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <CalendarIcon size={16} style={{ color: '#9FB9B3' }} />
+                          <span className="font-semibold">Tipo:</span>
+                          <span>{getEventTypeLabel(request.eventInfo.eventType)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users size={16} style={{ color: '#9FB9B3' }} />
+                          <span className="font-semibold">Invitados:</span>
+                          <span>{request.eventInfo.numberOfGuests}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock size={16} style={{ color: '#9FB9B3' }} />
+                          <span className="font-semibold">Fecha:</span>
+                          <span>{new Date(request.eventInfo.eventDate).toLocaleDateString('es-ES')}</span>
+                        </div>
+                      </div>
+
+                      {request.eventInfo.additionalNotes && (
+                        <div className="mt-2 p-2 rounded" style={{ backgroundColor: '#F5F2EB' }}>
+                          <p className="text-xs font-semibold" style={{ color: '#9FB9B3' }}>Notas:</p>
+                          <p className="text-sm" style={{ color: '#666' }}>{request.eventInfo.additionalNotes}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex md:flex-col gap-2">
+                      <button
+                        onClick={() => handleAcceptRequest(request._id)}
+                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all shadow-sm flex-1 md:flex-initial"
+                        style={{ backgroundColor: '#4CAF50', color: '#ffffff' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#45a049'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
+                      >
+                        <CheckCircle size={18} />
+                        Aceptar
+                      </button>
+                      <button
+                        onClick={() => handleRejectRequest(request._id)}
+                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all shadow-sm border-2 flex-1 md:flex-initial"
+                        style={{ borderColor: '#E57373', color: '#E57373', backgroundColor: '#ffffff' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#FFEBEE';
+                          e.currentTarget.style.borderColor = '#EF5350';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#ffffff';
+                          e.currentTarget.style.borderColor = '#E57373';
+                        }}
+                      >
+                        <Trash2 size={18} />
+                        Rechazar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Calendar Navigation */}
       <div className="max-w-7xl mx-auto mb-4">
@@ -562,20 +731,30 @@ const Calendar = () => {
       <ConfirmationModal
         isOpen={confirm.open}
         onClose={() => !confirm.loading && setConfirm({ open: false, action: null, payload: null, loading: false })}
-        onConfirm={() => {
-          if (confirm.action === 'unlink') {
-            confirmUnlink();
-          } else if (confirm.action === 'sync') {
-            handleSyncWithGoogle(confirm.payload);
-          }
-        }}
-        title={confirm.action === 'unlink' ? 'Desvincular Google Calendar' : 'Sincronizar con Google Calendar'}
+        onConfirm={handleConfirmAction}
+        title={
+          confirm.action === 'unlink' ? 'Desvincular Google Calendar' :
+          confirm.action === 'sync' ? 'Sincronizar con Google Calendar' :
+          confirm.action === 'accept' ? 'Aceptar Solicitud' :
+          confirm.action === 'reject' ? 'Rechazar Solicitud' : ''
+        }
         message={
           confirm.action === 'unlink' 
             ? '¿Estás seguro de que deseas desvincular tu cuenta de Google Calendar? Perderás la sincronización automática de eventos.'
-            : '¿Deseas sincronizar este evento con tu Google Calendar? Aparecerá en tu calendario personal.'
+            : confirm.action === 'sync'
+            ? '¿Deseas sincronizar este evento con tu Google Calendar? Aparecerá en tu calendario personal.'
+            : confirm.action === 'accept'
+            ? '¿Deseas aceptar esta solicitud? Se creará una cotización aprobada y el evento se programará en tu calendario.'
+            : confirm.action === 'reject'
+            ? '¿Estás seguro de que deseas rechazar esta solicitud? El cliente será notificado de tu decisión.'
+            : ''
         }
-        confirmText={confirm.action === 'unlink' ? 'Desvincular' : 'Sincronizar'}
+        confirmText={
+          confirm.action === 'unlink' ? 'Desvincular' :
+          confirm.action === 'sync' ? 'Sincronizar' :
+          confirm.action === 'accept' ? 'Aceptar' :
+          confirm.action === 'reject' ? 'Rechazar' : 'Confirmar'
+        }
         cancelText="Cancelar"
         loading={confirm.loading}
       />

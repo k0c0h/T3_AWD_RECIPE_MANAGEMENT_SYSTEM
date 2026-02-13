@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Plus, Download, FileText, FileSpreadsheet, Filter as FilterIcon, Tag, Package } from 'lucide-react';
+import React from 'react';
+import { Search, Plus, Download } from 'lucide-react';
 
 const IngredientsFilters = ({ 
   searchTerm, 
@@ -9,41 +9,51 @@ const IngredientsFilters = ({
   viewMode,
   onViewModeChange,
   onOpenModal,
+  onOpenExportModal,
   categories 
 }) => {
-  const [showExportMenu, setShowExportMenu] = useState(false);
-
-  const exportOptions = [
-    { id: 'pdf', label: 'Exportar PDF', icon: FileText },
-    { id: 'excel', label: 'Exportar Excel', icon: FileSpreadsheet },
-    { id: 'advanced', label: 'Exportar con Filtros Avanzados', icon: FilterIcon },
-    { id: 'category', label: 'Exportar por Categoría', icon: Tag },
-    { id: 'inventory', label: 'Exportar Inventario con Totales', icon: Package }
-  ];
-
-  const handleExport = (type) => {
-    console.log('Exporting:', type);
-    setShowExportMenu(false);
-  };
-
   return (
-    <div className="bg-white rounded-lg border p-4 mb-4">
-      <div className="flex flex-col md:flex-row gap-3">
+    <div className="bg-white rounded-lg border p-4 mb-4 shadow-sm" style={{ borderColor: "#e5dfd8" }}>
+      {/* Primera fila: Búsqueda y botones principales */}
+      <div className="flex flex-col lg:flex-row gap-3 mb-3 lg:mb-0">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
             placeholder="Buscar por nombre, producto o código..."
-            className="w-full pl-9 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 text-sm"
-            style={{ focusRingColor: '#9FB9B3' }}
+            className="w-full pl-9 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent text-sm"
+            style={{ borderColor: "#e5dfd8" }}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
 
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => onOpenModal()}
+            className="flex-1 sm:flex-none px-4 py-2 text-white rounded-md font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm"
+            style={{ backgroundColor: '#9FB9B3' }}
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">Nuevo</span>
+          </button>
+          
+          <button 
+            onClick={onOpenExportModal}
+            className="flex-1 sm:flex-none px-4 py-2 text-white rounded-md font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm"
+            style={{ backgroundColor: '#e7c78a' }}
+          >
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline">Exportar</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Segunda fila: Filtros */}
+      <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t" style={{ borderColor: "#e5dfd8" }}>
         <select
-          className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white text-sm"
-          style={{ focusRingColor: '#9FB9B3' }}
+          className="flex-1 sm:max-w-xs px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#9FB9B3] focus:border-transparent bg-white text-sm"
+          style={{ borderColor: "#e5dfd8" }}
           value={selectedCategory}
           onChange={(e) => onCategoryChange(e.target.value)}
         >
@@ -57,7 +67,7 @@ const IngredientsFilters = ({
         <div className="flex gap-2">
           <button
             onClick={() => onViewModeChange('active')}
-            className={`px-3 py-2 rounded-md font-medium transition-colors text-sm ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-md font-medium transition-colors text-sm ${
               viewMode === 'active' 
                 ? 'text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -68,7 +78,7 @@ const IngredientsFilters = ({
           </button>
           <button
             onClick={() => onViewModeChange('deleted')}
-            className={`px-3 py-2 rounded-md font-medium transition-colors text-sm ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-md font-medium transition-colors text-sm ${
               viewMode === 'deleted' 
                 ? 'text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -78,46 +88,6 @@ const IngredientsFilters = ({
             Archivados
           </button>
         </div>
-
-        {/* Export Dropdown */}
-        <div className="relative">
-          <button 
-            onClick={() => setShowExportMenu(!showExportMenu)}
-            className="px-4 py-2 text-white rounded-md font-medium hover:opacity-90 transition-opacity flex items-center gap-2 text-sm"
-            style={{ backgroundColor: '#e7c78a' }}
-          >
-            <Download className="w-4 h-4" />
-            Exportar
-          </button>
-          
-          {showExportMenu && (
-            <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border z-10" style={{ borderColor: '#E8D5C7' }}>
-              {exportOptions.map((option) => {
-                const Icon = option.icon;
-                return (
-                  <button
-                    key={option.id}
-                    onClick={() => handleExport(option.id)}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left text-sm border-b last:border-b-0"
-                    style={{ borderColor: '#F1F1F1' }}
-                  >
-                    <Icon className="w-4 h-4" style={{ color: '#9FB9B3' }} />
-                    <span className="text-gray-700">{option.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        <button 
-          onClick={onOpenModal}
-          className="px-4 py-2 text-white rounded-md font-medium hover:opacity-90 transition-opacity flex items-center gap-2 text-sm"
-          style={{ backgroundColor: '#D4B5A5' }}
-        >
-          <Plus className="w-4 h-4" />
-          Nuevo
-        </button>
       </div>
     </div>
   );

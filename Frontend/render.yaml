@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: dishdashfrontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_CRUD_URL
+        value: https://recipemanagementcrud.onrender.com/dishdash
+      - key: VITE_API_BUSINESS_URL
+        value: https://recipemanagementbusiness.onrender.com/dishdash
+      - key: VITE_ASSETS_URL
+        value: https://recipemanagementbusiness.onrender.com
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

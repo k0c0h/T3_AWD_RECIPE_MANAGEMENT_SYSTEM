@@ -19,11 +19,11 @@ export default function RecipeScalingForm({ recipes, onScale }) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-4 md:gap-4">
       <div>
-        <label className="block text-sm font-medium">Receta</label>
+        <label className="block text-sm font-medium mb-1">Receta</label>
         <select
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 text-sm md:text-base focus:ring-2 focus:ring-[#9bb3ac] focus:border-transparent"
           value={recipeId}
           onChange={(e) => setRecipeId(e.target.value)}
         >
@@ -35,39 +35,48 @@ export default function RecipeScalingForm({ recipes, onScale }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Porciones originales</label>
+        <label className="block text-sm font-medium mb-1">
+          Porciones originales
+        </label>
         <input
-          className="w-full border rounded p-2 bg-gray-100"
+          className="w-full border rounded p-2 bg-gray-100 text-sm md:text-base"
           value={selectedRecipe?.servings || ""}
           readOnly
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Nuevas porciones</label>
+        <label className="block text-sm font-medium mb-1">
+          Nuevas porciones
+        </label>
         <input
           type="number"
           min="1"
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 text-sm md:text-base focus:ring-2 focus:ring-[#9bb3ac] focus:border-transparent"
           value={newServings}
           onChange={(e) => setNewServings(e.target.value)}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Margen de ganancia en %</label>
+        <label className="block text-sm font-medium mb-1">
+          Margen de ganancia en %
+        </label>
         <input
           type="number"
           step="0.1"
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 text-sm md:text-base focus:ring-2 focus:ring-[#9bb3ac] focus:border-transparent"
           value={profitMargin}
           placeholder="Ej: 1.2 para 20%"
           onChange={(e) => setProfitMargin(e.target.value)}
         />
       </div>
 
-      <div className="md:col-span-4 flex justify-end">
-        <Button onClick={handleSubmit} className="bg-[#9bb3ac] hover:bg-[#adc4bc]">
+      <div className="md:col-span-4 flex justify-end pt-2 md:pt-0">
+        <Button 
+          onClick={handleSubmit} 
+          className="w-full sm:w-auto bg-[#9bb3ac] hover:bg-[#adc4bc] text-sm md:text-base"
+        >
           Calcular Ingredientes
         </Button>
       </div>

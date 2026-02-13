@@ -10,7 +10,7 @@ class Recipe {
     this.prepTime = data.prepTime || 0;
     this.cookTime = data.cookTime || 0;
     this.difficulty = data.difficulty || 'medium';
-    this.image = data.image || '';
+    this.image = data.imageUrl || data.image || '';
     this.tags = data.tags || [];
     this.isActive = data.isActive !== false;
     this.createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
@@ -22,6 +22,7 @@ class Recipe {
     const errors = {};
     if (!this.name || this.name.trim() === '') errors.name = 'Name is required';
     if (!this.category || this.category.trim() === '') errors.category = 'Category is required';
+    if (!this.description || this.description.trim() === '') errors.description = 'Description is required';
     if (this.servings < 1) errors.servings = 'Servings must be at least 1';
     if (!Array.isArray(this.ingredients) || this.ingredients.length === 0) errors.ingredients = 'At least one ingredient is required';
     if (!Array.isArray(this.instructions) || this.instructions.length === 0) errors.instructions = 'At least one instruction is required';
@@ -65,8 +66,8 @@ class Recipe {
     if (!searchTerm || searchTerm.trim().length < 3) return true;
     const search = searchTerm.toLowerCase();
     return this.name.toLowerCase().includes(search) ||
-           this.description.toLowerCase().includes(search) ||
-           this.tags.some(tag => tag.toLowerCase().includes(search));
+      this.description.toLowerCase().includes(search) ||
+      this.tags.some(tag => tag.toLowerCase().includes(search));
   }
 
   belongsToCategory(category) {
@@ -181,16 +182,16 @@ class Recipe {
 
   static exportToCSV(recipes, filename = 'recetas_exportadas.csv') {
     if (!Array.isArray(recipes) || recipes.length === 0) return null;
-    
+
     const headers = ['Nombre', 'Categoría', 'Porciones', 'Descripción', 'Tiempo Total', 'Dificultad'];
     const rows = recipes.map(r => r.toCSVRow());
-    
+
     let csvContent = 'data:text/csv;charset=utf-8,';
     csvContent += headers.join(',') + '\n';
     rows.forEach(row => {
       csvContent += row.map(field => `"${field}"`).join(',') + '\n';
     });
-    
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
@@ -198,7 +199,7 @@ class Recipe {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     return true;
   }
 
